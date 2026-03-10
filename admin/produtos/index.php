@@ -1,5 +1,5 @@
 <?php
-  require '../../config/conexao.php';
+  require '#';
 
   $stmt = $pdo->query("SELECT * FROM produtos ORDER BY id DESC");
   $produtos = $stmt->fetchAll();
@@ -49,14 +49,11 @@
         </tbody>
     </table>
       <a href="cadastrar.php" class="btn btn-outline-primary">Novo produto</a>
-
-</div>
+    </div>
 
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script type="module" src="../../js/acoesProdutos.js"></script>
 </body>
 </html>
 
