@@ -1,7 +1,7 @@
 <?php
-  require '#';
+  require '../../config/conexao.php';
 
-  $stmt = $pdo->query("SELECT * FROM produtos ORDER BY id DESC");
+  $stmt = $pdo->query("SELECT * FROM produtos where situacao = 1 ORDER BY id DESC");
   $produtos = $stmt->fetchAll();
 
 ?>

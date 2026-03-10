@@ -1,6 +1,6 @@
 <!-- cadastro de produtos -->
 <?php
-    require '#';
+    require '../../config/conexao.php';
 ?>
 
 
@@ -15,8 +15,6 @@
 
 
 <body>
-
-    <h1>Adicionar Produto</h1>
     <form action="salvar.php" method="post" id="cadastroProduto">
     <div class="container mt-5">
     <h1 class="mb-4">Adicionar Produto</h1>

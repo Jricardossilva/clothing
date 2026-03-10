@@ -1,6 +1,6 @@
 <!-- deletar produtos -->
 <?php
-    require '#'; 
+    require '../../config/conexao.php'; 
 
     if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         $id = $_GET['id'];
