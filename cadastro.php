@@ -77,10 +77,61 @@
                             Please enter a valid email address for shipping updates.
                         </div>
                     </div>
-                    <div class="col-12"> <label for="address" class="form-label">Endereço</label> <input type="text"
-                            class="form-control" id="address" placeholder="1234 Main St" required>
+
+                     <div class="col-4"> <label for="address" class="form-label">CEP</label> <input type="text"
+                            class="form-control" id="cep" placeholder="CEP" onblur="buscaCEP()" required>
                         <div class="invalid-feedback">
-                            Please enter your shipping address.
+                        </div>
+                    </div>
+                    <div class="col-8"> <label for="address" class="form-label">Endereço</label> <input type="text"
+                            class="form-control" id="logradouro" placeholder="Rua" required>
+                        <div class="invalid-feedback">
+
+                        </div>
+                    </div>
+                    <div class="col-5"> <label for="address" class="form-label">Bairro</label> <input type="text"
+                            class="form-control" id="bairro" placeholder="Bairro" required>
+                        <div class="invalid-feedback">
+
+                        </div>
+                    </div>
+                    <div class="col-5"> <label for="address" class="form-label">Cidade</label> <input type="text"
+                            class="form-control" id="localidade" placeholder="Cidade" required>
+                        <div class="invalid-feedback">
+
+                        </div>
+                    </div>
+                    <div class="col-2"> <label for="address" class="form-label">Estado</label> <input type="text"
+                            class="form-control" id="uf" placeholder="Estado" required>
+                        <div class="invalid-feedback">
+
+
+<script>
+async function buscaCEP() {
+    const cep = document.getElementById('cep').value.replace(/\D/g, '');
+    
+    if (cep.length !== 8) return;
+
+    try {
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = await response.json();
+
+        if (data.erro) {
+            alert("CEP não encontrado!");
+            return;
+        }
+
+        document.getElementById('logradouro').value = data.logradouro;
+        document.getElementById('bairro').value = data.bairro;
+        document.getElementById('localidade').value = data.localidade;
+        document.getElementById('uf').value = data.uf;
+        
+    } catch (error) {
+        console.error("Erro ao buscar o CEP:", error);
+    }
+}
+</script>
+
                         </div>
                     </div>
                     <div class="col-12"> <label for="address2" class="form-label">2° Endereço <span
@@ -96,20 +147,11 @@
                             Please select a valid country.
                         </div>
                     </div>
-                    <div class="col-md-4"> <label for="state" class="form-label">Estado</label> <select
-                            class="form-select" id="state" required>
-                            <option value="">Selecionar...</option>
-                            <option></option>
-                            <option>EUA</option>
                         </select>
                         <div class="invalid-feedback">
                             Please provide a valid state.
                         </div>
                     </div>
-                    <div class="col-md-3"> <label for="zip" class="form-label">Zip</label> <input type="text"
-                            class="form-control" id="zip" placeholder="" required>
-                        <div class="invalid-feedback">
-                            Zip code required.
                         </div>
                     </div>
                 </div>
