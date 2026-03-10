@@ -15,6 +15,7 @@
   include("includes/header.php");
   ?>
   <main>
+    
     <!-- Carrossel incial -->
     <div id="carouselExampleInterval" class="carousel slide text-center mt-3 h-75" data-bs-ride="carousel">
       <div class="carousel-inner">
@@ -271,7 +272,7 @@
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
 
-  <script src="scripts/index.js"></script>
+  <script src="assets/js/index.js"></script>
 </body>
 
 </html>
