@@ -17,7 +17,8 @@ CREATE TABLE endereco (
 	estado VARCHAR(100),
 	cep VARCHAR(8),
 	pais VARCHAR(100),
-    FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id) 
+    
 );
 
 
