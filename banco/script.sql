@@ -25,3 +25,13 @@ CREATE TABLE produtos(
     data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (categoria_id) REFERENCES categorias(id)
 );
+
+CREATE TABLE pagamento(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pedido_id INT,
+    metodo_pagamento ENUM('pix','credito','debito','boleto'),
+    status_pagamento ENUM('aprovado','aguardando','em processamento','rejeitado'), 
+    codigo_transacao VARCHAR (30),
+    data_pagamento DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+    
