@@ -13,3 +13,15 @@ CREATE TABLE categorias(
  	genero ENUM('masculino','feminino'),
     descricao VARCHAR (300)
 );
+
+CREATE TABLE produtos(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    categoria_id INT,
+    nome VARCHAR(80),
+    descricao VARCHAR(300),
+    preco DECIMAL(6,2),
+    estoque INT,
+    situacao INT DEFAULT 1,
+    data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+);
