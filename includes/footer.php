@@ -3,7 +3,7 @@
         <div class="w-50">
           <img
             class="logo-marca-footer"
-            src="images/logo-marca.png"
+            src="assets/img/logo-marca.png"
             alt="logo-da-marca"
           />
           <p class="mt-3 text-light">
@@ -58,17 +58,17 @@
       </div>
       <div class="d-flex justify-content-start gap-3 w-25">
         <a href=""
-          ><img class="icons" src="images/instagram-icon.png" alt=""
+          ><img class="icons" src="assets/img/instagram-icon.png" alt=""
         /></a>
-        <a href=""><img class="icons" src="images/tiktok-icon.png" alt="" /></a>
+        <a href=""><img class="icons" src="assets/img/tiktok-icon.png" alt="" /></a>
         <a href=""
-          ><img class="icons" src="images/facebook-icon.png" alt=""
-        /></a>
-        <a href=""
-          ><img class="icons" src="images/linkedin-logo.png" alt=""
+          ><img class="icons" src="assets/img/facebook-icon.png" alt=""
         /></a>
         <a href=""
-          ><img class="icons" src="images/youtube-icon.png" alt=""
+          ><img class="icons" src="assets/img/linkedin-icon.png" alt=""
+        /></a>
+        <a href=""
+          ><img class="icons" src="assets/img/youtube-icon.png" alt=""
         /></a>
       </div>
       <!-- Botão para subir a página -->

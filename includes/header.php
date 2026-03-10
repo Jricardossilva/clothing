@@ -2,19 +2,19 @@
       <div class="d-flex justify-content-between align-items-center px-3 pt-2">
         <div class="d-flex justify-content-start gap-3 w-25">
           <a href=""
-            ><img class="icons" src="assets/img/banner-1.jpg" alt=""
+            ><img class="icons" src="assets/img/instagram-icon.png" alt=""
           /></a>
           <a href=""
-            ><img class="icons" src="images/tiktok-icon.png" alt=""
+            ><img class="icons" src="assets/img/tiktok-icon.png" alt=""
           /></a>
           <a href=""
-            ><img class="icons" src="images/facebook-icon.png" alt=""
+            ><img class="icons" src="assets/img/youtube-icon.png" alt=""
           /></a>
           <a href=""
-            ><img class="icons" src="images/linkedin-logo.png" alt=""
+            ><img class="icons" src="assets/img/linkedin-icon.png" alt=""
           /></a>
           <a href=""
-            ><img class="icons" src="images/youtube-icon.png" alt=""
+            ><img class="icons" src="assets/img/facebook-icon.png" alt=""
           /></a>
         </div>
 
@@ -22,16 +22,16 @@
           <a href=""
             ><img
               class="logo-marca"
-              src="images/logo-marca.png"
+              src="assets/img/logo-marca.png"
               alt="Logo da Marca"
           /></a>
         </div>
 
         <div class="d-flex justify-content-end gap-3 w-25">
-          <a href=""><img src="images/coracao-icon.png" alt="" /></a>
-          <a href=""><img src="images/conta-icon.png" alt="" /></a>
-          <a href=""><img src="images/lupa-icon.png" alt="" /></a>
-          <a href=""><img src="images/sacola-icon.png" alt="" /></a>
+          <a href=""><img src="assets/img/coracao-icon.png" alt="" /></a>
+          <a href="./login.php" target="blank"><img src="assets/img/conta-icon.png" alt="" /></a>
+          <a href=""><img src="assets/img/lupa-icon.png" alt="" /></a>
+          <a href=""><img src="assets/img/sacola-icon.png" alt="" /></a>
         </div>
       </div>
 
