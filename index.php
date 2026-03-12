@@ -1,529 +1,278 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="styles/index.css" />
-    <title>Clothing</title>
-  </head>
 
-  <body>
-    <header>
-      <div class="d-flex justify-content-between align-items-center px-3 pt-2">
-        <div class="d-flex justify-content-start gap-3 w-25">
-          <a href=""
-            ><img class="icons" src="images/instagram-icon.png" alt=""
-          /></a>
-          <a href=""
-            ><img class="icons" src="images/tiktok-icon.png" alt=""
-          /></a>
-          <a href=""
-            ><img class="icons" src="images/facebook-icon.png" alt=""
-          /></a>
-          <a href=""
-            ><img class="icons" src="images/linkedin-logo.png" alt=""
-          /></a>
-          <a href=""
-            ><img class="icons" src="images/youtube-icon.png" alt=""
-          /></a>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+  <link rel="stylesheet" href="assets/css/index.css" />
+  <title>Clothing</title>
+</head>
 
-        <div class="d-flex justify-content-center w-50">
-          <a href=""
-            ><img
-              class="logo-marca"
-              src="images/logo-marca.png"
-              alt="Logo da Marca"
-          /></a>
+<body>
+  <?php
+  include("includes/header.php");
+  ?>
+  <main>
+    
+    <!-- Carrossel incial -->
+    <div id="carouselExampleInterval" class="carousel slide text-center mt-3 h-75" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active" data-bs-interval="2000">
+          <img class="banner rounded-1" src="assets/img/banner-1.jpg" class="d-block w-100" alt="..." />
         </div>
-
-        <div class="d-flex justify-content-end gap-3 w-25">
-          <a href=""><img src="images/coracao-icon.png" alt="" /></a>
-          <a href=""><img src="images/conta-icon.png" alt="" /></a>
-          <a href=""><img src="images/lupa-icon.png" alt="" /></a>
-          <a href=""><img src="images/sacola-icon.png" alt="" /></a>
+        <div class="carousel-item" data-bs-interval="2000">
+          <img class="banner rounded-1 d-block w-100" src="assets/img/banner-2.jpg" alt="..." />
         </div>
       </div>
-
-      <!-- ✅ MENU ATUALIZADO COM DROPDOWN -->
-      <nav class="d-flex gap-5 justify-content-center flex-wrap mt-5">
-        <div class="menu-item">
-          <a href="#" class="menu__link">Lançamento</a>
-          <div class="submenu">
-            <a href="#">Camisetas</a>
-            <a href="#">Calças</a>
-            <a href="#">Bermudas</a>
-            <a href="#">Acessórios</a>
-          </div>
-        </div>
-        <div class="menu-item">
-          <a href="pages/masculino.html" class="menu__link">Masculino</a>
-          <div class="submenu">
-            <a href="#">Camisetas</a>
-            <a href="#">Calças</a>
-            <a href="#">Bermudas</a>
-            <a href="#">Acessórios</a>
-          </div>
-        </div>
-        <div class="menu-item">
-          <a href="#" class="menu__link">Feminino</a>
-          <div class="submenu">
-            <a href="#">Blusas</a>
-            <a href="#">Vestidos</a>
-            <a href="#">Saias</a>
-            <a href="#">Moda Fitness</a>
-          </div>
-        </div>
-        <div class="menu-item">
-          <a href="#" class="menu__link">Destaques</a>
-          <div class="submenu">
-            <a href="#">Camisetas</a>
-            <a href="#">Calças</a>
-            <a href="#">Bermudas</a>
-            <a href="#">Acessórios</a>
-          </div>
-        </div>
-        <div class="menu-item">
-          <a href="#" class="menu__link">Promoção</a>
-          <div class="submenu">
-            <a href="#">Camisetas</a>
-            <a href="#">Calças</a>
-            <a href="#">Bermudas</a>
-            <a href="#">Acessórios</a>
-          </div>
-        </div>
-      </nav>
-    </header>
-    <main>
-      <!-- Carrossel incial -->
-      <div
-        id="carouselExampleInterval"
-        class="carousel slide text-center mt-3 h-75"
-        data-bs-ride="carousel"
-      >
-        <div class="carousel-inner">
-          <div class="carousel-item active" data-bs-interval="2000">
-            <img
-              class="banner rounded-1"
-              src="images/banner-1.jpg"
-              class="d-block w-100"
-              alt="..."
-            />
-          </div>
-          <div class="carousel-item" data-bs-interval="2000">
-            <img
-              class="banner rounded-1 d-block w-100"
-              src="images/banner-2.jpg"
-              alt="..."
-            />
-          </div>
-        </div>
-        <button
-          class="carousel-control-prev"
-          type="button"
-          data-bs-target="#carouselExampleInterval"
-          data-bs-slide="prev"
-        >
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button
-          class="carousel-control-next"
-          type="button"
-          data-bs-target="#carouselExampleInterval"
-          data-bs-slide="next"
-        >
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </div>
-      <!-- Cards de roupas iniciais -->
-      <section class="mx-auto section-roupas">
-        <h2 class="py-3 mt-3">Peças a partir de R$ 41,90</h2>
-        <div class="row row-cols-1 row-cols-md-4 g-4">
-          <div class="col">
-            <div class="card">
-              <img
-                src="images/exemplo-roupa.webp"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-                <p class="card-text">
-                  <strong>
-                    Camiseta Algodão Premium Feminina | Everyday Collection -
-                    Verde Oliva
-                  </strong>
-                </p>
-                <p class="d-flex justify-content-center gap-3">
-                  <strong>R$ 75,99</strong> <del>R$ 189,00</del>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card">
-              <img
-                src="images/exemplo-roupa.webp"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-                <p class="card-text">
-                  <strong>
-                    Camiseta Algodão Premium Feminina | Everyday Collection -
-                    Verde Oliva
-                  </strong>
-                </p>
-                <p class="d-flex justify-content-center gap-3">
-                  <strong>R$ 75,99</strong> <del>R$ 189,00</del>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card">
-              <img
-                src="images/exemplo-roupa.webp"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-                <p class="card-text">
-                  <strong>
-                    Camiseta Algodão Premium Feminina | Everyday Collection -
-                    Verde Oliva
-                  </strong>
-                </p>
-                <p class="d-flex justify-content-center gap-3">
-                  <strong>R$ 75,99</strong> <del>R$ 189,00</del>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card">
-              <img
-                src="images/exemplo-roupa.webp"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-                <p class="card-text">
-                  <strong>
-                    Camiseta Algodão Premium Feminina | Everyday Collection -
-                    Verde Oliva
-                  </strong>
-                </p>
-                <p class="d-flex justify-content-center gap-3">
-                  <strong>R$ 75,99</strong> <del>R$ 189,00</del>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <div class="text-center mt-4">
-        <button>
-          <span class="box">Ver tudo !</span>
-        </button>
-      </div>
-      <!-- Área de promoções -->
-      <div class="text-center">
-        <img
-          class="img-fluid banner-promo mt-4 w-100"
-          src="images/banner-3.png"
-          alt=""
-        />
-      </div>
-      <section class="mx-auto section-roupas mt-5">
-        <div class="row row-cols-1 row-cols-md-4 g-4">
-          <div class="col">
-            <div class="card">
-              <img
-                src="images/exemplo-roupa.webp"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-                <p class="card-text">
-                  <strong>
-                    Camiseta Algodão Premium Feminina | Everyday Collection -
-                    Verde Oliva
-                  </strong>
-                </p>
-                <p class="d-flex justify-content-center gap-3">
-                  <strong>R$ 75,99</strong> <del>R$ 189,00</del>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card">
-              <img
-                src="images/exemplo-roupa.webp"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-                <p class="card-text">
-                  <strong>
-                    Camiseta Algodão Premium Feminina | Everyday Collection -
-                    Verde Oliva
-                  </strong>
-                </p>
-                <p class="d-flex justify-content-center gap-3">
-                  <strong>R$ 75,99</strong> <del>R$ 189,00</del>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card">
-              <img
-                src="images/exemplo-roupa.webp"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-                <p class="card-text">
-                  <strong>
-                    Camiseta Algodão Premium Feminina | Everyday Collection -
-                    Verde Oliva
-                  </strong>
-                </p>
-                <p class="d-flex justify-content-center gap-3">
-                  <strong>R$ 75,99</strong> <del>R$ 189,00</del>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card">
-              <img
-                src="images/exemplo-roupa.webp"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-                <p class="card-text">
-                  <strong>
-                    Camiseta Algodão Premium Feminina | Everyday Collection -
-                    Verde Oliva
-                  </strong>
-                </p>
-                <p class="d-flex justify-content-center gap-3">
-                  <strong>R$ 75,99</strong> <del>R$ 189,00</del>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <div class="text-center mt-4">
-        <button>
-          <span class="box">Ver tudo !</span>
-        </button>
-      </div>
-      <!-- Área de Kits -->
-      <section class="bg-black p-1">
-        <div class="d-flex">
-          <h2
-            class="m-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem"
-          >
-            Monte seu kit
-          </h2>
-        </div>
-        <div class="d-flex w-100 gap-3 px-4 mb-5">
-          <div
-            class="d-flex flex-column align-items-center justify-content-center bg-white w-50 p-3"
-          >
-            <h4 class="mt-5 mb-3 text-uppercase">Kit Camisetas</h4>
-            <h3 class="fs-1 fw-bold">Prima Feminino</h3>
-            <p class="fs-2">de R$255 por R$195</p>
-            <p class="fs-3 mt-1 text-decoration-underline">Cupom: KITPIMA</p>
-            <img class="w-100" src="images/prima-feminino.png" alt="" />
-            <a href="" class="my-3 fw-bold text-uppercase menu__link"
-              >Comprar</a
-            >
-          </div>
-          <div
-            class="d-flex flex-column align-items-center justify-content-center bg-white w-50"
-          >
-            <h4 class="mt-5 mb-3 text-uppercase">Kit Camisetas</h4>
-            <h3 class="fs-1 fw-bold">Prima Masculino</h3>
-            <p class="fs-2">de R$255 por R$195</p>
-            <p class="fs-3 text-decoration-underline mt-1">Cupom: KITPIMA</p>
-            <img class="w-100" src="images/prima-feminino.png" alt="" />
-            <a href="" class="my-3 fw-bold text-uppercase menu__link"
-              >Comprar</a
-            >
-          </div>
-        </div>
-        <div class="d-flex">
-          <h2
-            class="mx-4 mt-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem"
-          >
-            Monte seu look para a primavera
-          </h2>
-        </div>
-        <div class="d-flex gap-4 p-3 mx-2">
-          <div class="card w-25">
-            <img
-              src="images/exemplo-roupa.webp"
-              class="card-img-top"
-              alt="..."
-            />
-            <div class="card-body">
-              <p class="card-text text-center">
-                <a href="#" class="fs-5 menu__link">Comprar</a>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval"
+        data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval"
+        data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+    <!-- Cards de roupas iniciais -->
+    <section class="mx-auto section-roupas">
+      <h2 class="py-3 mt-3">Peças a partir de R$ 41,90</h2>
+      <div class="row row-cols-1 row-cols-md-4 g-4">
+        <div class="col">
+          <div class="card">
+            <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+            <div class="card-body text-center">
+              <h5 class="card-title"></h5>
+              <p class="card-text">
+                <strong>
+                  Camiseta Algodão Premium Feminina | Everyday Collection -
+                  Verde Oliva
+                </strong>
               </p>
-            </div>
-          </div>
-          <div class="card w-25">
-            <img
-              src="images/exemplo-roupa.webp"
-              class="card-img-top"
-              alt="..."
-            />
-            <div class="card-body">
-              <p class="card-text text-center">
-                <a href="#" class="fs-5 menu__link">Comprar</a>
-              </p>
-            </div>
-          </div>
-          <div class="card w-25">
-            <img
-              src="images/exemplo-roupa.webp"
-              class="card-img-top"
-              alt="..."
-            />
-            <div class="card-body">
-              <p class="card-text text-center">
-                <a href="#" class="fs-5 menu__link">Comprar</a>
-              </p>
-            </div>
-          </div>
-          <div class="card w-25">
-            <img
-              src="images/exemplo-roupa.webp"
-              class="card-img-top"
-              alt="..."
-            />
-            <div class="card-body">
-              <p class="card-text text-center">
-                <a href="#" class="fs-5 menu__link">Comprar</a>
+              <p class="d-flex justify-content-center gap-3">
+                <strong>R$ 75,99</strong> <del>R$ 189,00</del>
               </p>
             </div>
           </div>
         </div>
-      </section>
-    </main>
-    <footer class="w-100 px-4 py-2">
-      <div class="d-flex align-items-center">
-        <div class="w-50">
-          <img
-            class="logo-marca-footer"
-            src="images/logo-marca.png"
-            alt="logo-da-marca"
-          />
-          <p class="mt-3 text-light">
-            © 2025 Lojavirtual.com CNPJ 00.000.000/0000-00 <br />
-            Todos os direito reservados
-          </p>
+        <div class="col">
+          <div class="card">
+            <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+            <div class="card-body text-center">
+              <h5 class="card-title"></h5>
+              <p class="card-text">
+                <strong>
+                  Camiseta Algodão Premium Feminina | Everyday Collection -
+                  Verde Oliva
+                </strong>
+              </p>
+              <p class="d-flex justify-content-center gap-3">
+                <strong>R$ 75,99</strong> <del>R$ 189,00</del>
+              </p>
+            </div>
+          </div>
         </div>
-        <div class="w-25 d-flex flex-row-reverse">
-          <ul class="text-end">
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Novidades</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Masculino</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Feminino</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Destaques</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Até 70% OFF</a>
-            </li>
-          </ul>
+        <div class="col">
+          <div class="card">
+            <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+            <div class="card-body text-center">
+              <h5 class="card-title"></h5>
+              <p class="card-text">
+                <strong>
+                  Camiseta Algodão Premium Feminina | Everyday Collection -
+                  Verde Oliva
+                </strong>
+              </p>
+              <p class="d-flex justify-content-center gap-3">
+                <strong>R$ 75,99</strong> <del>R$ 189,00</del>
+              </p>
+            </div>
+          </div>
         </div>
-        <div class="w-25 d-flex flex-row-reverse">
-          <ul class="text-end">
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Sobre nós</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Perguntas Frequentes</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Trocar é fácil</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Como cuidar de seus básicos</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Termos e condições</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Políticas de privacidade</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Trabalhe Conosco</a>
-            </li>
-          </ul>
+        <div class="col">
+          <div class="card">
+            <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+            <div class="card-body text-center">
+              <h5 class="card-title"></h5>
+              <p class="card-text">
+                <strong>
+                  Camiseta Algodão Premium Feminina | Everyday Collection -
+                  Verde Oliva
+                </strong>
+              </p>
+              <p class="d-flex justify-content-center gap-3">
+                <strong>R$ 75,99</strong> <del>R$ 189,00</del>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="d-flex justify-content-start gap-3 w-25">
-        <a href=""
-          ><img class="icons" src="images/instagram-icon.png" alt=""
-        /></a>
-        <a href=""><img class="icons" src="images/tiktok-icon.png" alt="" /></a>
-        <a href=""
-          ><img class="icons" src="images/facebook-icon.png" alt=""
-        /></a>
-        <a href=""
-          ><img class="icons" src="images/linkedin-logo.png" alt=""
-        /></a>
-        <a href=""
-          ><img class="icons" src="images/youtube-icon.png" alt=""
-        /></a>
+    </section>
+    <div class="text-center mt-4">
+      <button>
+        <span class="box">Ver tudo !</span>
+      </button>
+    </div>
+    <!-- Área de promoções -->
+    <div class="text-center">
+      <img class="img-fluid banner-promo mt-4 w-100" src="assets/img/banner-3.png" alt="" />
+    </div>
+    <section class="mx-auto section-roupas mt-5">
+      <div class="row row-cols-1 row-cols-md-4 g-4">
+        <div class="col">
+          <div class="card">
+            <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+            <div class="card-body text-center">
+              <h5 class="card-title"></h5>
+              <p class="card-text">
+                <strong>
+                  Camiseta Algodão Premium Feminina | Everyday Collection -
+                  Verde Oliva
+                </strong>
+              </p>
+              <p class="d-flex justify-content-center gap-3">
+                <strong>R$ 75,99</strong> <del>R$ 189,00</del>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+            <div class="card-body text-center">
+              <h5 class="card-title"></h5>
+              <p class="card-text">
+                <strong>
+                  Camiseta Algodão Premium Feminina | Everyday Collection -
+                  Verde Oliva
+                </strong>
+              </p>
+              <p class="d-flex justify-content-center gap-3">
+                <strong>R$ 75,99</strong> <del>R$ 189,00</del>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+            <div class="card-body text-center">
+              <h5 class="card-title"></h5>
+              <p class="card-text">
+                <strong>
+                  Camiseta Algodão Premium Feminina | Everyday Collection -
+                  Verde Oliva
+                </strong>
+              </p>
+              <p class="d-flex justify-content-center gap-3">
+                <strong>R$ 75,99</strong> <del>R$ 189,00</del>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+            <div class="card-body text-center">
+              <h5 class="card-title"></h5>
+              <p class="card-text">
+                <strong>
+                  Camiseta Algodão Premium Feminina | Everyday Collection -
+                  Verde Oliva
+                </strong>
+              </p>
+              <p class="d-flex justify-content-center gap-3">
+                <strong>R$ 75,99</strong> <del>R$ 189,00</del>
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-      <!-- Botão para subir a página -->
-      <div class="d-flex justify-content-end sticky-bottom p-3">
-        <button class="button back-to-top">
-          <svg class="svgIcon" viewBox="0 0 384 512">
-            <path
-              d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"
-            ></path>
-          </svg>
-        </button>
+    </section>
+    <div class="text-center mt-4">
+      <button>
+        <span class="box">Ver tudo !</span>
+      </button>
+    </div>
+    <!-- Área de Kits -->
+    <section class="bg-black p-1">
+      <div class="d-flex">
+        <h2
+          class="m-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem">
+          Monte seu kit
+        </h2>
       </div>
-    </footer>
+      <div class="d-flex w-100 gap-3 px-4 mb-5">
+        <div class="d-flex flex-column align-items-center justify-content-center bg-white w-50 p-3">
+          <h4 class="mt-5 mb-3 text-uppercase">Kit Camisetas</h4>
+          <h3 class="fs-1 fw-bold">Prima Feminino</h3>
+          <p class="fs-2">de R$255 por R$195</p>
+          <p class="fs-3 mt-1 text-decoration-underline">Cupom: KITPIMA</p>
+          <img class="w-100" src="images/prima-feminino.png" alt="" />
+          <a href="" class="my-3 fw-bold text-uppercase menu__link">Comprar</a>
+        </div>
+        <div class="d-flex flex-column align-items-center justify-content-center bg-white w-50">
+          <h4 class="mt-5 mb-3 text-uppercase">Kit Camisetas</h4>
+          <h3 class="fs-1 fw-bold">Prima Masculino</h3>
+          <p class="fs-2">de R$255 por R$195</p>
+          <p class="fs-3 text-decoration-underline mt-1">Cupom: KITPIMA</p>
+          <img class="w-100" src="images/prima-feminino.png" alt="" />
+          <a href="" class="my-3 fw-bold text-uppercase menu__link">Comprar</a>
+        </div>
+      </div>
+      <div class="d-flex">
+        <h2
+          class="mx-4 mt-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem">
+          Monte seu look para a primavera
+        </h2>
+      </div>
+      <div class="d-flex gap-4 p-3 mx-2">
+        <div class="card w-25">
+          <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+          <div class="card-body">
+            <p class="card-text text-center">
+              <a href="#" class="fs-5 menu__link">Comprar</a>
+            </p>
+          </div>
+        </div>
+        <div class="card w-25">
+          <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+          <div class="card-body">
+            <p class="card-text text-center">
+              <a href="#" class="fs-5 menu__link">Comprar</a>
+            </p>
+          </div>
+        </div>
+        <div class="card w-25">
+          <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+          <div class="card-body">
+            <p class="card-text text-center">
+              <a href="#" class="fs-5 menu__link">Comprar</a>
+            </p>
+          </div>
+        </div>
+        <div class="card w-25">
+          <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+          <div class="card-body">
+            <p class="card-text text-center">
+              <a href="#" class="fs-5 menu__link">Comprar</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <?php
+  include("includes/footer.php");
+  ?>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-      crossorigin="anonymous"
-    ></script>
+  <script src="assets/js/index.js"></script>
+</body>
 
-    <script src="scripts/index.js"></script>
-  </body>
 </html>
