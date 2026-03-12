@@ -23,8 +23,7 @@
             <th>Nome</th>
             <th>Descrição</th>
             <th>Preço(R$)</th>
-            <th>Estoque</th>
-            <th>Categoria</th>            
+            <th>Estoque</th>           
             <th>Ações</th>
           </tr>
         </thead>
@@ -35,8 +34,7 @@
                 <td><?= htmlspecialchars($produto['nome'])?></td>
                 <td><?= htmlspecialchars($produto['descricao'])?></td>
                 <td><?= htmlspecialchars($produto['preco'])?></td>
-                <td><?= htmlspecialchars($produto['estoque'])?></td> 
-                <td><?= htmlspecialchars($produto['categoria'])?></td> 
+                <td><?= htmlspecialchars($produto['estoque'])?></td>
                 <td>
                   <a href="editar.php?id=<?= htmlspecialchars($produto['id'])?>" class="btn btn-outline-warning btn-sm">Editar</a>
                   <a href="apagar.php?id=<?= htmlspecialchars($produto['id'])?>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Certeza que deseja excluir?')">Excluir</a>

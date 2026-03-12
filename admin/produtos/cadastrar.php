@@ -15,38 +15,33 @@
 
 
 <body>
-    <form action="salvar.php" method="post" id="cadastroProduto">
     <div class="container mt-5">
-    <h1 class="mb-4">Adicionar Produto</h1>
+        <h1 class="mb-4">Adicionar Produto</h1>
 
-    <form action="salvar.php" method="post">
-        <div class="mb-3">
-            <label class="form-label">Nome do produto</label>
-            <input type="text" name="nome" class="form-control" required>
-        </div>
+        <form action="salvar.php" method="post">
 
-        <div class="mb-3">
-            <label class="form-label">Descrição</label>
-            <input type="text" name="descricao" class="form-control" required>
-        </div>
+            <div class="row">
+                <div class="mb-3 col-md-4">
+                    <label class="form-label">Nome do produto</label>
+                    <input type="text" name="nome" class="form-control" required>
+                </div>
+                <div class="mb-3 col-md-4">
+                    <label class="form-label">Preço</label>
+                    <input type="number" name="preco" step="0.01" class="form-control" required>
+                </div>
+                <div class="mb-3 col-md-4">
+                    <label class="form-label">Estoque</label>
+                    <input type="number" name="estoque" class="form-control" required>
+                </div>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">Preço</label>
-            <input type="number" name="preco" step="0.01" class="form-control" required>
-        </div>
+            <div class="mb-3">
+                <label class="form-label">Descrição</label>
+                <textarea name="descricao" class="form-control" rows="9" required></textarea>
+            </div>        
 
-        <div class="mb-3">
-            <label class="form-label">Estoque</label>
-            <input type="number" name="estoque" class="form-control" required>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Categoria</label>
-            <input type="text" name="categoria" class="form-control" required>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Cadastrar</button>
-    </form>
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </form>
     </div>
     
 </body>
