@@ -50,9 +50,9 @@
 
             <section class="products">
 
-                <a href="produtos.html" class="product-link">
+                <a href="produto.php" class="product-link">
                     <div class="product">
-                        <img src="../images/camiseta-preta.jpg" alt="Camiseta Básica Preta" />
+                        <img src="assets/img/camiseta-preta.jpg" alt="Camiseta Básica Preta" />
                         <div class="name">Camiseta Básica Preta</div>
                         <div class="price">R$ 29,90 <span class="old-price">R$ 39,90</span></div>
                     </div>

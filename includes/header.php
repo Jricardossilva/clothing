@@ -16,7 +16,11 @@
         </div>
 
         <div class="d-flex justify-content-end gap-3 w-25">
-          <a href="#" data-bs-toggle="modal" data-bs-target='#modalFavoritos'><img src="assets/img/coracao-icon.png" alt="" /></a>
+
+          <a href="#" class="favorites-header-link" data-bs-toggle="modal" data-bs-target='#modalFavoritos'>
+            <img class="icons" src="assets/img/coracao-icon.png" alt="" />
+            <span class="favorites-count-badge" data-favorites-count>0</span>
+          </a>
           <!-- Modal -->
           <div class="modal fade" id="modalFavoritos" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -26,28 +30,32 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                  Aqui vai a lista de produtos favoritos.
+                  <div data-favorites-list></div>
                 </div>
               </div>
             </div>
           </div>
-          <a href="#" data-bs-toggle="offcanvas" data-bs-target="#janelaCarrinho" aria-controls="janelaCarrinho">
-            <img src="assets/img/sacola-icon.png" alt="Carrinho" />
-          </a>
 
+          <a href="#" class="favorites-header-link" data-bs-toggle="offcanvas" data-bs-target="#janelaCarrinho" aria-controls="janelaCarrinho">
+            <img class="icons" src="assets/img/sacola-icon.png" alt="Carrinho" />
+            <span class="favorites-count-badge" data-cart-count>0</span>
+          </a>
           <!-- Offcanvas -->
           <div class="offcanvas offcanvas-end" tabindex="-1" id="janelaCarrinho" aria-labelledby="janelaCarrinhoLabel">
             <div class="offcanvas-header">
               <h5 id="janelaCarrinhoLabel">Carrinho</h5>
               <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
             </div>
-            <div class="offcanvas-body">
+            <div class="offcanvas-body" data-cart-list>
               Aqui vão os produtos adicionados ao carrinho.
+            </div>
+            <div class="offcanvas-footer border-top p-3">
+              <a href="cadastro.php" class="btn btn-dark w-100">Ir para pagamento</a>
             </div>
           </div>
 
 
-          <a href="./login.php" target="blank"><img src="assets/img/conta-icon.png" alt="" /></a>
+          <a href="./login.php" target="blank"><img class="icons" src="assets/img/conta-icon.png" alt="" /></a>
         </div>
       </div>
 
@@ -100,3 +108,6 @@
         </div>
       </nav>
     </header>
+    <script src="assets/js/produtos.js"></script>
+    <script src="assets/js/favoritos.js"></script>
+    <script src="assets/js/carrinho.js"></script>
