@@ -50,6 +50,10 @@
               Aqui vão os produtos adicionados ao carrinho.
             </div>
             <div class="offcanvas-footer border-top p-3">
+              <div class="header-cart-total mb-3">
+                <span>Total</span>
+                <strong data-cart-total>R$ 0,00</strong>
+              </div>
               <a href="cadastro.php" class="btn btn-dark w-100">Ir para pagamento</a>
             </div>
           </div>

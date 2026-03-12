@@ -19,10 +19,42 @@ function saveCartItems(cartItems) {
   localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
 }
 
+function removeProductFromCart(productId) {
+  if (!productId) {
+    return;
+  }
+
+  const updatedCartItems = getCartItems().filter((item) => item.id !== productId);
+  saveCartItems(updatedCartItems);
+  document.dispatchEvent(new CustomEvent('cart:updated'));
+}
+
 function getCartItemsCount() {
   return getCartItems().reduce((total, item) => {
     const quantity = Number(item.quantity) || 0;
     return total + quantity;
+  }, 0);
+}
+
+function parsePriceValue(price) {
+  if (!price) {
+    return 0;
+  }
+
+  const normalizedPrice = String(price).replace(/\./g, '').replace(',', '.');
+  const parsedPrice = Number(normalizedPrice);
+  return Number.isNaN(parsedPrice) ? 0 : parsedPrice;
+}
+
+function formatCurrency(value) {
+  return `R$ ${value.toFixed(2).replace('.', ',')}`;
+}
+
+function getCartTotal() {
+  return getCartItems().reduce((total, item) => {
+    const price = parsePriceValue(item.price);
+    const quantity = Number(item.quantity) || 0;
+    return total + (price * quantity);
   }, 0);
 }
 
@@ -33,6 +65,15 @@ function updateCartCountBadge() {
   cartCountElements.forEach((element) => {
     element.textContent = totalItems;
     element.style.display = totalItems > 0 ? 'inline-block' : 'none';
+  });
+}
+
+function updateCartTotal() {
+  const cartTotalElements = document.querySelectorAll('[data-cart-total]');
+  const totalValue = formatCurrency(getCartTotal());
+
+  cartTotalElements.forEach((element) => {
+    element.textContent = totalValue;
   });
 }
 
@@ -60,14 +101,19 @@ function renderCartItems() {
         : '';
 
       return `
-        <a href="${url}" class="header-panel-item">
-          ${imageMarkup}
-          <div class="header-panel-content">
-            <p class="header-panel-title mb-1">${name}</p>
-            <p class="header-panel-meta mb-1">Quantidade: ${item.quantity}</p>
-            ${priceMarkup}
-          </div>
-        </a>
+        <div class="header-panel-item">
+          <a href="${url}" class="header-panel-link">
+            ${imageMarkup}
+            <div class="header-panel-content">
+              <p class="header-panel-title mb-1">${name}</p>
+              <p class="header-panel-meta mb-1">Quantidade: ${item.quantity}</p>
+              ${priceMarkup}
+            </div>
+          </a>
+          <button type="button" class="header-panel-remove" data-remove-cart-item="${item.id}">
+            Remover
+          </button>
+        </div>
       `;
     }).join('');
 
@@ -102,7 +148,19 @@ function addProductToCart(product) {
 
 document.addEventListener('DOMContentLoaded', updateCartCountBadge);
 document.addEventListener('DOMContentLoaded', renderCartItems);
+document.addEventListener('DOMContentLoaded', updateCartTotal);
+document.addEventListener('click', (event) => {
+  const removeButton = event.target.closest('[data-remove-cart-item]');
+
+  if (!removeButton) {
+    return;
+  }
+
+  removeProductFromCart(removeButton.dataset.removeCartItem);
+});
 document.addEventListener('cart:updated', updateCartCountBadge);
 document.addEventListener('cart:updated', renderCartItems);
+document.addEventListener('cart:updated', updateCartTotal);
 window.addEventListener('storage', updateCartCountBadge);
 window.addEventListener('storage', renderCartItems);
+window.addEventListener('storage', updateCartTotal);
