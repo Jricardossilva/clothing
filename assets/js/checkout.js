@@ -8,7 +8,11 @@ async function buscaCEP() {
         const data = await response.json();
 
         if (data.erro) {
-            alert("CEP não encontrado!");
+            Swal.fire({
+                icon: "error",
+                title: "CEP não encontrado",
+                text: "Verifique o CEP informado e tente novamente."
+            });
             return;
         }
 
@@ -19,6 +23,11 @@ async function buscaCEP() {
         
     } catch (error) {
         console.error("Erro ao buscar o CEP:", error);
+        Swal.fire({
+            icon: "error",
+            title: "Erro",
+            text: "Não foi possível buscar o CEP."
+        });
     }
 }
 
@@ -27,7 +36,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const pixRadio = document.getElementById("pix-Radio");
 
     const spanClose = document.querySelector(".close-btn") || document.querySelector(".close");
-
 
     if (pixRadio) {
         pixRadio.addEventListener("change", function() {
@@ -38,13 +46,11 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-
     if (spanClose) {
         spanClose.onclick = function() {
             fecharModal();
         }
     }
-
 
     window.onclick = function(event) {
         if (event.target == modal) {
@@ -57,7 +63,6 @@ function fecharModal() {
     const modal = document.getElementById("modalPixContainer");
     modal.style.display = "none";
     document.body.style.overflow = "auto";
-    
 }
 
 function enviarDados() {
@@ -65,11 +70,20 @@ function enviarDados() {
     const arquivo = arquivoInput.files[0];
     
     if (!arquivo) {
-        alert("Por favor, selecione o arquivo do comprovante antes de confirmar.");
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Por favor, selecione o comprovante antes de confirmar."
+        });
         return;
     }
 
-    alert("🚀 Sucesso! O comprovante de " + arquivo.name + " foi enviado para análise.");
+    Swal.fire({
+        title: "Pagamento enviado!",
+        text: "O comprovante " + arquivo.name + " foi enviado para análise.",
+        icon: "success"
+    });
+
     arquivoInput.value = "";
     fecharModal();
 }
