@@ -1,23 +1,36 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Camiseta Pima Masculina</title>
-
-
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="assets/css/index.css" />
+  <link rel="stylesheet" href="assets/css/produto.css">
 </head>
+
 <body>
+  <?php
+  include("includes/header.php")
+  ?>
   <div class="container py-5">
     <div class="row">
 
-      <div class="col-md-6">
-        <img src="../images/camiseta-preta.jpg" alt="Camiseta Preta" class="img-fluid rounded">
+      <div class="col-md-6 d-flex justify-content-center">
+        <div class="product-image-wrapper">
+          <button
+            class="favorite-btn"
+            type="button"
+            data-product-id="camiseta-masculina-preto"
+            aria-label="Favoritar produto">
+            <span class="favorite-btn__icon">&#9825;</span>
+          </button>
+
+          <img src="assets/img/camiseta-preta.jpg" alt="Camiseta Preta" class="img-fluid rounded d-block w-100">
+        </div>
       </div>
+
 
       <div class="col-md-6">
         <h5 class="text-muted">⭐️⭐️⭐️⭐️⭐️ 84 Avaliações</h5>
@@ -49,9 +62,9 @@
         <div class="mb-3">
           <label class="form-label fw-bold">Quantidade:</label>
           <div class="input-group" style="width: 140px;">
-            <button class="btn btn-outline-secondary" type="button">−</button>
-            <input type="text" class="form-control text-center" value="1">
-            <button class="btn btn-outline-secondary" type="button">+</button>
+            <button class="btn btn-outline-secondary" type="button" data-quantity-action="decrease">-</button>
+            <input type="text" class="form-control text-center" value="1" data-product-quantity inputmode="numeric">
+            <button class="btn btn-outline-secondary" type="button" data-quantity-action="increase">+</button>
           </div>
         </div>
 
@@ -65,11 +78,22 @@
         <p class="text-success fw-bold">🟢 Item está em estoque</p>
 
 
-        <button class="btn btn-dark btn-lg mt-2">Adicionar ao carrinho</button>
+        <button
+          class="btn btn-dark btn-lg mt-2"
+          type="button"
+          data-add-to-cart
+          data-product-id="camiseta-masculina-preto"
+          data-product-name="Camiseta Masculina - Preto"
+          data-product-price="79,90"
+          data-product-image="assets/img/camiseta-preta.jpg">
+          Adicionar ao carrinho
+        </button>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/produto.js"></script>
 </body>
+
 </html>
