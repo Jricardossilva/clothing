@@ -48,7 +48,7 @@
             <span class="favorite-btn__icon">&#9825;</span>
           </button>
 
-          <img src="assets/img/<?= htmlspecialchars($produto['imagem'])?>" alt="Camiseta Preta" class="img-fluid rounded d-block w-100">
+          <img src="assets/img/<?= htmlspecialchars($produto['url_imagem'])?>" alt="Camiseta Preta" class="img-fluid rounded d-block w-100">
         </div>
       </div>
 
