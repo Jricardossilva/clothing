@@ -1,3 +1,24 @@
+<?php
+    require '/config/conexao.php';
+
+    if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+        header("Location: index.php");
+        exit;
+    }
+
+    $id = (int) $_GET['id'];
+    $errors = [];
+
+    $stmt = $pdo->prepare("SELECT * FROM produtos WHERE id = ?");
+    $stmt->execute([$id]);
+    $produto = $stmt->fetch();
+
+    if (!$produto) {
+        header("Location: index.php");
+        exit;
+    }   
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -27,15 +48,15 @@
             <span class="favorite-btn__icon">&#9825;</span>
           </button>
 
-          <img src="assets/img/camiseta-preta.jpg" alt="Camiseta Preta" class="img-fluid rounded d-block w-100">
+          <img src="assets/img/<?= htmlspecialchars($produto['imagem'])?>" alt="Camiseta Preta" class="img-fluid rounded d-block w-100">
         </div>
       </div>
 
 
       <div class="col-md-6">
         <h5 class="text-muted">⭐️⭐️⭐️⭐️⭐️ 84 Avaliações</h5>
-        <h2 class="fw-bold">Camiseta Masculina - Preto</h2>
-        <p class="fs-4 fw-bold text-dark">R$ 79,90</p>
+        <h2 class="fw-bold"><?= htmlspecialchars($produto['nome'])?></h2>
+        <p class="fs-4 fw-bold text-dark"><?= htmlspecialchars($produto['preco'])?></p>
 
         <div class="mb-3">
           <label class="form-label fw-bold">Tamanho:</label><br>
