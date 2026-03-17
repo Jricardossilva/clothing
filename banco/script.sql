@@ -56,3 +56,25 @@ CREATE TABLE produto_imagem (
 
     
 );
+
+INSERT INTO produtos (nome, preco, url_imagem) VALUES
+('Camiseta Feminina 1', 59.90, 'uploads/feminino1.png'),
+('Camiseta Feminina 10', 64.90, 'uploads/feminino10.png'),
+('Camiseta Feminina 2', 69.90, 'uploads/feminino2.png'),
+('Camiseta Feminina 3', 72.50, 'uploads/feminino3.png'),
+('Camiseta Feminina 4', 78.90, 'uploads/feminino4.png'),
+('Camiseta Feminina 5', 83.40, 'uploads/feminino5.png'),
+('Camiseta Feminina 6', 89.90, 'uploads/feminino6.png'),
+('Camiseta Feminina 7', 57.90, 'uploads/feminino7.png'),
+('Camiseta Feminina 8', 66.90, 'uploads/feminino8.png'),
+('Camiseta Feminina 9', 74.90, 'uploads/feminino9.png'),
+('Camiseta Masculina 1', 61.90, 'uploads/masculino1.png'),
+('Camiseta Masculina 10', 68.90, 'uploads/masculino10.png'),
+('Camiseta Masculina 2', 73.90, 'uploads/masculino2.png'),
+('Camiseta Masculina 3', 79.90, 'uploads/masculino3.png'),
+('Camiseta Masculina 4', 84.90, 'uploads/masculino4.png'),
+('Camiseta Masculina 5', 91.90, 'uploads/masculino5.png'),
+('Camiseta Masculina 6', 76.40, 'uploads/masculino6.png'),
+('Camiseta Masculina 7', 82.90, 'uploads/masculino7.png'),
+('Camiseta Masculina 8', 87.50, 'uploads/masculino8.png'),
+('Camiseta Masculina 9', 95.90, 'uploads/masculino9.png');
