@@ -1,10 +1,6 @@
 <?php
-// index.php
-$page = $_GET['page'] ?? 'dashboard';
-$subpage = $_GET['subpage'] ?? 'index';
+// Define o conteúdo que será incluído
+$content = __DIR__ . '/dashboard.php';
 
-// Monta o caminho do arquivo de conteúdo
-$contentFile = "pages/$page/$subpage.php";
-
-// Inclui o template base
-include 'base.php';
+// Inclui a base (que já tem navbar, footer e HTML)
+include __DIR__ . '/base.php';
