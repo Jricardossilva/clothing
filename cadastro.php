@@ -1,3 +1,70 @@
+<?php
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $estado = $_POST['estado'] ?? '';
+    $peso = $_POST['peso'] ?? 1;
+
+    if (!$estado || $peso <= 0) {
+        $resultado = ['erro' => "Dados inválidos."];
+    } else {
+        $resultado = calcularFreteSimulado($estado, $peso);
+    }
+}
+
+function getDistanciasSP() {
+    return [
+        'SP' => 50,
+        'RJ' => 430,
+        'MG' => 500,
+        'ES' => 850,
+        'PR' => 400,
+        'SC' => 700,
+        'RS' => 1100,
+        'BA' => 1500,
+        'PE' => 2100,
+        'CE' => 2600,
+        'PB' => 2800,
+        'RN' => 2900,
+        'GO' => 900,
+        'DF' => 1000,
+        'MT' => 1400,
+        'MS' => 1000,
+        'AM' => 3900,
+        'PA' => 3000,
+        'MA' => 2600,
+        'PI' => 2400,
+        'AL' => 2200,
+        'SE' => 2000,
+        'RO' => 2800,
+        'AC' => 3500,
+        'AP' => 3300,
+        'RR' => 4500,
+        'TO' => 1800,
+    ];
+}
+
+function calcularFreteSimulado($estadoDestino, $peso) {
+    $distancias = getDistanciasSP();
+
+    $distancia = $distancias[$estadoDestino] ?? null;
+
+    $valorBase = 10.00;
+    $custoPorKm = 0.02;
+    $custoPorKg = 5.00;
+
+    $valor = $valorBase + ($distancia * $custoPorKm) + ($peso * $custoPorKg);
+
+    $prazo = ceil($distancia / 500);
+
+    return [
+        'estado' => $estadoDestino,
+        'valor' => number_format($valor, 2, ',', '.'),
+        'prazo' => $prazo
+    ];
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -54,6 +121,23 @@
                     <strong>$20</strong>
                 </li>
             </ul>
+            <div class="input-group"> 
+                <?php if ($_SERVER['REQUEST_METHOD'] == 'POST'): ?>
+
+                <?php if (isset($resultado['erro'])): ?>
+                    <p><?php echo $resultado['erro']; ?></p>
+                <?php else: ?>
+                    <ul>
+                        <li><strong>Estado:</strong> <?php echo $resultado['estado']; ?></li>
+                        <li><strong>Tipo de envio:</strong> PAC</li>
+                        <li><strong>Valor:</strong> R$ <?php echo $resultado['valor']; ?></li>
+                        <li><strong>Prazo:</strong> <?php echo $resultado['prazo']; ?> dias</li>
+                    </ul>
+                <?php endif; ?>
+
+            <?php endif; ?>
+            </div>
+
             <form class="card p-2">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Código de desconto">
@@ -64,7 +148,7 @@
 
 
         <div class="col-md-7 col-lg-8">
-            <form class="needs-validation" novalidate>
+            <form method="POST" class="needs-validation" novalidate>
                 <div class="row g-3">
                     <div class="col-sm-6">
                         <label for="firstName" class="form-label">Primeiro nome</label>
@@ -100,25 +184,33 @@
                         <div class="invalid-feedback">
                             Please enter a valid email address for shipping updates.
                         </div>
-                    </div>
+                    </div>                  
 
-                    <div class="col-4">
-                        <label for="cep" class="form-label">CEP</label>
-                        <input type="text" class="form-control" id="cep" placeholder="" onblur="buscaCEP()" required>
-                        <div class="invalid-feedback"></div>
+                     <div class="col-4"> <label for="address" class="form-label">CEP</label> 
+                     <input type="text"
+                            class="form-control" name="cep"id="cep" name="cep" placeholder="CEP" onblur="buscaCEP()" value="<?php echo $_POST['cep'] ?? '' ?>" required>
+                        <div class="invalid-feedback">
+                        </div>
                     </div>
+                    <div class="col-8"> <label for="address" class="form-label">Endereço</label> 
+                    <input type="text"
+                            class="form-control" name="rua" id="logradouro" placeholder="Rua" value="<?php echo $_POST['rua'] ?? '' ?>" required>
+                        <div class="invalid-feedback">
 
                     <div class="col-8">
                         <label for="logradouro" class="form-label">Endereço</label>
                         <input type="text" class="form-control" id="logradouro" placeholder="" required>
                         <div class="invalid-feedback"></div>
                     </div>
+                    <div class="col-5"> <label for="address" class="form-label">Bairro</label> 
+                    <input type="text"
+                            class="form-control" name="bairro" id="bairro" placeholder="Bairro" value="<?php echo $_POST['bairro'] ?? '' ?>" required>
+                        <div class="invalid-feedback">
 
-                    <div class="col-5">
-                        <label for="bairro" class="form-label">Bairro</label>
-                        <input type="text" class="form-control" id="bairro" placeholder="" required>
-                        <div class="invalid-feedback"></div>
-                    </div>
+                    <div class="col-5"> <label for="address" class="form-label">Cidade</label> 
+                    <input type="text"
+                            class="form-control" name="cidade" id="localidade" placeholder="Cidade" value="<?php echo $_POST['cidade'] ?? '' ?>" required>
+                        <div class="invalid-feedback">
 
                     <div class="col-5">
                         <label for="localidade" class="form-label">Cidade</label>
@@ -236,6 +328,37 @@
             <li class="list-inline-item"><a href="#">Support</a></li>
         </ul>
     </footer>
+    </div>
+<script>
+    async function buscaCEP() {
+        const cep = document.getElementById('cep').value.replace(/\D/g, '');
+        
+        if (cep.length !== 8) return;
+
+        try {
+            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            const data = await response.json();
+
+            if (data.erro) {
+                alert("CEP não encontrado!");
+                return;
+            }
+
+            document.getElementById('logradouro').value = data.logradouro;
+            document.getElementById('bairro').value = data.bairro;
+            document.getElementById('localidade').value = data.localidade;
+            document.getElementById('uf').value = data.uf;
+            
+        } catch (error) {
+            console.error("Erro ao buscar o CEP:", error);
+        }
+    }
+</script>
+    <script src="/docs/5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        class="astro-vvvwv3sm"></script>
+    <script src="checkout.js" class="astro-vvvwv3sm"></script>
+</body>
 
 
 <div id="modalPixContainer" class="modal">

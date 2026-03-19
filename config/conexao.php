@@ -1,8 +1,8 @@
 <?php
-    $host = '';
-    $db   = '';
-    $user = '';
-    $pass = '';
+    $host = 'projetointegrador.com.br';
+    $db   = 'u115459815_clothing';
+    $user = 'u115459815_site_clothing';
+    $pass = 'Websenac123';
     $charset = 'utf8mb4';
     $config = "mysql:host=$host;dbname=$db;charset=$charset";
 
