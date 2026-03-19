@@ -84,3 +84,12 @@ CREATE TABLE produto_imagem (
 
     
 );
+
+
+CREATE TABLE usuarios (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(100),
+    email VARCHAR(100) NOT NULL UNIQUE,
+    senha VARCHAR(255),
+    dataCadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
