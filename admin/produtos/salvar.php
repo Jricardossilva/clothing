@@ -1,16 +1,16 @@
-<!-- salvar produtos -->
 <?php
 require '../../config/conexao.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
+    $id = $_POST['id'] ?? null;
     $nome = trim($_POST['nome']);
     $descricao = trim($_POST['descricao']);
     $preco = trim($_POST['preco']);
     $estoque = trim($_POST['estoque']);
     $imagem = null;
 
-    //salvar imagem em pasta img
+    // Verificar se enviou uma nova imagem
     if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] == 0) {
         $nomeOriginal = $_FILES['imagem']['name'];
         $imagem = time() . '-' . $nomeOriginal;
@@ -18,18 +18,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         move_uploaded_file($_FILES['imagem']['tmp_name'], $destino);
     }
 
-    $sql = "INSERT INTO produtos (nome, descricao, preco, estoque, url_imagem) VALUES (?, ?, ?, ?, ?)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        $nome,
-        $descricao,
-        $preco,
-        $estoque,
-        $imagem
-    ]);
+    if ($id) {
+        // Edição
+        // Buscar imagem atual para manter se não enviou nova
+        $stmt = $pdo->prepare("SELECT url_imagem FROM produtos WHERE id = ?");
+        $stmt->execute([$id]);
+        $produtoAtual = $stmt->fetch();
+        $imagemAtual = $produtoAtual['url_imagem'];
+
+        $sql = "UPDATE produtos SET nome=?, descricao=?, preco=?, estoque=?, url_imagem=? WHERE id=?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            $nome,
+            $descricao,
+            $preco,
+            $estoque,
+            $imagem ?: $imagemAtual,
+            $id
+        ]);
+
+    } else {
+        // Cadastro
+        $sql = "INSERT INTO produtos (nome, descricao, preco, estoque, url_imagem) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            $nome,
+            $descricao,
+            $preco,
+            $estoque,
+            $imagem
+        ]);
+    }
+
+    header('Location: index.php');
+    exit;
+
 } else {
-    echo "❌ Erro no cadastro.";
+    echo "❌ Erro: método inválido.";
 }
-header('Location: index.php');
-exit;
 ?>

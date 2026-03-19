@@ -1,17 +1,9 @@
-<footer class="footer footer-transparent d-print-none">
-    <div class="container-xl">
-        <div class="row justify-content-center text-center align-items-center">
-            <div class="col-auto mt-3 mt-lg-0">
-                <ul class="list-inline list-inline-dots mb-0 justify-content-center">
-                    <li class="list-inline-item">
-                        Copyright &copy; 2026
-                        <a href="." class="link-secondary">Clothing Store</a>. Todos os direitos reservados.
-                    </li>
-                    <li class="list-inline-item">
-                        <p>v1.0.0</p>
-                    </li>
-                </ul>
-            </div>
-        </div>
+<footer class="footer mt-auto bg-primary text-white py-3">
+    <div class="container text-center">
+        <small>
+            Copyright &copy; 2026
+            <a href="." class="text-white text-decoration-none">Clothing Store</a>
+            - Todos os direitos reservados | v1.0.0
+        </small>
     </div>
 </footer>
