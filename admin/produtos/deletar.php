@@ -4,9 +4,8 @@
     if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         $id = $_GET['id'];
 
-        $sql = "DELETE FROM produtos WHERE id = :id";
+        $sql = ("UPDATE produtos SET situacao = 0 WHERE id = :id");
         $stmt = $pdo->prepare($sql);
-        
       
         $stmt->execute(['id' => $id]);
 
