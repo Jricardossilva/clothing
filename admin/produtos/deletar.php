@@ -1,4 +1,3 @@
-<!-- deletar produtos -->
 <?php
     require '../../config/conexao.php'; 
 
