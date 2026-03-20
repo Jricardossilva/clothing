@@ -30,7 +30,7 @@
         <!-- Perfil à direita -->
         <div class="nav-item dropdown ms-3">
             <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Usuario
+                <?php $nome ?>;
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
                 <li><a class="dropdown-item" href="perfil.php#senha">Alterar senha</a></li>
