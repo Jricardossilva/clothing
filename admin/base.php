@@ -1,6 +1,6 @@
 <?php
 // Defina a base do seu projeto (ajuste se necessário)
-define('BASE_URL', 'clothing/admin/categorias');
+define('BASE_URL', 'http://localhost/clothing/admin');
 ?>
 
 <!DOCTYPE html>
@@ -13,7 +13,7 @@ define('BASE_URL', 'clothing/admin/categorias');
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- usa BASE_URL aqui também -->
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css">
+    <link rel="stylesheet" href="http://localhost/clothing/assets/css/style.css">
 </head>
 
 <body class="d-flex flex-column min-vh-100">
