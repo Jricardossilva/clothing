@@ -17,8 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         if (password_verify($senha, $usuario['senha'])) {
             $_SESSION['usuario_id'] = $usuario['id'];
-            $_SESSION['nome'] = $usuario['nome'];            
-            header("Location: ./admin/");
+            $_SESSION['nome'] = $usuario['nome']; 
+            header("Location: admin/index.php");
             exit;
         } else {
             die("Senha ou Email não encontrado!");
