@@ -75,7 +75,7 @@
           </div>
         </div>
         <div class="menu-item">
-          <a href="lista_produtos.php" class="menu__link">Masculino</a>
+          <a href="lista_produtos.php?genero=masculino" class="menu__link">Masculino</a>
           <div class="submenu">
             <a href="#">Camisetas</a>
             <a href="#">Calças</a>
@@ -84,7 +84,7 @@
           </div>
         </div>
         <div class="menu-item">
-          <a href="lista_produtos.php" class="menu__link">Feminino</a>
+          <a href="lista_produtos.php?genero=feminino" class="menu__link">Feminino</a>
           <div class="submenu">
             <a href="#">Blusas</a>
             <a href="#">Vestidos</a>

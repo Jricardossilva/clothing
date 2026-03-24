@@ -1,4 +1,3 @@
-<div class="container my-4">
     <div class="row justify-content-center g-4">
         <div class="col-6 col-lg-2">
             <div class="card h-100 shadow-sm border-0 rounded-4 border-top border-3 border-success hover-shadow transition scale-hover-106">
@@ -29,4 +28,3 @@
             </div>
         </div>
     </div>
-</div>

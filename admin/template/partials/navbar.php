@@ -1,9 +1,14 @@
+<?php
+$nome_completo = $_SESSION['nome'];
+$primeiro_nome = explode(" ", $nome_completo);
+?>
+
 <header class="navbar navbar-expand-md navbar-light sticky-top bg-primary py-3">
     <div class="container-xl d-flex justify-content-between align-items-center">
 
         <!-- Logo à esquerda -->
-        <a href="index.php" class="navbar-brand">
-            <img src="../../../assets/img/logo_clothing.svg" alt="Logo" class="navbar-brand-image">
+        <a href="<?= BASE_URL ?>/index.php" class="navbar-brand">
+            <img src="<?= BASE_URL ?>/../assets/img/logo_clothing.svg" alt="Logo" class="navbar-brand-image" style="height: 40px;">
         </a>
 
         <!-- Botão do colapso (mobile) -->
@@ -17,11 +22,11 @@
 
                 <!-- Produtos -->
                 <li class="nav-item">
-                     <a class="nav-link active" aria-current="page" href="#">Produtos</a>
+                    <a class="nav-link active" style="color: white;" href="<?= BASE_URL ?>/produtos/index.php">Produtos</a>
                 </li>
                 <!-- Categorias -->
                 <li class="nav-item">
-                     <a class="nav-link" aria-current="page" href="#">Categorias</a>
+                     <a class="nav-link active" style="color: white;" href="<?= BASE_URL ?>/categorias/index.php">Categorias</a>
                 </li>
 
             </ul>
@@ -30,7 +35,7 @@
         <!-- Perfil à direita -->
         <div class="nav-item dropdown ms-3">
             <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <?php $nome ?>;
+                <?= htmlspecialchars($primeiro_nome[0])?>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
                 <li><a class="dropdown-item" href="perfil.php#senha">Alterar senha</a></li>
