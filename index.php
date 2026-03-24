@@ -43,7 +43,7 @@
       <div class="row row-cols-1 row-cols-md-4 g-4">
         <div class="col">
           <div class="card">
-            <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+            <img src="uploads/feminino1.png" class="card-img-top" alt="Camiseta feminina" />
             <div class="card-body text-center">
               <h5 class="card-title"></h5>
               <p class="card-text">
@@ -60,7 +60,7 @@
         </div>
         <div class="col">
           <div class="card">
-            <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+            <img src="uploads/masculino2.png" class="card-img-top" alt="Camiseta masculina" />
             <div class="card-body text-center">
               <h5 class="card-title"></h5>
               <p class="card-text">
@@ -77,7 +77,7 @@
         </div>
         <div class="col">
           <div class="card">
-            <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+            <img src="uploads/feminino3.png" class="card-img-top" alt="Camiseta feminina" />
             <div class="card-body text-center">
               <h5 class="card-title"></h5>
               <p class="card-text">
@@ -94,7 +94,7 @@
         </div>
         <div class="col">
           <div class="card">
-            <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+            <img src="uploads/masculino4.png" class="card-img-top" alt="Camiseta masculina" />
             <div class="card-body text-center">
               <h5 class="card-title"></h5>
               <p class="card-text">
@@ -124,7 +124,7 @@
       <div class="row row-cols-1 row-cols-md-4 g-4">
         <div class="col">
           <div class="card">
-            <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+            <img src="uploads/feminino5.png" class="card-img-top" alt="Camiseta feminina" />
             <div class="card-body text-center">
               <h5 class="card-title"></h5>
               <p class="card-text">
@@ -141,7 +141,7 @@
         </div>
         <div class="col">
           <div class="card">
-            <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+            <img src="uploads/masculino6.png" class="card-img-top" alt="Camiseta masculina" />
             <div class="card-body text-center">
               <h5 class="card-title"></h5>
               <p class="card-text">
@@ -158,7 +158,7 @@
         </div>
         <div class="col">
           <div class="card">
-            <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+            <img src="uploads/feminino7.png" class="card-img-top" alt="Camiseta feminina" />
             <div class="card-body text-center">
               <h5 class="card-title"></h5>
               <p class="card-text">
@@ -175,7 +175,7 @@
         </div>
         <div class="col">
           <div class="card">
-            <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+            <img src="uploads/masculino8.png" class="card-img-top" alt="Camiseta masculina" />
             <div class="card-body text-center">
               <h5 class="card-title"></h5>
               <p class="card-text">
@@ -211,7 +211,7 @@
           <h3 class="fs-1 fw-bold">Prima Feminino</h3>
           <p class="fs-2">de R$255 por R$195</p>
           <p class="fs-3 mt-1 text-decoration-underline">Cupom: KITPIMA</p>
-          <img class="w-100" src="images/prima-feminino.png" alt="" />
+          <img class="w-100" src="uploads/feminino9.png" alt="Kit feminino" />
           <a href="" class="my-3 fw-bold text-uppercase menu__link">Comprar</a>
         </div>
         <div class="d-flex flex-column align-items-center justify-content-center bg-white w-50">
@@ -219,7 +219,7 @@
           <h3 class="fs-1 fw-bold">Prima Masculino</h3>
           <p class="fs-2">de R$255 por R$195</p>
           <p class="fs-3 text-decoration-underline mt-1">Cupom: KITPIMA</p>
-          <img class="w-100" src="images/prima-feminino.png" alt="" />
+          <img class="w-100" src="uploads/masculino1.png" alt="Kit masculino" />
           <a href="" class="my-3 fw-bold text-uppercase menu__link">Comprar</a>
         </div>
       </div>
@@ -231,7 +231,7 @@
       </div>
       <div class="d-flex gap-4 p-3 mx-2">
         <div class="card w-25">
-          <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+          <img src="uploads/feminino10.png" class="card-img-top" alt="Look feminino" />
           <div class="card-body">
             <p class="card-text text-center">
               <a href="#" class="fs-5 menu__link">Comprar</a>
@@ -239,7 +239,7 @@
           </div>
         </div>
         <div class="card w-25">
-          <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+          <img src="uploads/masculino2.png" class="card-img-top" alt="Look masculino" />
           <div class="card-body">
             <p class="card-text text-center">
               <a href="#" class="fs-5 menu__link">Comprar</a>
@@ -247,7 +247,7 @@
           </div>
         </div>
         <div class="card w-25">
-          <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+          <img src="uploads/masculino3.png" class="card-img-top" alt="Look masculino" />
           <div class="card-body">
             <p class="card-text text-center">
               <a href="#" class="fs-5 menu__link">Comprar</a>
@@ -255,7 +255,7 @@
           </div>
         </div>
         <div class="card w-25">
-          <img src="images/exemplo-roupa.webp" class="card-img-top" alt="..." />
+          <img src="uploads/masculino4.png" class="card-img-top" alt="Look masculino" />
           <div class="card-body">
             <p class="card-text text-center">
               <a href="#" class="fs-5 menu__link">Comprar</a>
