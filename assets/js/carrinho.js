@@ -29,6 +29,29 @@ function removeProductFromCart(productId) {
   document.dispatchEvent(new CustomEvent('cart:updated'));
 }
 
+function updateProductQuantity(productId, nextQuantity) {
+  if (!productId) {
+    return;
+  }
+
+  const normalizedQuantity = Math.max(0, Number(nextQuantity) || 0);
+  const cartItems = getCartItems();
+  const itemToUpdate = cartItems.find((item) => item.id === productId);
+
+  if (!itemToUpdate) {
+    return;
+  }
+
+  if (normalizedQuantity < 1) {
+    removeProductFromCart(productId);
+    return;
+  }
+
+  itemToUpdate.quantity = normalizedQuantity;
+  saveCartItems(cartItems);
+  document.dispatchEvent(new CustomEvent('cart:updated'));
+}
+
 function getCartItemsCount() {
   return getCartItems().reduce((total, item) => {
     const quantity = Number(item.quantity) || 0;
@@ -106,13 +129,23 @@ function renderCartItems() {
             ${imageMarkup}
             <div class="header-panel-content">
               <p class="header-panel-title mb-1">${name}</p>
-              <p class="header-panel-meta mb-1">Quantidade: ${item.quantity}</p>
               ${priceMarkup}
             </div>
           </a>
-          <button type="button" class="header-panel-remove" data-remove-cart-item="${item.id}">
-            Remover
-          </button>
+          <div class="header-panel-actions">
+            <div class="header-quantity-control" aria-label="Alterar quantidade">
+              <button type="button" class="header-quantity-btn" data-cart-quantity-action="decrease" data-cart-item-id="${item.id}" aria-label="Diminuir quantidade">
+                -
+              </button>
+              <span class="header-quantity-value">${item.quantity}</span>
+              <button type="button" class="header-quantity-btn" data-cart-quantity-action="increase" data-cart-item-id="${item.id}" aria-label="Aumentar quantidade">
+                +
+              </button>
+            </div>
+            <button type="button" class="header-panel-remove" data-remove-cart-item="${item.id}">
+              Remover
+            </button>
+          </div>
         </div>
       `;
     }).join('');
@@ -151,6 +184,24 @@ document.addEventListener('DOMContentLoaded', renderCartItems);
 document.addEventListener('DOMContentLoaded', updateCartTotal);
 document.addEventListener('click', (event) => {
   const removeButton = event.target.closest('[data-remove-cart-item]');
+  const quantityButton = event.target.closest('[data-cart-quantity-action]');
+
+  if (quantityButton) {
+    const { cartItemId, cartQuantityAction } = quantityButton.dataset;
+    const cartItem = getCartItems().find((item) => item.id === cartItemId);
+
+    if (!cartItem) {
+      return;
+    }
+
+    const currentQuantity = Number(cartItem.quantity) || 1;
+    const nextQuantity = cartQuantityAction === 'decrease'
+      ? currentQuantity - 1
+      : currentQuantity + 1;
+
+    updateProductQuantity(cartItemId, nextQuantity);
+    return;
+  }
 
   if (!removeButton) {
     return;
