@@ -1,0 +1,29 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.main-content {
+    flex: 1; /* garante que o main ocupe espaço restante */
+}
+
+/* Transição suave */
+.transition {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Efeito de aumentar */
+.scale-hover-106:hover {
+    transform: scale(1.05);
+}
+
+/* Sombra forte no hover */
+.hover-shadow:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Garante que o card tenha base */
+.card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
