@@ -80,6 +80,7 @@ function calcularFreteSimulado($estadoDestino, $peso) {
     <h1 class="h2">Formulário de cadastro</h1>
     <p class="lead">Informe seus dados para uma melhor experiência em nosso site.</p>
 
+<div>
     <div class="row g-5">
 
         <div class="col-md-5 col-lg-4 order-md-last">
@@ -192,45 +193,30 @@ function calcularFreteSimulado($estadoDestino, $peso) {
                         <div class="invalid-feedback">
                         </div>
                     </div>
-                    <div class="col-8"> <label for="address" class="form-label">Endereço</label> 
-                    <input type="text"
+                    <div class="col-8"> 
+                        <label for="address" class="form-label">Endereço</label> 
+                        <input type="text"
                             class="form-control" name="rua" id="logradouro" placeholder="Rua" value="<?php echo $_POST['rua'] ?? '' ?>" required>
-                        <div class="invalid-feedback">
-
-                    <div class="col-8">
-                        <label for="logradouro" class="form-label">Endereço</label>
-                        <input type="text" class="form-control" id="logradouro" placeholder="" required>
                         <div class="invalid-feedback"></div>
                     </div>
-                    <div class="col-5"> <label for="address" class="form-label">Bairro</label> 
-                    <input type="text"
+                    <div class="col-4"> <label for="address" class="form-label">Bairro</label> 
+                        <input type="text"
                             class="form-control" name="bairro" id="bairro" placeholder="Bairro" value="<?php echo $_POST['bairro'] ?? '' ?>" required>
-                        <div class="invalid-feedback">
-
-                    <div class="col-5"> <label for="address" class="form-label">Cidade</label> 
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="col-4"> <label for="address" class="form-label">Cidade</label> 
                     <input type="text"
                             class="form-control" name="cidade" id="localidade" placeholder="Cidade" value="<?php echo $_POST['cidade'] ?? '' ?>" required>
-                        <div class="invalid-feedback">
-
-                    <div class="col-5">
-                        <label for="localidade" class="form-label">Cidade</label>
-                        <input type="text" class="form-control" id="localidade" placeholder="" required>
-                        <div class="invalid-feedback"></div>
+                            <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="col-2"> <label for="address" class="form-label">Estado</label> 
+                        <input type="text"
+                                class="form-control" name="estado" id="uf" placeholder="Estado" value="<?php echo $_POST['estado'] ?? '' ?>" required>
+                            <div class="invalid-feedback">
+                            </div>
                     </div>
 
-                    <div class="col-2">
-                        <label for="uf" class="form-label">Estado</label>
-                        <input type="text" class="form-control" id="uf" placeholder="" required>
-                        <div class="invalid-feedback"></div>
-                    </div>
-
-                    <div class="col-12">
-                        <label for="address2" class="form-label">2° Endereço <span
-                                class="text-body-secondary">(Opcional)</span></label>
-                        <input type="text" class="form-control" id="address2" placeholder="Apartamento ou suíte">
-                    </div>
-
-                    <div class="col-md-5">
+                    <div class="col-md-2">
                         <label for="country" class="form-label">País</label>
                         <select class="form-select" id="country" required>
                             <option value="">Selecionar...</option>
@@ -241,7 +227,11 @@ function calcularFreteSimulado($estadoDestino, $peso) {
                             Please select a valid country.
                         </div>
                     </div>
-                </div>
+            
+                    <button type="submit" class="btn btn-secondary">Calcular frete</button>
+                    <!-- <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button> -->   
+            </form>
+        
 
                 <hr class="my-4">
 
@@ -312,13 +302,15 @@ function calcularFreteSimulado($estadoDestino, $peso) {
                 </div>
 
                 <hr class="my-4">
+                <form>
+                    <button class="w-100 btn btn-primary btn-lg" type="submit">
+                        Continuar para o pagamento
+                    </button>
+                </form>
 
-                <button class="w-100 btn btn-primary btn-lg" type="submit">
-                    Continuar para o pagamento
-                </button>
-            </form>
-        </div>
+        </div>   
     </div>
+</div>
 
     <footer class="my-5 pt-5 text-body-secondary text-center text-small">
         <p class="mb-1">&copy; 2017–2025 Company Name</p>
@@ -328,7 +320,7 @@ function calcularFreteSimulado($estadoDestino, $peso) {
             <li class="list-inline-item"><a href="#">Support</a></li>
         </ul>
     </footer>
-    </div>
+
 <script>
     async function buscaCEP() {
         const cep = document.getElementById('cep').value.replace(/\D/g, '');
