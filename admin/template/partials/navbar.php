@@ -2,8 +2,8 @@
     <div class="container-xl d-flex justify-content-between align-items-center">
 
         <!-- Logo à esquerda -->
-        <a href="index.php" class="navbar-brand">
-            <img src="../../../../clothing/assets/img/logo_clothing.svg" alt="Logo" class="navbar-brand-image" style="height: 40px;">
+        <a href="<?= BASE_URL ?>/index.php" class="navbar-brand">
+            <img src="<?= BASE_URL ?>/../assets/img/logo_clothing.svg" alt="Logo" class="navbar-brand-image" style="height: 40px;">
         </a>
 
         <!-- Botão do colapso (mobile) -->
@@ -17,11 +17,11 @@
 
                 <!-- Produtos -->
                 <li class="nav-item">
-                    <a class="nav-link active" style="color: white;" href="../../admin/produtos/index.php">Produtos</a>
+                    <a class="nav-link active" style="color: white;" href="<?= BASE_URL ?>/produtos/index.php">Produtos</a>
                 </li>
                 <!-- Categorias -->
                 <li class="nav-item">
-                     <a class="nav-link active" style="color: white;" href="../../admin/categorias/index.php">Categorias</a>
+                     <a class="nav-link active" style="color: white;" href="<?= BASE_URL ?>/categorias/index.php">Categorias</a>
                 </li>
 
             </ul>
