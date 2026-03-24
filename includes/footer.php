@@ -17,10 +17,10 @@
               <a class="text-light" href="#">Novidades</a>
             </li>
             <li class="p-2 footer-links">
-              <a class="text-light" href="#">Masculino</a>
+              <a class="text-light" href="lista_produtos.php?genero=masculino">Masculino</a>
             </li>
             <li class="p-2 footer-links">
-              <a class="text-light" href="#">Feminino</a>
+              <a class="text-light" href="lista_produtos.php?genero=feminino">Feminino</a>
             </li>
             <li class="p-2 footer-links">
               <a class="text-light" href="#">Destaques</a>

@@ -2,9 +2,37 @@
 include 'config/conexao.php';
 
 $produtos = [];
+$generoSelecionado = null;
+$tituloPagina = 'NOSSOS PRODUTOS';
+
+$mapaGeneros = [
+    'masculino' => ['%Masculino%', '%Masculina%'],
+    'feminino' => ['%Feminino%', '%Feminina%'],
+];
+
+$generoParam = strtolower(trim((string) filter_input(INPUT_GET, 'genero', FILTER_UNSAFE_RAW)));
+
+if (array_key_exists($generoParam, $mapaGeneros)) {
+    $generoSelecionado = $generoParam;
+    $tituloPagina = 'PRODUTOS ' . strtoupper($generoSelecionado);
+}
 
 if (isset($pdo)) {
-    $stmt = $pdo->query('SELECT id, nome, preco, url_imagem FROM produtos ORDER BY id DESC');
+    if ($generoSelecionado !== null) {
+        $stmt = $pdo->prepare(
+            'SELECT id, nome, preco, url_imagem
+             FROM produtos
+             WHERE nome LIKE :termo1 OR nome LIKE :termo2
+             ORDER BY id DESC'
+        );
+        $stmt->execute([
+            ':termo1' => $mapaGeneros[$generoSelecionado][0],
+            ':termo2' => $mapaGeneros[$generoSelecionado][1],
+        ]);
+    } else {
+        $stmt = $pdo->query('SELECT id, nome, preco, url_imagem FROM produtos ORDER BY id DESC');
+    }
+
     $produtos = $stmt->fetchAll();
 }
 
@@ -29,7 +57,7 @@ function formatarPreco(float $preco): string
 <body>
     <?php include 'includes/header.php'; ?>
     <main>
-        <h2 class="text-center mt-4 fw-bold">NOSSOS PRODUTOS</h2>
+        <h2 class="text-center mt-4 fw-bold"><?php echo htmlspecialchars($tituloPagina, ENT_QUOTES, 'UTF-8'); ?></h2>
 
         <div class="container d-flex mt-4">
             <aside class="sidebar">
@@ -68,8 +96,8 @@ function formatarPreco(float $preco): string
                 <?php else: ?>
                     <div class="product product-empty">
                         <img src="assets/img/camiseta-preta.jpg" alt="Nenhum produto cadastrado" />
-                        <div class="name">Nenhum produto cadastrado</div>
-                        <div class="price">Cadastre produtos no banco para listar aqui.</div>
+                        <div class="name">Nenhum produto encontrado</div>
+                        <div class="price">Nao ha produtos para o filtro selecionado.</div>
                     </div>
                 <?php endif; ?>
             </section>
