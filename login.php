@@ -29,8 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -62,6 +60,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </span>
         </div>
         <button id=entrarAdm class="submit" type="submit">Entrar</button>
+        <div class = "text-center mt-5">      
+        <a href="#" class="signup-link">Esqueceu a senha?
+        <b></b>
+        <a href="#" onclick="alert('Um link de recuperação será enviado para seu e-mail cadastrado.');">Recuperar</a>
+        </a>
+        </div>
+        
+        
     </form>
 
 
