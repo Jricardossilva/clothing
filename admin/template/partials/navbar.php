@@ -38,7 +38,7 @@ $primeiro_nome = explode(" ", $nome_completo);
                 <?= htmlspecialchars($primeiro_nome[0])?>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="perfil.php#senha">Alterar senha</a></li>
+                <li><a class="dropdown-item" href="../alterarsenha.php">Alterar senha</a></li>
                 <li>
                     <form method="POST" action="logout.php">
                         <button type="submit" class="dropdown-item">Sair</button>
