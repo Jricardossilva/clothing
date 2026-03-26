@@ -54,7 +54,7 @@
                 <span>Total</span>
                 <strong data-cart-total>R$ 0,00</strong>
               </div>
-              <a href="cadastro.php" class="btn btn-dark w-100">Ir para pagamento</a>
+              <a href="checkout.php" class="btn btn-dark w-100">Ir para pagamento</a>
             </div>
           </div>
 
