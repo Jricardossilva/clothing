@@ -1,3 +1,8 @@
+<?php
+$nome_completo = $_SESSION['nome'];
+$primeiro_nome = explode(" ", $nome_completo);
+?>
+
 <header class="navbar navbar-expand-md navbar-light sticky-top bg-primary py-3">
     <div class="container-xl d-flex justify-content-between align-items-center">
 
@@ -30,7 +35,7 @@
         <!-- Perfil à direita -->
         <div class="nav-item dropdown ms-3">
             <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <?php $nome ?>;
+                <?= htmlspecialchars($primeiro_nome[0])?>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
                 <li><a class="dropdown-item" href="perfil.php#senha">Alterar senha</a></li>
