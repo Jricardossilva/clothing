@@ -1,14 +1,15 @@
 <?php
 
 session_start();
+// Defina a base do seu projeto (ajuste se necessário)
+define('BASE_URL', 'http://localhost/clothing/admin');
 
 if(!isset($_SESSION['usuario_id'])) {
-    header("Location: ../login.php");
+    header("Location: http://localhost/clothing/login.php");
     exit;
 }
 
-// Defina a base do seu projeto (ajuste se necessário)
-define('BASE_URL', 'http://localhost/clothing/admin');
+
 ?>
 
 <!DOCTYPE html>

@@ -40,7 +40,7 @@ $primeiro_nome = explode(" ", $nome_completo);
             <ul class="dropdown-menu dropdown-menu-end">
                 <li><a class="dropdown-item" href="perfil.php#senha">Alterar senha</a></li>
                 <li>
-                    <form method="POST" action="logout.php">
+                    <form method="POST" action="<?= BASE_URL ?>/logout.php">
                         <button type="submit" class="dropdown-item">Sair</button>
                     </form>
                 </li>
