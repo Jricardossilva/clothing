@@ -7,8 +7,12 @@
 ?>
 
 
-<H1>Produtos</H1>
-<table class="table">
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Produtos</h1>
+    <a href="form.php" class="btn btn-primary">Cadastrar</a>
+</div>
+<table class="table table-hover">
     <thead>
       <tr>                      
         <th>Nome</th>
@@ -27,8 +31,8 @@
             <td><?= htmlspecialchars($produto['preco'])?></td>
             <td><?= htmlspecialchars($produto['estoque'])?></td>
             <td>
-              <a href="form.php?id=<?= htmlspecialchars($produto['id'])?>" class="btn btn-outline-warning btn-sm">Editar</a>
-              <a href="deletar.php?id=<?= htmlspecialchars($produto['id'])?>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Certeza que deseja excluir?')">Excluir</a>
+              <a href="form.php?id=<?= htmlspecialchars($produto['id'])?>" class="btn btn-warning">Editar</a>
+              <a href="deletar.php?id=<?= htmlspecialchars($produto['id'])?>" class="btn btn-danger" onclick="return confirm('Certeza que deseja excluir?')">Excluir</a>
             </td>
           </tr>
         <?php endforeach; ?>
@@ -37,6 +41,4 @@
     <?php endif; ?>
     </tbody>
 </table>
-<a href="form.php" class="btn btn-outline-primary">Novo produto</a>
-
 
