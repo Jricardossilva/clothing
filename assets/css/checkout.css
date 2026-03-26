@@ -1,0 +1,177 @@
+:root {
+    --footer-color: #2F3B42;
+}
+
+.checkout-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+.checkout-page > .container {
+    flex: 1 0 auto;
+}
+
+.header-panel-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.header-panel-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border: 1px solid #e8e8e8;
+    border-radius: 10px;
+    color: #111;
+}
+
+.header-panel-item:hover {
+    background-color: #f8f8f8;
+}
+
+.header-panel-link {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    color: #111;
+    flex: 1;
+    min-width: 0;
+    text-decoration: none;
+}
+
+.header-panel-link:hover {
+    color: #111;
+}
+
+.header-panel-thumb {
+    width: 68px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    flex-shrink: 0;
+}
+
+.header-panel-thumb--placeholder {
+    border: 1px dashed #cfcfcf;
+}
+
+.header-panel-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.header-panel-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #111;
+}
+
+.header-panel-price,
+.header-panel-empty {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.header-panel-remove {
+    border: 1px solid #d0d0d0;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    line-height: 1;
+    white-space: nowrap;
+    background-color: #fff;
+}
+
+.header-panel-remove:hover {
+    background-color: #111;
+    border-color: #111;
+    color: #fff;
+}
+
+.header-panel-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.header-quantity-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px;
+    border: 1px solid #dcdcdc;
+    border-radius: 999px;
+    background-color: #fff;
+}
+
+.header-quantity-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid #d0d0d0;
+    background-color: #f6f6f6;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.header-quantity-btn:hover {
+    background-color: #111;
+    border-color: #111;
+    color: #fff;
+}
+
+.header-quantity-value {
+    min-width: 20px;
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #111;
+}
+
+.checkout-page-footer {
+    margin-top: auto;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+}
+
+.checkout-page-footer footer {
+    width: 100%;
+    margin-bottom: 0;
+    background-color: var(--footer-color);
+}
+
+.checkout-page-footer .logo-marca-footer {
+    width: 350px;
+}
+
+.checkout-page-footer .footer-links {
+    color: #fff;
+    line-height: 2;
+    position: relative;
+    list-style-type: none;
+}
+
+.checkout-page-footer .footer-links::before {
+    content: "";
+    width: 0;
+    height: 2px;
+    border-radius: 2px;
+    background-color: #fff;
+    position: absolute;
+    bottom: -0.25rem;
+    left: 50%;
+    transition: width 0.4s, left 0.4s;
+}
+
+.checkout-page-footer .footer-links:hover::before {
+    width: 100%;
+    left: 0;
+}
