@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class = "text-center mt-5">      
         <a href="#" class="signup-link">Esqueceu a senha?
         <b></b>
-        <a href="#" onclick="alert('Um link de recuperação será enviado para seu e-mail cadastrado.');">Recuperar</a>
+        <a href="#" onclick="alert('Um link de recuperação será enviado para seu e-mail cadastrado.');"> Recuperar</a>
         </a>
         </div>
         
