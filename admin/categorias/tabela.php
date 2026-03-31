@@ -27,9 +27,12 @@
                 <td><?php echo $categoria['genero']; ?></td>
                 <td>
                     <a href="form.php?id=<?php echo $categoria['id']; ?>" class="btn btn-warning">Editar</a>
-                    <a href="deletar.php?id=<?php echo $categoria['id']; ?>" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja deletar esta categoria?');">Deletar</a>
+                    <a href="deletar.php?id=<?php echo $categoria['id']; ?>" class="btn btn-danger" onclick="deletar(event, this.href)">Deletar</a>
                 </td>
             </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
+
+
+<script type="module" src="../../assets/js/funcoesGlobais/acoesProdutos.js"></script>

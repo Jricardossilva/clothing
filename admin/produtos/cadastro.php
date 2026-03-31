@@ -49,7 +49,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         </div>
         <div class="mb-3 col-md-6">
             <label for="formFileSm" class="form-label">Adicione uma imagem</label>
-            <input name="imagem" class="form-control form-control-sm" id="formFileSm" type="file">
+            <input name="imagem" class="form-control form-control-sm" id="formFileSm" type="file" required>
             <?php if(!empty($produto['imagem'])): ?>
                 <small>Imagem atual: <?= $produto['imagem'] ?></small>
             <?php endif; ?>
