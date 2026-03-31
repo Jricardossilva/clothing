@@ -32,7 +32,7 @@
             <td><?= htmlspecialchars($produto['estoque'])?></td>
             <td>
               <a href="form.php?id=<?= htmlspecialchars($produto['id'])?>" class="btn btn-warning">Editar</a>
-              <a href="deletar.php?id=<?= htmlspecialchars($produto['id'])?>" class="btn btn-danger" onclick="return confirm('Certeza que deseja excluir?')">Excluir</a>
+              <a href="deletar.php?id=<?= htmlspecialchars($produto['id'])?>" class="btn btn-danger" onclick="deletar(event, this.href)">Deletar</a>
             </td>
           </tr>
         <?php endforeach; ?>
@@ -42,3 +42,4 @@
     </tbody>
 </table>
 
+<script type="module" src="../../assets/js/funcoesGlobais/acoesProdutos.js"></script>

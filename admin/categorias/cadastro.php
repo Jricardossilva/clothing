@@ -22,7 +22,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 ?>
 
 <h1>Editar Categoria</h1>
-<form action="salvar.php" method="post" enctype="multipart/form-data">
+<form action="salvar.php" method="post" enctype="multipart/form-data" id="cadastroProduto">
     <input type="hidden" name="id" value="<?php echo $categoria['id']; ?>">
     <div class="form-group">
         <label for="nome">Nome:</label>
@@ -44,3 +44,5 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     <button type="submit" class="btn btn-primary mt-3"><?= empty($categoria['id']) ? 'Cadastrar' : 'Atualizar' ?></button>
     <a href="index.php" class="btn btn-secondary mt-3">Cancelar</a>
 </form>
+
+<script type="module" src="../../assets/js/funcoesGlobais/cadastroPage.js"></script>

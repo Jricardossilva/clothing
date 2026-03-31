@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const product = typeof getProductData === "function" ? getProductData(item.id) || {} : {};
             const image = item.image || product.image || "";
             const name = item.name || product.name || "Produto indisponivel";
-            const url = product.url || "#";
+            const url = item.url || product.url || `produto.php?id=${encodeURIComponent(item.id)}`;
             const imageMarkup = image
                 ? `<img src="${image}" alt="${name}" class="header-panel-thumb">`
                 : '<div class="header-panel-thumb header-panel-thumb--placeholder"></div>';
