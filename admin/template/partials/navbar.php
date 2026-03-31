@@ -28,6 +28,10 @@ $primeiro_nome = explode(" ", $nome_completo);
                 <li class="nav-item">
                      <a class="nav-link active" style="color: white;" href="<?= BASE_URL ?>/categorias/index.php">Categorias</a>
                 </li>
+                <!-- Relatório -->
+                <li class="nav-item">
+                     <a class="nav-link active" style="color: white;" href="<?= BASE_URL ?>/relatorio/index.php">Relatório</a>
+                </li>
 
             </ul>
         </div>

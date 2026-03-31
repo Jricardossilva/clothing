@@ -72,6 +72,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     </div>        
 
     <button type="submit" class="btn btn-primary"><?= empty($produto['id']) ? 'Cadastrar' : 'Atualizar' ?></button>
+    <a href="index.php" class="btn btn-secondary">Cancelar</a>
 </form>
 
 <script type="module" src="../../assets/js/funcoesGlobais/cadastroPage.js"></script>
