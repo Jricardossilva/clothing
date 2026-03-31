@@ -22,7 +22,9 @@ CREATE TABLE produtos(
     preco DECIMAL(6,2),
     estoque INT,
     situacao INT DEFAULT 1,
-    data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    data_cadastro DATETIME DEFAULT,
+    url_imagem VARCHAR(255) NULL,
+    CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (categoria_id) REFERENCES categorias(id)
 );
 
@@ -78,8 +80,8 @@ CREATE TABLE tabela_pedidos (
 CREATE TABLE produto_imagem (  
     id INT PRIMARY KEY AUTO_INCREMENT,
 	produto_id INT,
-    url_imagem VARCHAR(50),
-    ordem INT(50),
+    url_imagem VARCHAR(255),
+    ordem INT(255),
     FOREIGN KEY (produto_id) REFERENCES produtos(id)    
 
     
