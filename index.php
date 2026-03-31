@@ -35,12 +35,11 @@ function separarProdutosPorGenero(array $produtos): array
   $masculinos = [];
 
   foreach ($produtos as $produto) {
-    if (($produto['genero'] ?? null) === 'feminino') {
+    if (stripos($produto['nome'], 'femin') !== false) {
       $femininos[] = $produto;
-      continue;
+    } else {
+      $masculinos[] = $produto;
     }
-
-    $masculinos[] = $produto;
   }
 
   return [
@@ -51,161 +50,71 @@ function separarProdutosPorGenero(array $produtos): array
 
 function intercalarProdutosPorGenero(array $femininos, array $masculinos): array
 {
-  $produtosIntercalados = [];
-  $maiorGrupo = max(count($femininos), count($masculinos));
+  $resultado = [];
+  $max = max(count($femininos), count($masculinos));
 
-  for ($indice = 0; $indice < $maiorGrupo; $indice++) {
-    if (isset($femininos[$indice])) {
-      $produtosIntercalados[] = $femininos[$indice];
-    }
-
-    if (isset($masculinos[$indice])) {
-      $produtosIntercalados[] = $masculinos[$indice];
-    }
+  for ($i = 0; $i < $max; $i++) {
+    if (isset($femininos[$i])) $resultado[] = $femininos[$i];
+    if (isset($masculinos[$i])) $resultado[] = $masculinos[$i];
   }
 
-  return $produtosIntercalados;
+  return $resultado;
 }
 
 function obterProdutoAleatorio(array &$produtos, array $fallback): array
 {
-  $produto = array_shift($produtos);
-
-  if ($produto === null) {
-    return $fallback;
-  }
-
-  return $produto;
+  return array_shift($produtos) ?? $fallback;
 }
 
-$produtosHome = [
-  [
-    'imagem' => 'uploads/feminino1.png',
-    'alt' => 'Camiseta feminina',
-    'genero' => 'feminino',
-    'nome' => 'Camiseta Feminina 1',
-    'preco' => 59.90,
-  ],
-  [
-    'imagem' => 'uploads/masculino2.png',
-    'alt' => 'Camiseta masculina',
-    'genero' => 'masculino',
-    'nome' => 'Camiseta Masculina 2',
-    'preco' => 73.90,
-  ],
-  [
-    'imagem' => 'uploads/feminino3.png',
-    'alt' => 'Camiseta feminina',
-    'genero' => 'feminino',
-    'nome' => 'Camiseta Feminina 3',
-    'preco' => 72.50,
-  ],
-  [
-    'imagem' => 'uploads/masculino4.png',
-    'alt' => 'Camiseta masculina',
-    'genero' => 'masculino',
-    'nome' => 'Camiseta Masculina 4',
-    'preco' => 84.90,
-  ],
-  [
-    'imagem' => 'uploads/feminino5.png',
-    'alt' => 'Camiseta feminina',
-    'genero' => 'feminino',
-    'nome' => 'Camiseta Feminina 5',
-    'preco' => 83.40,
-  ],
-  [
-    'imagem' => 'uploads/masculino6.png',
-    'alt' => 'Camiseta masculina',
-    'genero' => 'masculino',
-    'nome' => 'Camiseta Masculina 6',
-    'preco' => 76.40,
-  ],
-  [
-    'imagem' => 'uploads/feminino7.png',
-    'alt' => 'Camiseta feminina',
-    'genero' => 'feminino',
-    'nome' => 'Camiseta Feminina 7',
-    'preco' => 57.90,
-  ],
-  [
-    'imagem' => 'uploads/masculino8.png',
-    'alt' => 'Camiseta masculina',
-    'genero' => 'masculino',
-    'nome' => 'Camiseta Masculina 8',
-    'preco' => 87.50,
-  ],
-];
-
-$produtosPorImagem = [];
-$produtosPorNome = [];
+/* =========================
+   🔥 BUSCAR DO BANCO
+========================= */
+$produtosHome = [];
 
 if (isset($pdo)) {
-  $imagens = array_column($produtosHome, 'imagem');
-  $nomes = array_column($produtosHome, 'nome');
-  $placeholdersImagens = implode(',', array_fill(0, count($imagens), '?'));
-  $placeholdersNomes = implode(',', array_fill(0, count($nomes), '?'));
-
-  $stmt = $pdo->prepare(
-    "SELECT nome, preco, url_imagem
-     FROM produtos
-     WHERE url_imagem IN ($placeholdersImagens) OR nome IN ($placeholdersNomes)"
-  );
-  $stmt->execute([...$imagens, ...$nomes]);
+  $stmt = $pdo->query("
+    SELECT id, nome, preco, url_imagem
+    FROM produtos
+    WHERE situacao = 1 AND estoque > 0
+  ");
 
   foreach ($stmt->fetchAll() as $produto) {
-    if (!empty($produto['url_imagem'])) {
-      $produtosPorImagem[$produto['url_imagem']] = $produto;
-    }
-
-    if (!empty($produto['nome'])) {
-      $produtosPorNome[$produto['nome']] = $produto;
-    }
+    $produtosHome[] = [
+      'id' => (int) $produto['id'],
+      'nome' => $produto['nome'],
+      'preco' => (float) $produto['preco'],
+      'imagem' => !empty($produto['url_imagem']) ? $produto['url_imagem'] : 'assets/img/placeholder.png',
+      'alt' => $produto['nome'],
+      'preco_original' => calcularPrecoOriginal((float) $produto['preco']),
+    ];
   }
 }
 
-foreach ($produtosHome as $indice => $produtoHome) {
-  $produtoBanco = $produtosPorImagem[$produtoHome['imagem']] ?? $produtosPorNome[$produtoHome['nome']] ?? null;
-
-  if ($produtoBanco) {
-    $produtosHome[$indice]['nome'] = $produtoBanco['nome'];
-    $produtosHome[$indice]['preco'] = (float) $produtoBanco['preco'];
-  }
-
-  $produtosHome[$indice]['preco_original'] = calcularPrecoOriginal($produtosHome[$indice]['preco']);
-}
-
+/* =========================
+   🔁 LÓGICA EXISTENTE
+========================= */
 $produtosPorGenero = separarProdutosPorGenero($produtosHome);
+
 $femininosHome = $produtosPorGenero['femininos'];
 $masculinosHome = $produtosPorGenero['masculinos'];
+
 $produtosHome = intercalarProdutosPorGenero($femininosHome, $masculinosHome);
-$precoInicial = min(array_column($produtosHome, 'preco'));
+
+$precoInicial = !empty($produtosHome) ? min(array_column($produtosHome, 'preco')) : 0;
+
 $primeiraVitrine = array_slice($produtosHome, 0, 4);
 $segundaVitrine = array_slice($produtosHome, 4, 4);
 
-$kitFeminino = obterProdutoAleatorio($femininosHome, [
-  'imagem' => 'uploads/feminino9.png',
-  'alt' => 'Kit feminino',
-  'genero' => 'feminino',
-  'nome' => 'Camiseta Feminina 9',
-  'preco' => 74.90,
-]);
-
-$kitMasculino = obterProdutoAleatorio($masculinosHome, [
-  'imagem' => 'uploads/masculino1.png',
-  'alt' => 'Kit masculino',
-  'genero' => 'masculino',
-  'nome' => 'Camiseta Masculina 1',
-  'preco' => 61.90,
-]);
+$kitFeminino = obterProdutoAleatorio($femininosHome, $produtosHome[0] ?? []);
+$kitMasculino = obterProdutoAleatorio($masculinosHome, $produtosHome[1] ?? []);
 
 $looksPrimavera = intercalarProdutosPorGenero(
   array_slice($femininosHome, 0, 2),
   array_slice($masculinosHome, 0, 2)
 );
 
-$precosKitFeminino = calcularPrecoKit($kitFeminino['preco']);
-$precosKitMasculino = calcularPrecoKit($kitMasculino['preco']);
+$precosKitFeminino = calcularPrecoKit($kitFeminino['preco'] ?? 0);
+$precosKitMasculino = calcularPrecoKit($kitMasculino['preco'] ?? 0);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -250,20 +159,22 @@ $precosKitMasculino = calcularPrecoKit($kitMasculino['preco']);
       <div class="row row-cols-1 row-cols-md-4 g-4">
         <?php foreach ($primeiraVitrine as $produto): ?>
           <div class="col">
-            <div class="card">
-              <img src="<?php echo htmlspecialchars($produto['imagem'], ENT_QUOTES, 'UTF-8'); ?>" class="card-img-top"
-                alt="<?php echo htmlspecialchars($produto['alt'], ENT_QUOTES, 'UTF-8'); ?>" />
-              <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-                <p class="card-text">
-                  <strong><?php echo htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8'); ?></strong>
-                </p>
-                <p class="d-flex justify-content-center gap-3">
-                  <strong>R$ <?php echo formatarPrecoHome($produto['preco']); ?></strong>
-                  <del>R$ <?php echo formatarPrecoHome($produto['preco_original']); ?></del>
-                </p>
+            <a href="produto.php?id=<?php echo (int) $produto['id']; ?>" class="text-decoration-none text-dark">
+              <div class="card">
+                <img src="<?php echo htmlspecialchars($produto['imagem'], ENT_QUOTES, 'UTF-8'); ?>" class="card-img-top"
+                  alt="<?php echo htmlspecialchars($produto['alt'], ENT_QUOTES, 'UTF-8'); ?>" />
+                <div class="card-body text-center">
+                  <h5 class="card-title"></h5>
+                  <p class="card-text">
+                    <strong><?php echo htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8'); ?></strong>
+                  </p>
+                  <p class="d-flex justify-content-center gap-3">
+                    <strong>R$ <?php echo formatarPrecoHome($produto['preco']); ?></strong>
+                    <del>R$ <?php echo formatarPrecoHome($produto['preco_original']); ?></del>
+                  </p>
+                </div>
               </div>
-            </div>
+            </a>
           </div>
         <?php endforeach; ?>
       </div>
@@ -284,20 +195,22 @@ $precosKitMasculino = calcularPrecoKit($kitMasculino['preco']);
       <div class="row row-cols-1 row-cols-md-4 g-4">
         <?php foreach ($segundaVitrine as $produto): ?>
           <div class="col">
-            <div class="card">
-              <img src="<?php echo htmlspecialchars($produto['imagem'], ENT_QUOTES, 'UTF-8'); ?>" class="card-img-top"
-                alt="<?php echo htmlspecialchars($produto['alt'], ENT_QUOTES, 'UTF-8'); ?>" />
-              <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-                <p class="card-text">
-                  <strong><?php echo htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8'); ?></strong>
-                </p>
-                <p class="d-flex justify-content-center gap-3">
-                  <strong>R$ <?php echo formatarPrecoHome($produto['preco']); ?></strong>
-                  <del>R$ <?php echo formatarPrecoHome($produto['preco_original']); ?></del>
-                </p>
+            <a href="produto.php?id=<?php echo (int) $produto['id']; ?>" class="text-decoration-none text-dark">
+              <div class="card">
+                <img src="<?php echo htmlspecialchars($produto['imagem'], ENT_QUOTES, 'UTF-8'); ?>" class="card-img-top"
+                  alt="<?php echo htmlspecialchars($produto['alt'], ENT_QUOTES, 'UTF-8'); ?>" />
+                <div class="card-body text-center">
+                  <h5 class="card-title"></h5>
+                  <p class="card-text">
+                    <strong><?php echo htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8'); ?></strong>
+                  </p>
+                  <p class="d-flex justify-content-center gap-3">
+                    <strong>R$ <?php echo formatarPrecoHome($produto['preco']); ?></strong>
+                    <del>R$ <?php echo formatarPrecoHome($produto['preco_original']); ?></del>
+                  </p>
+                </div>
               </div>
-            </div>
+            </a>
           </div>
         <?php endforeach; ?>
       </div>
