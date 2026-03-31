@@ -80,7 +80,7 @@ CREATE TABLE tabela_pedidos (
 CREATE TABLE produto_imagem (  
     id INT PRIMARY KEY AUTO_INCREMENT,
 	produto_id INT,
-    url_imagem VARCHAR(50),
+    url_imagem VARCHAR(255),
     ordem INT(255),
     FOREIGN KEY (produto_id) REFERENCES produtos(id)    
 
