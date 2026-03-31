@@ -185,7 +185,7 @@ function calcularFreteSimulado($estadoDestino, $peso)
                         <div class="row g-3">
                             <div class="col-sm-6">
                                 <label for="firstName" class="form-label">Nome</label>
-                                <input type="text" class="form-control" id="firstName" placeholder="" value="" required>
+                                <input type="text" class="form-control" name="nome" id="firstName" placeholder="" value="<?php echo $_POST['nome'] ?? '' ?>" required>
                                 <div class="invalid-feedback">
                                     Valid first name is required.
                                 </div>
@@ -193,14 +193,14 @@ function calcularFreteSimulado($estadoDestino, $peso)
 
                             <div class="col-sm-6">
                                 <label for="lastName" class="form-label">Sobrenome</label>
-                                <input type="text" class="form-control" id="lastName" placeholder="" value="" required>
+                                <input type="text" class="form-control" name="sobrenome" id="lastName" placeholder="" value="<?php echo $_POST['sobrenome'] ?? '' ?>" required>
                                 <div class="invalid-feedback">
                                     Valid last name is required.
                                 </div>
                             </div>
 	                            <div class="col-12">
 	                                <label for="email" class="form-label">Email</label>
-	                                <input type="email" class="form-control" id="email" placeholder="nome@exemplo.com" value=""
+	                                <input type="email" class="form-control" name="email" id="email" placeholder="nome@exemplo.com" value="<?php echo $_POST['email'] ?? '' ?>"
 	                                    required>
 	                                <div class="invalid-feedback">
 	                                    Please enter a valid email address for shipping updates.
@@ -254,18 +254,21 @@ function calcularFreteSimulado($estadoDestino, $peso)
                                 <div class="invalid-feedback">
                                 </div>
                             </div>
-
                             <div class="col-md-2">
                                 <label for="country" class="form-label">País</label>
-                                <select class="form-select" id="country" required>
-                                    <option value="">Selecionar...</option>
-                                    <option>United States</option>
-                                    <option>Brasil</option>
+                                <select class="form-select" name="pais" id="country" required>
+                                    <!-- A opção padrão deve ter value vazio para o 'required' funcionar -->
+                                    <option value="" <?php echo !isset($_POST['pais']) ? 'selected' : ''; ?> disabled>Selecionar</option>
+                                    
+                                    <option value="United States" <?php echo (($_POST['pais'] ?? '') == 'United States') ? 'selected' : ''; ?>>United States</option>
+                                    
+                                    <option value="Brasil" <?php echo (($_POST['pais'] ?? '') == 'Brasil') ? 'selected' : ''; ?>>Brasil</option>
                                 </select>
                                 <div class="invalid-feedback">
                                     Please select a valid country.
                                 </div>
                             </div>
+
 
                             <button type="submit" class="btn btn-secondary">Calcular frete</button>
                             <!-- <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button> -->
@@ -400,6 +403,8 @@ function calcularFreteSimulado($estadoDestino, $peso)
     <script src="assets/js/produtos.js"></script>
     <script src="assets/js/carrinho.js"></script>
     <script src="assets/js/checkout.js"></script>
+
+        
 </body>
 
 
