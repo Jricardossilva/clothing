@@ -63,18 +63,24 @@ function separarProdutosPorGenero(array $produtos): array
 {
   $femininos = [];
   $masculinos = [];
+  $neutros = [];
 
   foreach ($produtos as $produto) {
-    if (stripos($produto['nome'], 'femin') !== false) {
+    $nomeProduto = mb_strtolower($produto['nome'], 'UTF-8');
+
+    if (str_contains($nomeProduto, 'femin')) {
       $femininos[] = $produto;
-    } else {
+    } elseif (str_contains($nomeProduto, 'mascul')) {
       $masculinos[] = $produto;
+    } else {
+      $neutros[] = $produto;
     }
   }
 
   return [
     'femininos' => embaralharProdutos($femininos),
     'masculinos' => embaralharProdutos($masculinos),
+    'neutros' => embaralharProdutos($neutros),
   ];
 }
 
@@ -152,8 +158,10 @@ $produtosPorGenero = separarProdutosPorGenero($produtosHome);
 
 $femininosHome = $produtosPorGenero['femininos'];
 $masculinosHome = $produtosPorGenero['masculinos'];
+$neutrosHome = $produtosPorGenero['neutros'];
 
 $produtosHome = intercalarProdutosPorGenero($femininosHome, $masculinosHome);
+$produtosHome = array_merge($produtosHome, $neutrosHome);
 
 $precoInicial = !empty($produtosHome) ? min(array_column($produtosHome, 'preco')) : 0;
 
