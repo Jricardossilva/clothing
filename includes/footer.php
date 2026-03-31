@@ -33,7 +33,7 @@
         <div class="w-25 d-flex flex-row-reverse">
           <ul class="text-end">
             <li class="p-2 footer-links">
-              <a class="text-light" href="#">Sobre nós</a>
+              <a class="text-light" href="../clothing/devs.php">Sobre nós</a>
             </li>
             <li class="p-2 footer-links">
               <a class="text-light" href="#">Perguntas Frequentes</a>
