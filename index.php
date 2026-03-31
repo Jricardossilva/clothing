@@ -6,6 +6,36 @@ function formatarPrecoHome(float $preco): string
   return number_format($preco, 2, ',', '.');
 }
 
+function normalizarCaminhoImagem(?string $caminho): string
+{
+  if (empty($caminho)) {
+    return 'assets/img/placeholder.png';
+  }
+
+  if (
+    str_starts_with($caminho, 'http://') ||
+    str_starts_with($caminho, 'https://') ||
+    str_starts_with($caminho, 'uploads/') ||
+    str_starts_with($caminho, 'assets/')
+  ) {
+    $caminhoNormalizado = $caminho;
+  } else {
+    $caminhoNormalizado = 'uploads/' . ltrim($caminho, '/');
+  }
+
+  if (
+    !str_starts_with($caminhoNormalizado, 'http://') &&
+    !str_starts_with($caminhoNormalizado, 'https://')
+  ) {
+    $arquivoLocal = __DIR__ . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $caminhoNormalizado);
+    if (!file_exists($arquivoLocal)) {
+      return 'assets/img/placeholder.png';
+    }
+  }
+
+  return $caminhoNormalizado;
+}
+
 function calcularPrecoOriginal(float $precoAtual): float
 {
   return round($precoAtual * 1.35, 2);
@@ -66,6 +96,18 @@ function obterProdutoAleatorio(array &$produtos, array $fallback): array
   return array_shift($produtos) ?? $fallback;
 }
 
+function removerProdutosPorIds(array $produtos, array $idsUsados): array
+{
+  if (empty($idsUsados)) {
+    return $produtos;
+  }
+
+  return array_values(array_filter(
+    $produtos,
+    static fn(array $produto): bool => !in_array($produto['id'], $idsUsados, true)
+  ));
+}
+
 /* =========================
    🔥 BUSCAR DO BANCO
 ========================= */
@@ -73,9 +115,22 @@ $produtosHome = [];
 
 if (isset($pdo)) {
   $stmt = $pdo->query("
-    SELECT id, nome, preco, url_imagem
-    FROM produtos
-    WHERE situacao = 1 AND estoque > 0
+    SELECT
+      p.id,
+      p.nome,
+      p.preco,
+      COALESCE(p.url_imagem, pi.url_imagem, 'assets/img/placeholder.png') AS url_imagem
+    FROM produtos p
+    LEFT JOIN produto_imagem pi
+      ON pi.produto_id = p.id
+      AND pi.ordem = (
+        SELECT MIN(pi2.ordem)
+        FROM produto_imagem pi2
+        WHERE pi2.produto_id = p.id
+      )
+    WHERE p.situacao = 1
+      AND COALESCE(p.estoque, 1) > 0
+    ORDER BY p.id DESC
   ");
 
   foreach ($stmt->fetchAll() as $produto) {
@@ -83,7 +138,7 @@ if (isset($pdo)) {
       'id' => (int) $produto['id'],
       'nome' => $produto['nome'],
       'preco' => (float) $produto['preco'],
-      'imagem' => !empty($produto['url_imagem']) ? $produto['url_imagem'] : 'assets/img/placeholder.png',
+      'imagem' => normalizarCaminhoImagem($produto['url_imagem'] ?? null),
       'alt' => $produto['nome'],
       'preco_original' => calcularPrecoOriginal((float) $produto['preco']),
     ];
@@ -105,12 +160,17 @@ $precoInicial = !empty($produtosHome) ? min(array_column($produtosHome, 'preco')
 $primeiraVitrine = array_slice($produtosHome, 0, 4);
 $segundaVitrine = array_slice($produtosHome, 4, 4);
 
-$kitFeminino = obterProdutoAleatorio($femininosHome, $produtosHome[0] ?? []);
-$kitMasculino = obterProdutoAleatorio($masculinosHome, $produtosHome[1] ?? []);
+$idsUsadosNasVitrines = array_column(array_merge($primeiraVitrine, $segundaVitrine), 'id');
+
+$femininosDisponiveis = removerProdutosPorIds($femininosHome, $idsUsadosNasVitrines);
+$masculinosDisponiveis = removerProdutosPorIds($masculinosHome, $idsUsadosNasVitrines);
+
+$kitFeminino = obterProdutoAleatorio($femininosDisponiveis, []);
+$kitMasculino = obterProdutoAleatorio($masculinosDisponiveis, []);
 
 $looksPrimavera = intercalarProdutosPorGenero(
-  array_slice($femininosHome, 0, 2),
-  array_slice($masculinosHome, 0, 2)
+  array_slice($femininosDisponiveis, 0, 2),
+  array_slice($masculinosDisponiveis, 0, 2)
 );
 
 $precosKitFeminino = calcularPrecoKit($kitFeminino['preco'] ?? 0);
@@ -157,26 +217,32 @@ $precosKitMasculino = calcularPrecoKit($kitMasculino['preco'] ?? 0);
     <section class="mx-auto section-roupas">
       <h2 class="py-3 mt-3">Peças a partir de R$ <?php echo formatarPrecoHome($precoInicial); ?></h2>
       <div class="row row-cols-1 row-cols-md-4 g-4">
-        <?php foreach ($primeiraVitrine as $produto): ?>
-          <div class="col">
-            <a href="produto.php?id=<?php echo (int) $produto['id']; ?>" class="text-decoration-none text-dark">
-              <div class="card">
-                <img src="<?php echo htmlspecialchars($produto['imagem'], ENT_QUOTES, 'UTF-8'); ?>" class="card-img-top"
-                  alt="<?php echo htmlspecialchars($produto['alt'], ENT_QUOTES, 'UTF-8'); ?>" />
-                <div class="card-body text-center">
-                  <h5 class="card-title"></h5>
-                  <p class="card-text">
-                    <strong><?php echo htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8'); ?></strong>
-                  </p>
-                  <p class="d-flex justify-content-center gap-3">
-                    <strong>R$ <?php echo formatarPrecoHome($produto['preco']); ?></strong>
-                    <del>R$ <?php echo formatarPrecoHome($produto['preco_original']); ?></del>
-                  </p>
+        <?php if ($primeiraVitrine): ?>
+          <?php foreach ($primeiraVitrine as $produto): ?>
+            <div class="col">
+              <a href="produto.php?id=<?php echo (int) $produto['id']; ?>" class="text-decoration-none text-dark">
+                <div class="card">
+                  <img src="<?php echo htmlspecialchars($produto['imagem'], ENT_QUOTES, 'UTF-8'); ?>" class="card-img-top"
+                    alt="<?php echo htmlspecialchars($produto['alt'], ENT_QUOTES, 'UTF-8'); ?>" />
+                  <div class="card-body text-center">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text">
+                      <strong><?php echo htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8'); ?></strong>
+                    </p>
+                    <p class="d-flex justify-content-center gap-3">
+                      <strong>R$ <?php echo formatarPrecoHome($produto['preco']); ?></strong>
+                      <del>R$ <?php echo formatarPrecoHome($produto['preco_original']); ?></del>
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </a>
+              </a>
+            </div>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <div class="col-12">
+            <p class="text-center mb-0">Nenhum produto disponivel no momento.</p>
           </div>
-        <?php endforeach; ?>
+        <?php endif; ?>
       </div>
     </section>
 
@@ -237,8 +303,8 @@ $precosKitMasculino = calcularPrecoKit($kitMasculino['preco'] ?? 0);
           <p class="fs-2">de R$<?php echo formatarPrecoHome($precosKitFeminino['cheio']); ?> por
             R$<?php echo formatarPrecoHome($precosKitFeminino['promocional']); ?></p>
           <p class="fs-3 mt-1 text-decoration-underline">Cupom: KITPIMA</p>
-          <img class="w-100" src="<?php echo htmlspecialchars($kitFeminino['imagem'], ENT_QUOTES, 'UTF-8'); ?>"
-            alt="<?php echo htmlspecialchars($kitFeminino['nome'], ENT_QUOTES, 'UTF-8'); ?>" />
+          <img class="w-100" src="<?php echo htmlspecialchars($kitFeminino['imagem'] ?? 'assets/img/placeholder.png', ENT_QUOTES, 'UTF-8'); ?>"
+            alt="<?php echo htmlspecialchars($kitFeminino['nome'] ?? 'Kit feminino', ENT_QUOTES, 'UTF-8'); ?>" />
           <a href="" class="my-3 fw-bold text-uppercase menu__link">Comprar</a>
         </div>
         <div class="d-flex flex-column align-items-center justify-content-center bg-white w-50">
@@ -247,8 +313,8 @@ $precosKitMasculino = calcularPrecoKit($kitMasculino['preco'] ?? 0);
           <p class="fs-2">de R$<?php echo formatarPrecoHome($precosKitMasculino['cheio']); ?> por
             R$<?php echo formatarPrecoHome($precosKitMasculino['promocional']); ?></p>
           <p class="fs-3 text-decoration-underline mt-1">Cupom: KITPIMA</p>
-          <img class="w-100" src="<?php echo htmlspecialchars($kitMasculino['imagem'], ENT_QUOTES, 'UTF-8'); ?>"
-            alt="<?php echo htmlspecialchars($kitMasculino['nome'], ENT_QUOTES, 'UTF-8'); ?>" />
+          <img class="w-100" src="<?php echo htmlspecialchars($kitMasculino['imagem'] ?? 'assets/img/placeholder.png', ENT_QUOTES, 'UTF-8'); ?>"
+            alt="<?php echo htmlspecialchars($kitMasculino['nome'] ?? 'Kit masculino', ENT_QUOTES, 'UTF-8'); ?>" />
           <a href="" class="my-3 fw-bold text-uppercase menu__link">Comprar</a>
         </div>
       </div>
