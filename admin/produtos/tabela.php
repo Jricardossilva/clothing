@@ -17,7 +17,7 @@
       <tr>                      
         <th>Nome</th>
         <th>Descrição</th>
-        <th>Preço(R$)</th>
+        <th>Preço</th>
         <th>Estoque</th>           
         <th>Ações</th>
       </tr>
@@ -28,7 +28,7 @@
           <tr>               
             <td><?= htmlspecialchars($produto['nome'])?></td>
             <td><?= htmlspecialchars($produto['descricao'])?></td>
-            <td><?= htmlspecialchars($produto['preco'])?></td>
+            <td>R$ <?= number_format($produto['preco'], 2, ',', '.') ?></td>
             <td><?= htmlspecialchars($produto['estoque'])?></td>
             <td>
               <a href="form.php?id=<?= htmlspecialchars($produto['id'])?>" class="btn btn-warning">Editar</a>
