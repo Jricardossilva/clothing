@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] == 0) {
         $nomeOriginal = $_FILES['imagem']['name'];
         $imagem = time() . '-' . $nomeOriginal;
-        $destino = $_SERVER['DOCUMENT_ROOT'] . '/clothing/assets/img/' . $imagem;
+        $destino = $_SERVER['DOCUMENT_ROOT'] . '/clothing/uploads/' . $imagem;
         move_uploaded_file($_FILES['imagem']['tmp_name'], $destino);
     }
 
