@@ -3,30 +3,28 @@ session_start();
 require './config/conexao.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-    $senha = trim($_POST['senha']);
-    $novasenha = trim($_POST['novasenha']);
-
-
-  $sql = "SELECT * FROM usuarios WHERE senha = :senha";
+    $email = trim($_POST['email']);
+    $senhatemp = trim($_POST['novasenha']);
+    $novasenha = password_hash($senhatemp, PASSWORD_DEFAULT);
+    $sql = "SELECT * FROM usuarios WHERE email = :email";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':senha', $senha);
-    $stmt->bindValue(':novasenha', $novasenha);
+    $stmt->bindValue(':email', $email);
     $stmt->execute(); 
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($usuario['email']) {
+        $email = $usuario['email'];      
+        $sql = "UPDATE usuarios SET senha = :novasenha WHERE email = :email";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':novasenha', $novasenha);
+        $stmt->bindValue(':email', $email);
+        $stmt->execute();
 
+     header("Location: index.php");
+    exit();
 
-    if ($stmt->rowCount() > 0) {
-        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-        "UPDATE usuarios SET senha = :novasenha WHERE id = :id";
-        // if (password_verify($senha, $usuario['senha'])) {
-        //     $_SESSION['usuario_id'] = $usuario['id'];
-        //     $_SESSION['nome'] = $usuario['nome'];            
-        //     header("Location: ./admin/");
-        //     exit;
-        // } else {
-        //     die("Senha ou Email não encontrado!");
-        // }
-    } 
+    }
+    
 }
 ?>
 
@@ -43,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head> 
 <body style="background-color: rgb(46, 49, 49);" >
     <!-- From Uiverse.io by Yaya12085 --> 
-    <form method="post" class="form">
+    <form method="post" id="formSenha" class="form">
        <p class="form-title">Alterar senha</p>
         <div class="input-container">
             <span>
@@ -53,9 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </span>
       </div>
       <div class="input-container">
-        <input name="senha" placeholder="Senha atual" type="password">
-        <input name="novasenha" placeholder="Nova senha" type="password">
-        <input name="novasenha" placeholder="Confirmar senha" type="password">
+        <input name="email" placeholder="Email do usuário" type="email">
+        <input name="novasenha" id="senhaNova" placeholder="Nova senha" type="password">
+        <input name="confirma_senha" id="confirmSenha" placeholder="Confirmar senha" type="password">
           
 
             <span>
@@ -82,6 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 
+
+    
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
