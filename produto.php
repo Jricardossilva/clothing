@@ -18,7 +18,15 @@
         exit;
     } 
     
-
+    $imagemProduto = !empty($produto['url_imagem']) ? $produto['url_imagem'] : 'assets/img/camiseta-preta.jpg';
+    $precoFormatado = number_format((float) $produto['preco'], 2, ',', '.');
+    $dadosProdutoJs = json_encode([
+        'id' => (string) $produto['id'],
+        'name' => $produto['nome'],
+        'price' => $precoFormatado,
+        'image' => $imagemProduto,
+        'url' => 'produto.php?id=' . (int) $produto['id'],
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
 ?>
 
@@ -28,7 +36,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Camiseta Pima Masculina</title>
+  <title><?= htmlspecialchars($produto['nome']) ?></title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/index.css" />
   <link rel="stylesheet" href="assets/css/produto.css">
@@ -46,12 +54,12 @@
           <button
             class="favorite-btn"
             type="button"
-            data-product-id="camiseta-masculina-preto"
+            data-product-id="<?= (int) $produto['id'] ?>"
             aria-label="Favoritar produto">
             <span class="favorite-btn__icon">&#9825;</span>
           </button>
 
-          <img src="<?= htmlspecialchars($produto['url_imagem'])?>" alt="Camiseta Preta" class="img-fluid rounded d-block w-100">
+          <img src="<?= htmlspecialchars($imagemProduto)?>" alt="<?= htmlspecialchars($produto['nome']) ?>" class="img-fluid rounded d-block w-100">
         </div>
       </div>
 
@@ -111,10 +119,11 @@
           class="btn btn-dark btn-lg mt-2"
           type="button"
           data-add-to-cart
-          data-product-id="camiseta-masculina-preto"
-          data-product-name="Camiseta Masculina - Preto"
-          data-product-price="79,90"
-          data-product-image="assets/img/camiseta-preta.jpg">
+          data-product-id="<?= (int) $produto['id'] ?>"
+          data-product-name="<?= htmlspecialchars($produto['nome']) ?>"
+          data-product-price="<?= htmlspecialchars($precoFormatado) ?>"
+          data-product-image="<?= htmlspecialchars($imagemProduto) ?>"
+          data-product-url="<?= htmlspecialchars('produto.php?id=' . (int) $produto['id']) ?>">
           Adicionar ao carrinho
         </button>
       </div>
@@ -122,6 +131,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    if (typeof registerProductData === 'function') {
+      registerProductData(<?= $dadosProdutoJs ?>);
+    }
+  </script>
   <script src="assets/js/produto.js"></script>
 </body>
 

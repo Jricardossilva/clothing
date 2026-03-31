@@ -85,6 +85,7 @@ if (addToCartButton) {
       name: addToCartButton.dataset.productName,
       price: addToCartButton.dataset.productPrice,
       image: addToCartButton.dataset.productImage,
+      url: addToCartButton.dataset.productUrl,
       quantity
     });
   });

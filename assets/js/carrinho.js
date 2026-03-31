@@ -111,10 +111,10 @@ function renderCartItems() {
     }
 
     const cartMarkup = cartItems.map((item) => {
-      const product = getProductData(item.id) || {};
+      const product = typeof getProductData === 'function' ? getProductData(item.id) || {} : {};
       const image = item.image || product.image || '';
       const name = item.name || product.name || 'Produto indisponivel';
-      const url = product.url || '#';
+      const url = item.url || product.url || `produto.php?id=${encodeURIComponent(item.id)}`;
       const price = item.price || product.price || '';
       const imageMarkup = image
         ? `<img src="${image}" alt="${name}" class="header-panel-thumb">`
@@ -160,17 +160,27 @@ function addProductToCart(product) {
   }
 
   const cartItems = getCartItems();
+  const normalizedProductId = String(product.id);
   const quantityToAdd = Math.max(1, Number(product.quantity) || 1);
-  const existingItem = cartItems.find((item) => item.id === product.id);
+  const existingItem = cartItems.find((item) => item.id === normalizedProductId);
+
+  if (typeof registerProductData === 'function') {
+    registerProductData(product);
+  }
 
   if (existingItem) {
     existingItem.quantity += quantityToAdd;
+    existingItem.name = product.name || existingItem.name || '';
+    existingItem.price = product.price || existingItem.price || '';
+    existingItem.image = product.image || existingItem.image || '';
+    existingItem.url = product.url || existingItem.url || '';
   } else {
     cartItems.push({
-      id: product.id,
+      id: normalizedProductId,
       name: product.name || '',
       price: product.price || '',
       image: product.image || '',
+      url: product.url || '',
       quantity: quantityToAdd
     });
   }

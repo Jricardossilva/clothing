@@ -120,40 +120,6 @@ function calcularFreteSimulado($estadoDestino, $peso)
 	                            <strong id="checkoutCartTotal">R$ 0,00</strong>
 	                        </li>
 	                    </ul>
-                    <ul class="list-group mb-3" style="display: none;">
-                        <li class="list-group-item d-flex justify-content-between lh-sm">
-                            <div>
-                                <h6 class="my-0">Nome do produto</h6>
-                                <small class="text-body-secondary">descrição</small>
-                            </div>
-                            <span class="text-body-secondary">$12</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between lh-sm">
-                            <div>
-                                <h6 class="my-0">Segundo produto</h6>
-                                <small class="text-body-secondary">descrição</small>
-                            </div>
-                            <span class="text-body-secondary">$8</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between lh-sm">
-                            <div>
-                                <h6 class="my-0">Terceiro produto</h6>
-                                <small class="text-body-secondary">descrição</small>
-                            </div>
-                            <span class="text-body-secondary">$5</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between bg-body-tertiary">
-                            <div class="text-success">
-                                <h6 class="my-0">Cupom de desconto</h6>
-                                <small>código exemplo</small>
-                            </div>
-                            <span class="text-success">−$5</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between">
-                            <span>Total (R$)</span>
-                            <strong>$20</strong>
-                        </li>
-                    </ul>
                     <div class="input-group">
                         <?php if ($_SERVER['REQUEST_METHOD'] == 'POST'): ?>
 
@@ -397,8 +363,6 @@ function calcularFreteSimulado($estadoDestino, $peso)
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="assets/js/produtos.js"></script>
-    <script src="assets/js/carrinho.js"></script>
     <script src="assets/js/checkout.js"></script>
 </body>
 
