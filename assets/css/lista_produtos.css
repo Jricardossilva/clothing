@@ -66,12 +66,13 @@
 }
 
 .name {
-    font-size: 15px;
+    font-size: 18px;
     margin-top: 8px;
+    color: black;
 }
 
 .price {
-    color: red;
+    color: gray;
     font-weight: bold;
 }
 

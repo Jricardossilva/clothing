@@ -4,33 +4,67 @@ include 'config/conexao.php';
 $produtos = [];
 $generoSelecionado = null;
 $tituloPagina = 'NOSSOS PRODUTOS';
+$ordenacaoSelecionada = 'lancamentos';
 
 $mapaGeneros = [
     'masculino' => ['%Masculino%', '%Masculina%'],
     'feminino' => ['%Feminino%', '%Feminina%'],
 ];
 
+$mapaOrdenacao = [
+    'menor_preco' => [
+        'label' => 'Menor preço',
+        'sql' => 'p.preco ASC, p.id DESC',
+    ],
+    'maior_preco' => [
+        'label' => 'Maior preço',
+        'sql' => 'p.preco DESC, p.id DESC',
+    ],
+    'lancamentos' => [
+        'label' => 'Lançamentos',
+        'sql' => 'p.id DESC',
+    ],
+];
+
 $generoParam = strtolower(trim((string) filter_input(INPUT_GET, 'genero', FILTER_UNSAFE_RAW)));
+$ordenarParam = strtolower(trim((string) filter_input(INPUT_GET, 'ordenar', FILTER_UNSAFE_RAW)));
 
 if (array_key_exists($generoParam, $mapaGeneros)) {
     $generoSelecionado = $generoParam;
     $tituloPagina = 'PRODUTOS ' . strtoupper($generoSelecionado);
 }
 
+if (array_key_exists($ordenarParam, $mapaOrdenacao)) {
+    $ordenacaoSelecionada = $ordenarParam;
+}
+
+$orderBy = $mapaOrdenacao[$ordenacaoSelecionada]['sql'];
+
 if (isset($pdo)) {
     if ($generoSelecionado !== null) {
         $stmt = $pdo->prepare(
-            'SELECT id, nome, preco, url_imagem
-             FROM produtos
-             WHERE nome LIKE :termo1 OR nome LIKE :termo2
-             ORDER BY id DESC'
+             'SELECT p.id, p.nome, p.preco, p.url_imagem, c.genero AS categoria_genero
+             FROM produtos p
+             LEFT JOIN categorias c
+               ON c.id = p.categoria_id
+             WHERE LOWER(COALESCE(c.genero, "")) = :genero
+                OR p.nome LIKE :termo1
+                OR p.nome LIKE :termo2
+             ORDER BY ' . $orderBy
         );
         $stmt->execute([
+            ':genero' => $generoSelecionado,
             ':termo1' => $mapaGeneros[$generoSelecionado][0],
             ':termo2' => $mapaGeneros[$generoSelecionado][1],
         ]);
     } else {
-        $stmt = $pdo->query('SELECT id, nome, preco, url_imagem FROM produtos ORDER BY id DESC');
+        $stmt = $pdo->query(
+            'SELECT p.id, p.nome, p.preco, p.url_imagem, c.genero AS categoria_genero
+             FROM produtos p
+             LEFT JOIN categorias c
+               ON c.id = p.categoria_id
+             ORDER BY ' . $orderBy
+        );
     }
 
     $produtos = $stmt->fetchAll();
@@ -61,13 +95,25 @@ function formatarPreco(float $preco): string
 
         <div class="container d-flex mt-4">
             <aside class="sidebar">
+                <form method="get" action="lista_produtos.php">
+                    <?php if ($generoSelecionado !== null): ?>
+                        <input type="hidden" name="genero" value="<?php echo htmlspecialchars($generoSelecionado, ENT_QUOTES, 'UTF-8'); ?>">
+                    <?php endif; ?>
+
                 <h3>Ordenar por</h3>
-                <label><input type="radio" name="ordenar"> Menor preco</label>
-                <label><input type="radio" name="ordenar"> Maior preco</label>
-                <label><input type="radio" name="ordenar"> Mais vendidos</label>
-                <label><input type="radio" name="ordenar"> Lancamentos</label>
+                    <?php foreach ($mapaOrdenacao as $valorOrdenacao => $dadosOrdenacao): ?>
+                        <label>
+                            <input
+                                type="radio"
+                                name="ordenar"
+                                value="<?php echo htmlspecialchars($valorOrdenacao, ENT_QUOTES, 'UTF-8'); ?>"
+                                <?php echo $ordenacaoSelecionada === $valorOrdenacao ? 'checked' : ''; ?>>
+                            <?php echo htmlspecialchars($dadosOrdenacao['label'], ENT_QUOTES, 'UTF-8'); ?>
+                        </label>
+                    <?php endforeach; ?>
 
                 <h3>Tamanho</h3>
+                <label><input type="checkbox" name="tamanho"> PP</label>
                 <label><input type="checkbox" name="tamanho"> P</label>
                 <label><input type="checkbox" name="tamanho"> M</label>
                 <label><input type="checkbox" name="tamanho"> G</label>
@@ -76,8 +122,14 @@ function formatarPreco(float $preco): string
                 <h3>Cor</h3>
                 <label><input type="checkbox" name="cor"> Branco</label>
                 <label><input type="checkbox" name="cor"> Preto</label>
-                <label><input type="checkbox" name="cor"> Azul</label>
                 <label><input type="checkbox" name="cor"> Cinza</label>
+                <label><input type="checkbox" name="cor"> Azul</label>
+                <label><input type="checkbox" name="cor"> Vermelho</label>
+                <label><input type="checkbox" name="cor"> Verde</label>
+                <label><input type="checkbox" name="cor"> Rosa</label>
+
+                    <button type="submit" class="btn btn-dark w-100 mt-3">Aplicar Filtros</button>
+                </form>
             </aside>
 
             <section class="products">

@@ -24,7 +24,7 @@
                 <td><?php echo $categoria['id']; ?></td>
                 <td><?php echo $categoria['nome']; ?></td>
                 <td><?php echo $categoria['descricao']; ?></td>
-                <td><?php echo $categoria['genero']; ?></td>
+                <td><?php echo ucfirst((string) $categoria['genero']); ?></td>
                 <td>
                     <a href="form.php?id=<?php echo $categoria['id']; ?>" class="btn btn-warning">Editar</a>
                     <a href="deletar.php?id=<?php echo $categoria['id']; ?>" class="btn btn-danger" onclick="deletar(event, this.href)">Deletar</a>
