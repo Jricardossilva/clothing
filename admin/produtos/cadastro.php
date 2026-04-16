@@ -10,6 +10,8 @@ $produto = [
     'id' => '',
     'nome' => '',
     'preco' => '',
+    'cor' => '',
+    'tamanho' => '',
     'estoque' => '',
     'imagem' => '',
     'categoria_id' => '',
@@ -39,7 +41,11 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             <label class="form-label">Nome do produto</label>
             <input type="text" name="nome" class="form-control" required value="<?= htmlspecialchars($produto['nome']) ?>">
         </div>
-        <div class="mb-3 col-md-4">
+        <div class="mb-3 col-md-2">
+            <label class="form-label">Cor</label>
+            <input type="color" name="cor" class="form-control" required value="<?= $produto['cor'] ?>">
+        </div>
+        <div class="mb-3 col-md-2">
             <label class="form-label">Preço</label>
             <input type="number" name="preco" step="0.01" class="form-control" required value="<?= $produto['preco'] ?>">
         </div>
@@ -47,23 +53,37 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             <label class="form-label">Estoque</label>
             <input type="number" name="estoque" class="form-control" required value="<?= $produto['estoque'] ?>">
         </div>
-        <div class="mb-3 col-md-6">
+        <div class="mb-3 col-md-4">
             <label for="formFileSm" class="form-label">Adicione uma imagem</label>
             <input name="imagem" class="form-control form-control-sm" id="formFileSm" type="file" required>
             <?php if(!empty($produto['imagem'])): ?>
                 <small>Imagem atual: <?= $produto['imagem'] ?></small>
             <?php endif; ?>
         </div>
-        <div class="mb-3 col-md-6">
-            <label class="form-label">Categoria</label>
-            <select name="categoria" id="categoria" class="form-control" required>
-                <option value="" disabled>Selecione uma categoria</option>
-                <?php foreach($categorias as $categoria): ?>
-                    <option value="<?= $categoria['id'] ?>" <?= ($produto['categoria_id'] == $categoria['id']) ? 'selected' : '' ?>>
-                        <?= $categoria['nome'] ?>
+        <div class="mb-3 col-md-4">
+            <label class="form-label">Tamanho</label>
+            <select name="tamanho" id="tamanho" class="form-control" required>
+                <option value="" disabled>Selecione um tamanho</option>
+                <?php 
+                    $tamanhos = ['PP', 'P', 'M', 'G', 'GG'];
+                    foreach($tamanhos as $tamanho): 
+                ?>
+                    <option value="<?= $tamanho ?>" <?= ($produto['tamanho'] == $tamanho) ? 'selected' : '' ?>>
+                        <?= $tamanho ?>
                     </option>
                 <?php endforeach; ?>
             </select>
+        </div>
+        <div class="mb-3 col-md-4">
+            <label class="form-label">Categoria</label>
+            <select name="categoria_id" id="categoria" class="form-control" required>
+            <option value="" disabled>Selecione uma categoria</option>
+            <?php foreach($categorias as $categoria): ?>
+                <option value="<?= $categoria['id'] ?>" <?= ($produto['categoria_id'] == $categoria['id']) ? 'selected' : '' ?>>
+                    <?= $categoria['nome'] ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
         </div>
     </div>
     <div class="mb-3">

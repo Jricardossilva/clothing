@@ -5,10 +5,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $id = $_POST['id'] ?? null;
     $nome = trim($_POST['nome']);
-    $descricao = trim($_POST['descricao']);
     $preco = trim($_POST['preco']);
+    $cor = trim($_POST['cor']);
+    $tamanho = trim($_POST['tamanho']);
     $estoque = trim($_POST['estoque']);
     $imagem = null;
+    $descricao = trim($_POST['descricao']);
+    $categoria_id = (int) trim($_POST['categoria_id']);
 
     // Verificar se enviou uma nova imagem
     if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] == 0) {
@@ -26,27 +29,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $produtoAtual = $stmt->fetch();
         $imagemAtual = $produtoAtual['url_imagem'];
 
-        $sql = "UPDATE produtos SET nome=?, descricao=?, preco=?, estoque=?, url_imagem=? WHERE id=?";
+        $sql = "UPDATE produtos SET nome=?, descricao=?, preco=?, cor=?, tamanho=?, estoque=?, url_imagem=?, categoria_id=? WHERE id=?";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
             $nome,
             $descricao,
             $preco,
+            $cor,
+            $tamanho,
             $estoque,
             $imagem ?: $imagemAtual,
+            $categoria_id,
             $id
+            
         ]);
 
     } else {
         // Cadastro
-        $sql = "INSERT INTO produtos (nome, descricao, preco, estoque, url_imagem) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO produtos (nome, descricao, preco, cor, tamanho, estoque, url_imagem, categoria_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
             $nome,
             $descricao,
             $preco,
+            $cor,
+            $tamanho,
             $estoque,
-            $imagem
+            $imagem,
+            $categoria_id
         ]);
     }
 
