@@ -3,6 +3,8 @@ include 'config/conexao.php';
 
 $produtos = [];
 $generoSelecionado = null;
+$categoriaSelecionada = null;
+$categoriaSelecionadaNome = null;
 $tituloPagina = 'NOSSOS PRODUTOS';
 $ordenacaoSelecionada = 'lancamentos';
 
@@ -28,6 +30,12 @@ $mapaOrdenacao = [
 
 $generoParam = strtolower(trim((string) filter_input(INPUT_GET, 'genero', FILTER_UNSAFE_RAW)));
 $ordenarParam = strtolower(trim((string) filter_input(INPUT_GET, 'ordenar', FILTER_UNSAFE_RAW)));
+$categoriaParam = filter_input(
+    INPUT_GET,
+    'categoria',
+    FILTER_VALIDATE_INT,
+    ['options' => ['min_range' => 1]]
+);
 
 if (array_key_exists($generoParam, $mapaGeneros)) {
     $generoSelecionado = $generoParam;
@@ -41,30 +49,68 @@ if (array_key_exists($ordenarParam, $mapaOrdenacao)) {
 $orderBy = $mapaOrdenacao[$ordenacaoSelecionada]['sql'];
 
 if (isset($pdo)) {
+    if ($categoriaParam !== false && $categoriaParam !== null) {
+        $stmtCategoria = $pdo->prepare(
+            'SELECT id, nome, genero
+             FROM categorias
+             WHERE id = :categoria_id'
+        );
+        $stmtCategoria->execute([':categoria_id' => $categoriaParam]);
+        $categoriaBanco = $stmtCategoria->fetch();
+
+        if ($categoriaBanco) {
+            $categoriaSelecionada = (int) $categoriaBanco['id'];
+            $categoriaSelecionadaNome = $categoriaBanco['nome'];
+
+            if ($generoSelecionado === null && !empty($categoriaBanco['genero'])) {
+                $generoBanco = strtolower((string) $categoriaBanco['genero']);
+                if (array_key_exists($generoBanco, $mapaGeneros)) {
+                    $generoSelecionado = $generoBanco;
+                }
+            }
+        }
+    }
+
+    if ($categoriaSelecionadaNome !== null && $generoSelecionado !== null) {
+        $tituloPagina = strtoupper($categoriaSelecionadaNome) . ' ' . strtoupper($generoSelecionado);
+    } elseif ($categoriaSelecionadaNome !== null) {
+        $tituloPagina = strtoupper($categoriaSelecionadaNome);
+    } elseif ($generoSelecionado !== null) {
+        $tituloPagina = 'PRODUTOS ' . strtoupper($generoSelecionado);
+    }
+
+    $where = [
+        'p.situacao = 1',
+        'COALESCE(p.estoque, 1) > 0',
+    ];
+    $parametros = [];
+
     if ($generoSelecionado !== null) {
-        $stmt = $pdo->prepare(
-             'SELECT p.id, p.nome, p.preco, p.url_imagem, c.genero AS categoria_genero
-             FROM produtos p
-             LEFT JOIN categorias c
-               ON c.id = p.categoria_id
-             WHERE LOWER(COALESCE(c.genero, "")) = :genero
-                OR p.nome LIKE :termo1
-                OR p.nome LIKE :termo2
-             ORDER BY ' . $orderBy
-        );
-        $stmt->execute([
-            ':genero' => $generoSelecionado,
-            ':termo1' => $mapaGeneros[$generoSelecionado][0],
-            ':termo2' => $mapaGeneros[$generoSelecionado][1],
-        ]);
+        $where[] = '(LOWER(COALESCE(c.genero, "")) = :genero
+            OR p.nome LIKE :termo1
+            OR p.nome LIKE :termo2)';
+        $parametros[':genero'] = $generoSelecionado;
+        $parametros[':termo1'] = $mapaGeneros[$generoSelecionado][0];
+        $parametros[':termo2'] = $mapaGeneros[$generoSelecionado][1];
+    }
+
+    if ($categoriaSelecionada !== null) {
+        $where[] = 'c.id = :categoria_id';
+        $parametros[':categoria_id'] = $categoriaSelecionada;
+    }
+
+    $sql = 'SELECT p.id, p.nome, p.preco, p.url_imagem, c.genero AS categoria_genero, c.nome AS categoria_nome
+            FROM produtos p
+            LEFT JOIN categorias c
+              ON c.id = p.categoria_id
+            WHERE ' . implode(' AND ', $where) . '
+            ORDER BY ' . $orderBy;
+
+    if ($parametros) {
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($parametros);
     } else {
-        $stmt = $pdo->query(
-            'SELECT p.id, p.nome, p.preco, p.url_imagem, c.genero AS categoria_genero
-             FROM produtos p
-             LEFT JOIN categorias c
-               ON c.id = p.categoria_id
-             ORDER BY ' . $orderBy
-        );
+        $stmt = $pdo->query($sql);
     }
 
     $produtos = $stmt->fetchAll();
@@ -98,6 +144,9 @@ function formatarPreco(float $preco): string
                 <form method="get" action="lista_produtos.php">
                     <?php if ($generoSelecionado !== null): ?>
                         <input type="hidden" name="genero" value="<?php echo htmlspecialchars($generoSelecionado, ENT_QUOTES, 'UTF-8'); ?>">
+                    <?php endif; ?>
+                    <?php if ($categoriaSelecionada !== null): ?>
+                        <input type="hidden" name="categoria" value="<?php echo (int) $categoriaSelecionada; ?>">
                     <?php endif; ?>
 
                 <h3>Ordenar por</h3>
