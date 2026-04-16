@@ -1,8 +1,188 @@
 <?php
 
+session_start();
+require './config/conexao.php';
+
 $valorFrete = 0;
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+// =============================
+// PROCESSAMENTO DA COMPRA
+// =============================
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['finalizar_compra'])) {
+
+    $carrinho = isset($_POST['carrinho']) 
+    ? json_decode($_POST['carrinho'], true) 
+    : [];
+
+        if (empty($carrinho)) {
+            die("Carrinho vazio");
+}
+
+    $carrinho = $_SESSION['carrinho'];
+    // $cliente_id = $_SESSION['cliente_id'] ?? 1;
+
+    $metodo_pagamento = $_POST['metodo_pagamento'];
+    $frete = floatval($_POST['frete'] ?? 0);
+
+    // DADOS ENDEREÇO
+    $logradouro = $_POST['rua'];
+    $numero = $_POST['numero'];
+    $bairro = $_POST['bairro'];
+    $cidade = $_POST['cidade'];
+    $estado = $_POST['estado'];
+    $cep = $_POST['cep'];
+    $pais = $_POST['pais'];
+
+    $total = 0;
+
+    // $conn->begin_transaction();
+
+    try {
+        // =========================
+        // 0. INSERIR CLIENTE
+        // =========================
+        die('teste1');
+         $sql = "INSERT INTO cliente 
+                ( cliente_id, nome, sobrenome, email)
+                VALUES 
+                ($cliente_id, '$nome', '$sobrenome', '$email')";
+
+        if (!$conn->query($sql)) {
+            throw new Exception("Erro ao salvar cliente");
+        }
+        echo 'teste2';
+        $cliente_id = $conn->insert_id;
+        echo 'teste3';
+
+        // =========================
+        // 1. INSERIR ENDEREÇO
+        // =========================
+        $sql = "INSERT INTO endereco 
+                (cliente_id, logradouro, numero, bairro, cidade, estado, cep, pais)
+                VALUES 
+                ($cliente_id, '$logradouro', $numero, '$bairro', '$cidade', '$estado', '$cep', '$pais')";
+
+        if (!$conn->query($sql)) {
+            throw new Exception("Erro ao salvar endereço");
+        }
+        echo 'teste4';
+        $endereco_id = $conn->insert_id;
+        echo 'teste5';
+        // =========================
+        // 2. CALCULAR TOTAL
+        // =========================
+        foreach ($carrinho as $variacao_id => $quantidade) {
+            echo 'dentro do foreach';
+            $variacao_id = $item['id'];
+            $quantidade = $item['quantity'];
+            $sql = "SELECT pv.produto_id, pv.estoque, p.preco 
+                    FROM produto_variacoes pv
+                    INNER JOIN produtos p ON p.id = pv.produto_id
+                    WHERE pv.id = $variacao_id FOR UPDATE";
+
+            $result = $conn->query($sql);
+            $dados = $result->fetch_assoc();
+            echo 'teste6';
+            if (!$dados) {
+                throw new Exception("Produto não encontrado");
+            }
+
+            if ($dados['estoque'] < $quantidade) {
+                throw new Exception("Estoque insuficiente");
+            }
+
+            $subtotal = $dados['preco'] * $quantidade;
+            $total += $subtotal;
+        }
+
+        $total += $frete;
+
+        // =========================
+        // 3. INSERT PEDIDO
+        // =========================
+        $sql = "INSERT INTO tabela_pedidos
+                (cliente_id, endereco_entrega_id, valor_total, valor_frete, status_compra)
+                VALUES
+                ($cliente_id, $endereco_id, $total, $frete, 'AGUARDANDO PAGAMENTO')";
+
+        if (!$conn->query($sql)) {
+            throw new Exception("Erro ao criar pedido");
+        }
+
+        $pedido_id = $conn->insert_id;
+
+        // =========================
+        // 4. INSERT PAGAMENTO
+        // =========================
+        $codigo_transacao = uniqid();
+
+        $sql = "INSERT INTO pagamento
+                (pedido_id, metodo_pagamento, status_pagamento, codigo_transacao)
+                VALUES
+                ($pedido_id, '$metodo_pagamento', 'aguardando', '$codigo_transacao')";
+
+        if (!$conn->query($sql)) {
+            throw new Exception("Erro no pagamento");
+        }
+
+        // =========================
+        // 5. ITENS + ESTOQUE
+        // =========================
+        foreach ($carrinho as $variacao_id => $quantidade) {
+
+            $sql = "SELECT pv.produto_id, p.preco 
+                    FROM produto_variacoes pv
+                    INNER JOIN produtos p ON p.id = pv.produto_id
+                    WHERE pv.id = $variacao_id";
+
+            $result = $conn->query($sql);
+            $dados = $result->fetch_assoc();
+
+            $produto_id = $dados['produto_id'];
+            $preco = $dados['preco'];
+            $subtotal = $preco * $quantidade;
+
+            // INSERT ITEM
+            $sql = "INSERT INTO itens_pedido
+                    (pedido_id, produto_id, variacao_id, quantidade, preco_unitario, subtotal)
+                    VALUES
+                    ($pedido_id, $produto_id, $variacao_id, $quantidade, $preco, $subtotal)";
+
+            if (!$conn->query($sql)) {
+                throw new Exception("Erro ao inserir item");
+            }
+
+            // UPDATE ESTOQUE
+            $sql = "UPDATE produto_variacoes
+                    SET estoque = estoque - $quantidade
+                    WHERE id = $variacao_id";
+
+            if (!$conn->query($sql)) {
+                throw new Exception("Erro ao atualizar estoque");
+            }
+        }
+
+        // =========================
+        // 6. FINALIZAR
+        // =========================
+        // $conn->commit();
+
+        unset($_SESSION['carrinho']);
+
+        echo "<script>alert('Compra realizada com sucesso ✔️');</script>";
+
+    } catch (Exception $e) {
+
+        // $conn->rollback();
+
+        echo "<script>alert('Erro: " . $e->getMessage() . "');</script>";
+    }
+}
+
+// =============================
+// FRETE
+// =============================
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['calcular_frete'])) {
     $estado = $_POST['estado'] ?? '';
     $peso = $_POST['peso'] ?? 1;
 
@@ -120,6 +300,7 @@ function calcularFreteSimulado($estadoDestino, $peso)
 	                            <strong id="checkoutCartTotal">R$ 0,00</strong>
 	                        </li>
 	                    </ul>
+                   
                     <div class="input-group">
                         <?php if ($_SERVER['REQUEST_METHOD'] == 'POST'): ?>
 
@@ -147,7 +328,7 @@ function calcularFreteSimulado($estadoDestino, $peso)
 
 
                 <div class="col-md-7 col-lg-8">
-	                    <form method="POST" class="needs-validation mb-5" id="checkoutForm" novalidate>
+	                <form method="POST" class="needs-validation mb-5" id="checkoutForm" novalidate>
                         <div class="row g-3">
                             <div class="col-sm-6">
                                 <label for="firstName" class="form-label">Nome</label>
@@ -236,23 +417,27 @@ function calcularFreteSimulado($estadoDestino, $peso)
                             </div>
 
 
-                            <button type="submit" class="btn btn-secondary">Calcular frete</button>
-                            <!-- <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button> -->
+                            <button type="submit" name="calcular_frete" class="btn btn-secondary">Calcular frete</button>
+                        </form>
+                            
+                        <!-- <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button> -->
+                        <form method="post">
+                             <input type="hidden" name="carrinho" id="carrinhoInput">
                             <hr class="my-4">
                             <h4 class="mb-3">Pagamento</h4>
                             <div class="my-3">
                                 <div class="form-check">
-                                    <input id="credit" name="paymentMethod" type="radio" class="form-check-input" value="credit" required>
+                                    <input id="credit" name="metodo_pagamento" type="radio" class="form-check-input" value="credit" required>
                                     <label class="form-check-label" for="credit">Cartão de crédito</label>
                                 </div>
 
                                 <div class="form-check">
-                                    <input id="debit" name="paymentMethod" type="radio" class="form-check-input" value="debit" required>
+                                    <input id="debit" name="metodo_pagamento" type="radio" class="form-check-input" value="debit" required>
                                     <label class="form-check-label" for="debit">Cartão de débito</label>
                                 </div>
 
                                 <div class="form-check">
-                                    <input id="pix-Radio" name="paymentMethod" type="radio" class="form-check-input" value="pix" required>
+                                    <input id="pix-Radio" name="metodo_pagamento" type="radio" class="form-check-input" value="pix" required>
                                     <label class="form-check-label" for="pix">Pix</label>
                                 </div>
                             </div>
@@ -293,11 +478,10 @@ function calcularFreteSimulado($estadoDestino, $peso)
                             </div>
 
                             <hr class="my-4">
-	                            <button class="w-100 btn btn-primary btn-lg mt-3" id="checkoutSubmitPayment" type="submit">
+	                            <button class="w-100 btn btn-primary btn-lg mt-3" name="finalizar_compra" value="1" id="checkoutSubmitPayment" type="submit">
 	                                Realizar pagamento
-	                            </button>
-
-                    </form>
+	                            </button>           
+                        </form>
                 </div>
             </div>
         </div>

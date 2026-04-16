@@ -176,6 +176,9 @@ document.addEventListener("DOMContentLoaded", function() {
     if (checkoutForm) {
         checkoutForm.addEventListener("submit", function(event) {
             const submitter = event.submitter;
+            const cartItems = getCartItems(); // sua função já existente
+            console.log("Carrinho enviado:", cartItems);
+            document.getElementById("carrinhoInput").value = JSON.stringify(cartItems);
 
             if (!submitter || submitter.id !== "checkoutSubmitPayment") {
                 return;
