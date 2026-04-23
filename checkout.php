@@ -209,7 +209,7 @@ function calcularFreteSimulado($estadoDestino, $peso)
                                     class="form-control" name="bairro" id="bairro" placeholder="Bairro" value="<?php echo $_POST['bairro'] ?? '' ?>" required>
                                 <div class="invalid-feedback"></div>
                             </div>
-                            <div class="col-4"> <label for="address" class="form-label">Cidade</label>
+                            <div class="col-5"> <label for="address" class="form-label">Cidade</label>
                                 <input type="text"
                                     class="form-control" name="cidade" id="localidade" placeholder="Cidade" value="<?php echo $_POST['cidade'] ?? '' ?>" required>
                                 <div class="invalid-feedback"></div>
@@ -220,7 +220,7 @@ function calcularFreteSimulado($estadoDestino, $peso)
                                 <div class="invalid-feedback">
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-5">
                                 <label for="country" class="form-label">País</label>
                                 <select class="form-select" name="pais" id="country" required>
                                     <!-- A opção padrão deve ter value vazio para o 'required' funcionar -->
