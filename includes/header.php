@@ -97,7 +97,7 @@ if (!function_exists('montarLinkListaProdutos')) {
 
   <nav class="d-flex gap-5 justify-content-center flex-wrap mt-5">
     <div class="menu-item">
-      <a href="<?php echo htmlspecialchars(montarLinkListaProdutos(['ordenar' => 'lancamentos']), ENT_QUOTES, 'UTF-8'); ?>" class="menu__link">Lancamento</a>
+      <a href="<?php echo htmlspecialchars(montarLinkListaProdutos(['ordenar' => 'lancamentos']), ENT_QUOTES, 'UTF-8'); ?>" class="menu__link">Lançamento</a>
       <div class="submenu">
         <a href="<?php echo htmlspecialchars(montarLinkListaProdutos(['ordenar' => 'lancamentos']), ENT_QUOTES, 'UTF-8'); ?>">Todos</a>
         <a href="<?php echo htmlspecialchars(montarLinkListaProdutos(['genero' => 'masculino', 'ordenar' => 'lancamentos']), ENT_QUOTES, 'UTF-8'); ?>">Masculino</a>
@@ -147,7 +147,7 @@ if (!function_exists('montarLinkListaProdutos')) {
     </div>
 
     <div class="menu-item">
-      <a href="<?php echo htmlspecialchars(montarLinkListaProdutos(['ordenar' => 'menor_preco']), ENT_QUOTES, 'UTF-8'); ?>" class="menu__link">Promocao</a>
+      <a href="<?php echo htmlspecialchars(montarLinkListaProdutos(['ordenar' => 'menor_preco']), ENT_QUOTES, 'UTF-8'); ?>" class="menu__link">Promoção</a>
       <div class="submenu">
         <a href="<?php echo htmlspecialchars(montarLinkListaProdutos(['ordenar' => 'menor_preco']), ENT_QUOTES, 'UTF-8'); ?>">Menor preco</a>
         <a href="<?php echo htmlspecialchars(montarLinkListaProdutos(['genero' => 'masculino', 'ordenar' => 'menor_preco']), ENT_QUOTES, 'UTF-8'); ?>">Masculino</a>

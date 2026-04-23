@@ -7,6 +7,11 @@ $categoriaSelecionada = null;
 $categoriaSelecionadaNome = null;
 $tituloPagina = 'NOSSOS PRODUTOS';
 $ordenacaoSelecionada = 'lancamentos';
+$tamanhosDisponiveis = ['PP', 'P', 'M', 'G', 'GG', 'XG'];
+$coresDisponiveis = [];
+$tamanhosSelecionados = [];
+$coresSelecionadas = [];
+$parametrosLimparFiltros = [];
 
 $mapaGeneros = [
     'masculino' => ['%Masculino%', '%Masculina%'],
@@ -28,8 +33,29 @@ $mapaOrdenacao = [
     ],
 ];
 
+function obterFiltroArray(string $nome): array
+{
+    $valor = $_GET[$nome] ?? [];
+
+    if (!is_array($valor)) {
+        $valor = [$valor];
+    }
+
+    $valor = array_map(
+        static fn($item): string => trim((string) $item),
+        $valor
+    );
+
+    return array_values(array_unique(array_filter(
+        $valor,
+        static fn(string $item): bool => $item !== ''
+    )));
+}
+
 $generoParam = strtolower(trim((string) filter_input(INPUT_GET, 'genero', FILTER_UNSAFE_RAW)));
 $ordenarParam = strtolower(trim((string) filter_input(INPUT_GET, 'ordenar', FILTER_UNSAFE_RAW)));
+$tamanhosParam = obterFiltroArray('tamanho');
+$coresParam = obterFiltroArray('cor');
 $categoriaParam = filter_input(
     INPUT_GET,
     'categoria',
@@ -49,6 +75,53 @@ if (array_key_exists($ordenarParam, $mapaOrdenacao)) {
 $orderBy = $mapaOrdenacao[$ordenacaoSelecionada]['sql'];
 
 if (isset($pdo)) {
+    $stmtTamanhos = $pdo->query(
+        'SELECT DISTINCT tamanho
+         FROM produtos
+         WHERE tamanho IS NOT NULL
+           AND TRIM(tamanho) <> ""
+         ORDER BY FIELD(tamanho, "PP", "P", "M", "G", "GG", "XG"), tamanho'
+    );
+    $tamanhosBanco = array_values(array_filter(array_map(
+        static fn($tamanho): string => strtoupper(trim((string) $tamanho['tamanho'])),
+        $stmtTamanhos->fetchAll()
+    )));
+
+    if ($tamanhosBanco) {
+        $tamanhosDisponiveis = $tamanhosBanco;
+    }
+
+    $stmtCores = $pdo->query(
+        'SELECT DISTINCT cor
+         FROM produtos
+         WHERE cor IS NOT NULL
+           AND TRIM(cor) <> ""
+         ORDER BY cor ASC'
+    );
+    $coresDisponiveis = array_values(array_filter(array_map(
+        static fn($cor): string => trim((string) $cor['cor']),
+        $stmtCores->fetchAll()
+    )));
+
+    $mapaTamanhosDisponiveis = array_flip($tamanhosDisponiveis);
+    $tamanhosSelecionados = array_values(array_filter(array_map(
+        static fn(string $tamanho): string => strtoupper($tamanho),
+        $tamanhosParam
+    ), static fn(string $tamanho): bool => isset($mapaTamanhosDisponiveis[$tamanho])));
+
+    $mapaCoresDisponiveis = [];
+    foreach ($coresDisponiveis as $corDisponivel) {
+        $mapaCoresDisponiveis[strtolower(trim($corDisponivel))] = $corDisponivel;
+    }
+
+    foreach ($coresParam as $corParam) {
+        $corNormalizada = strtolower(trim($corParam));
+        if (isset($mapaCoresDisponiveis[$corNormalizada])) {
+            $coresSelecionadas[] = $mapaCoresDisponiveis[$corNormalizada];
+        }
+    }
+    $coresSelecionadas = array_values(array_unique($coresSelecionadas));
+
     if ($categoriaParam !== false && $categoriaParam !== null) {
         $stmtCategoria = $pdo->prepare(
             'SELECT id, nome, genero
@@ -79,6 +152,14 @@ if (isset($pdo)) {
         $tituloPagina = 'PRODUTOS ' . strtoupper($generoSelecionado);
     }
 
+    if ($generoSelecionado !== null) {
+        $parametrosLimparFiltros['genero'] = $generoSelecionado;
+    }
+
+    if ($categoriaSelecionada !== null) {
+        $parametrosLimparFiltros['categoria'] = $categoriaSelecionada;
+    }
+
     $where = [
         'p.situacao = 1',
         'COALESCE(p.estoque, 1) > 0',
@@ -97,6 +178,30 @@ if (isset($pdo)) {
     if ($categoriaSelecionada !== null) {
         $where[] = 'c.id = :categoria_id';
         $parametros[':categoria_id'] = $categoriaSelecionada;
+    }
+
+    if ($tamanhosSelecionados) {
+        $placeholdersTamanhos = [];
+
+        foreach ($tamanhosSelecionados as $indice => $tamanhoSelecionado) {
+            $placeholder = ':tamanho' . $indice;
+            $placeholdersTamanhos[] = $placeholder;
+            $parametros[$placeholder] = $tamanhoSelecionado;
+        }
+
+        $where[] = 'p.tamanho IN (' . implode(', ', $placeholdersTamanhos) . ')';
+    }
+
+    if ($coresSelecionadas) {
+        $placeholdersCores = [];
+
+        foreach ($coresSelecionadas as $indice => $corSelecionada) {
+            $placeholder = ':cor' . $indice;
+            $placeholdersCores[] = $placeholder;
+            $parametros[$placeholder] = strtolower(trim($corSelecionada));
+        }
+
+        $where[] = 'TRIM(LOWER(p.cor)) IN (' . implode(', ', $placeholdersCores) . ')';
     }
 
     $sql = 'SELECT p.id, p.nome, p.preco, p.url_imagem, c.genero AS categoria_genero, c.nome AS categoria_nome
@@ -119,6 +224,35 @@ if (isset($pdo)) {
 function formatarPreco(float $preco): string
 {
     return number_format($preco, 2, ',', '.');
+}
+
+function formatarNomeCor(string $cor): string
+{
+    $corTratada = strtoupper(trim($cor));
+    $mapaCores = [
+        '#FFFFFF' => 'Branco',
+        '#FFF' => 'Branco',
+        '#000000' => 'Preto',
+        '#000' => 'Preto',
+        '#808080' => 'Cinza',
+        '#C0C0C0' => 'Cinza claro',
+        '#FF0000' => 'Vermelho',
+        '#F00' => 'Vermelho',
+        '#0000FF' => 'Azul',
+        '#00F' => 'Azul',
+        '#008000' => 'Verde',
+        '#00FF00' => 'Verde',
+        '#0F0' => 'Verde',
+        '#FFFF00' => 'Amarelo',
+        '#FF0' => 'Amarelo',
+        '#FFA500' => 'Laranja',
+        '#FFC0CB' => 'Rosa',
+        '#800080' => 'Roxo',
+        '#A52A2A' => 'Marrom',
+        '#F5F5DC' => 'Bege',
+    ];
+
+    return $mapaCores[$corTratada] ?? $cor;
 }
 ?>
 <!DOCTYPE html>
@@ -162,22 +296,43 @@ function formatarPreco(float $preco): string
                     <?php endforeach; ?>
 
                 <h3>Tamanho</h3>
-                <label><input type="checkbox" name="tamanho"> PP</label>
-                <label><input type="checkbox" name="tamanho"> P</label>
-                <label><input type="checkbox" name="tamanho"> M</label>
-                <label><input type="checkbox" name="tamanho"> G</label>
-                <label><input type="checkbox" name="tamanho"> GG</label>
+                    <?php foreach ($tamanhosDisponiveis as $tamanhoDisponivel): ?>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="tamanho[]"
+                                value="<?php echo htmlspecialchars($tamanhoDisponivel, ENT_QUOTES, 'UTF-8'); ?>"
+                                <?php echo in_array($tamanhoDisponivel, $tamanhosSelecionados, true) ? 'checked' : ''; ?>>
+                            <?php echo htmlspecialchars($tamanhoDisponivel, ENT_QUOTES, 'UTF-8'); ?>
+                        </label>
+                    <?php endforeach; ?>
 
                 <h3>Cor</h3>
-                <label><input type="checkbox" name="cor"> Branco</label>
-                <label><input type="checkbox" name="cor"> Preto</label>
-                <label><input type="checkbox" name="cor"> Cinza</label>
-                <label><input type="checkbox" name="cor"> Azul</label>
-                <label><input type="checkbox" name="cor"> Vermelho</label>
-                <label><input type="checkbox" name="cor"> Verde</label>
-                <label><input type="checkbox" name="cor"> Rosa</label>
+                    <?php if ($coresDisponiveis): ?>
+                        <?php foreach ($coresDisponiveis as $corDisponivel): ?>
+                            <label class="filter-color-option" title="<?php echo htmlspecialchars(formatarNomeCor($corDisponivel), ENT_QUOTES, 'UTF-8'); ?>">
+                                <input
+                                    type="checkbox"
+                                    name="cor[]"
+                                    value="<?php echo htmlspecialchars($corDisponivel, ENT_QUOTES, 'UTF-8'); ?>"
+                                    <?php echo in_array($corDisponivel, $coresSelecionadas, true) ? 'checked' : ''; ?>>
+                                <span
+                                    class="filter-color-swatch"
+                                    style="background-color: <?php echo htmlspecialchars($corDisponivel, ENT_QUOTES, 'UTF-8'); ?>;"
+                                    aria-label="<?php echo htmlspecialchars(formatarNomeCor($corDisponivel), ENT_QUOTES, 'UTF-8'); ?>">
+                                </span>
+                            </label>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <p class="filter-empty">Nenhuma cor cadastrada.</p>
+                    <?php endif; ?>
 
                     <button type="submit" class="btn btn-dark w-100 mt-3">Aplicar Filtros</button>
+                    <a
+                        href="lista_produtos.php<?php echo $parametrosLimparFiltros ? '?' . htmlspecialchars(http_build_query($parametrosLimparFiltros), ENT_QUOTES, 'UTF-8') : ''; ?>"
+                        class="btn btn-outline-secondary w-100 mt-2">
+                        Limpar Filtros
+                    </a>
                 </form>
             </aside>
 
