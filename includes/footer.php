@@ -45,7 +45,7 @@
               <a class="text-light" href="#">Como cuidar de seus básicos</a>
             </li>
             <li class="p-2 footer-links">
-              <a class="text-light" href="#">Termos e condições</a>
+              <a class="text-light" target="_blank" href="assets/pdfs/termosClothing.pdf">Termos e condições</a>
             </li>
             <li class="p-2 footer-links">
               <a class="text-light" href="#">Políticas de privacidade</a>
