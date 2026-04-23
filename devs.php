@@ -32,7 +32,7 @@
         <h3>Contribuições</h3>
 
         <p class="descricao">
-          Desenvolveu a interface do site, organizando layout, cores e garantindo boa experiência do usuário.
+          Atuei no desenvolvimento da interface do site da loja, ajudando na organização do layout, na escolha das cores e na criação de páginas mais claras e fáceis de usar, buscando oferecer uma boa experiência ao usuário.
         </p>
 
         <div class="icones">
