@@ -192,29 +192,29 @@ function calcularFreteSimulado($estadoDestino, $peso)
                                     class="form-control" name="rua" id="logradouro" placeholder="Rua" value="<?php echo $_POST['rua'] ?? '' ?>" required>
                                 <div class="invalid-feedback"></div>
                             </div>
+                            <div class="col-md-4">
+                                <label for="complemento" class="form-label">Complemento</label>
+                                <input type="text"
+                                    class="form-control" name="complemento" id="complemento" placeholder="Apartamento, bloco, casa..." value="<?php echo $_POST['complemento'] ?? '' ?>">
+                                <div class="invalid-feedback"></div>
+                            </div>
                             <div class="col-md-3">
                                 <label for="numero" class="form-label">Numero</label>
                                 <input type="text"
                                     class="form-control" name="numero" id="numero" placeholder="Numero" value="<?php echo $_POST['numero'] ?? '' ?>" required>
                                 <div class="invalid-feedback"></div>
                             </div>
-                            <div class="col-md-5">
-                                <label for="complemento" class="form-label">Complemento</label>
-                                <input type="text"
-                                    class="form-control" name="complemento" id="complemento" placeholder="Apartamento, bloco, casa..." value="<?php echo $_POST['complemento'] ?? '' ?>">
-                                <div class="invalid-feedback"></div>
-                            </div>
-                            <div class="col-4"> <label for="address" class="form-label">Bairro</label>
+                            <div class="col-5"> <label for="address" class="form-label">Bairro</label>
                                 <input type="text"
                                     class="form-control" name="bairro" id="bairro" placeholder="Bairro" value="<?php echo $_POST['bairro'] ?? '' ?>" required>
                                 <div class="invalid-feedback"></div>
                             </div>
-                            <div class="col-5"> <label for="address" class="form-label">Cidade</label>
+                            <div class="col-4"> <label for="address" class="form-label">Cidade</label>
                                 <input type="text"
                                     class="form-control" name="cidade" id="localidade" placeholder="Cidade" value="<?php echo $_POST['cidade'] ?? '' ?>" required>
                                 <div class="invalid-feedback"></div>
                             </div>
-                            <div class="col-2"> <label for="address" class="form-label">Estado</label>
+                            <div class="col-3"> <label for="address" class="form-label">Estado</label>
                                 <input type="text"
                                     class="form-control" name="estado" id="uf" placeholder="Estado" value="<?php echo $_POST['estado'] ?? '' ?>" required>
                                 <div class="invalid-feedback">
