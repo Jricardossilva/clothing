@@ -1,17 +1,11 @@
-/* CONFIGURAÇÃO GERAL */
-body {
-  background: #ffffff;
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 30px;
-}
 
 /* GRID 3 POR LINHA */
-.container {
+.grade {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 25px;
   justify-items: center;
+  margin: 30px;
 }
 
 /* CARD */
@@ -100,32 +94,32 @@ body {
 }
 
 /* ÍCONES */
-.icons {
+.icones {
   display: flex;
   gap: 20px;
   margin-top: 15px;
 }
 
-.icons a {
+.icones a {
   color: white;
   font-size: 24px;
   transition: 0.3s;
 }
 
-.icons a:hover {
+.icones a:hover {
   transform: scale(1.2);
   color: #93c5fd;
 }
 
 /* RESPONSIVO */
 @media (max-width: 900px) {
-  .container {
+  .grade {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 600px) {
-  .container {
+  .grade {
     grid-template-columns: 1fr;
   }
 }
