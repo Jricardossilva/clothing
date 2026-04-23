@@ -9,18 +9,17 @@ $valorFrete = 0;
 // PROCESSAMENTO DA COMPRA
 // =============================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['finalizar_compra'])) {
-
+    die('teste');
     $carrinho = isset($_POST['carrinho']) 
     ? json_decode($_POST['carrinho'], true) 
     : [];
 
-        if (empty($carrinho)) {
-            die("Carrinho vazio");
-}
-
-    $carrinho = $_SESSION['carrinho'];
-    // $cliente_id = $_SESSION['cliente_id'] ?? 1;
-
+    // DADOS CLIENTE
+    $nome = $_POST['nome'];
+    $sobrenome = $_POST['sobrenome'];
+    $email = $_POST['email'];
+    
+    // DADOS PAGAMENTO
     $metodo_pagamento = $_POST['metodo_pagamento'];
     $frete = floatval($_POST['frete'] ?? 0);
 
@@ -41,11 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['finalizar_compra'])) 
         // =========================
         // 0. INSERIR CLIENTE
         // =========================
-        die('teste1');
          $sql = "INSERT INTO cliente 
-                ( cliente_id, nome, sobrenome, email)
+                (nome, sobrenome, email)
                 VALUES 
-                ($cliente_id, '$nome', '$sobrenome', '$email')";
+                ('$nome', '$sobrenome', '$email')";
 
         if (!$conn->query($sql)) {
             throw new Exception("Erro ao salvar cliente");
@@ -71,18 +69,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['finalizar_compra'])) 
         // =========================
         // 2. CALCULAR TOTAL
         // =========================
-        foreach ($carrinho as $variacao_id => $quantidade) {
-            echo 'dentro do foreach';
-            $variacao_id = $item['id'];
-            $quantidade = $item['quantity'];
-            $sql = "SELECT pv.produto_id, pv.estoque, p.preco 
+
+        foreach ($carrinho as $item) {
+            $variacao_id = (int)$item['id'];
+            $quantidade = (int)$item['quantity'];
+
+            $sql = "SELECT pv.produto_id, p.preco 
                     FROM produto_variacoes pv
                     INNER JOIN produtos p ON p.id = pv.produto_id
-                    WHERE pv.id = $variacao_id FOR UPDATE";
+                    WHERE pv.id = $variacao_id";
 
             $result = $conn->query($sql);
             $dados = $result->fetch_assoc();
-            echo 'teste6';
+            die($dados);
+
+            $produto_id = $dados['produto_id'];
+            $preco = $dados['preco'];
+            $subtotal = $preco * $quantidade;
+            
             if (!$dados) {
                 throw new Exception("Produto não encontrado");
             }
@@ -91,7 +95,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['finalizar_compra'])) 
                 throw new Exception("Estoque insuficiente");
             }
 
-            $subtotal = $dados['preco'] * $quantidade;
             $total += $subtotal;
         }
 
@@ -128,7 +131,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['finalizar_compra'])) 
         // =========================
         // 5. ITENS + ESTOQUE
         // =========================
-        foreach ($carrinho as $variacao_id => $quantidade) {
+        foreach ($carrinho as $item) {
+            $variacao_id = (int)$item['id'];
+            $quantidade = (int)$item['quantity'];
 
             $sql = "SELECT pv.produto_id, p.preco 
                     FROM produto_variacoes pv
@@ -182,72 +187,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['finalizar_compra'])) 
 // =============================
 // FRETE
 // =============================
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['calcular_frete'])) {
-    $estado = $_POST['estado'] ?? '';
-    $peso = $_POST['peso'] ?? 1;
+// if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['calcular_frete'])) {
+//     $estado = $_POST['estado'] ?? '';
+//     $peso = $_POST['peso'] ?? 1;
 
-    if (!$estado || $peso <= 0) {
-        $resultado = ['erro' => "Dados inválidos."];
-    } else {
-        $resultado = calcularFreteSimulado($estado, $peso);
-        $valorFrete = $resultado['valor_numerico'] ?? 0;
-    }
-}
-
-function getDistanciasSP()
-{
-    return [
-        'SP' => 50,
-        'RJ' => 430,
-        'MG' => 500,
-        'ES' => 850,
-        'PR' => 400,
-        'SC' => 700,
-        'RS' => 1100,
-        'BA' => 1500,
-        'PE' => 2100,
-        'CE' => 2600,
-        'PB' => 2800,
-        'RN' => 2900,
-        'GO' => 900,
-        'DF' => 1000,
-        'MT' => 1400,
-        'MS' => 1000,
-        'AM' => 3900,
-        'PA' => 3000,
-        'MA' => 2600,
-        'PI' => 2400,
-        'AL' => 2200,
-        'SE' => 2000,
-        'RO' => 2800,
-        'AC' => 3500,
-        'AP' => 3300,
-        'RR' => 4500,
-        'TO' => 1800,
-    ];
-}
-
-function calcularFreteSimulado($estadoDestino, $peso)
-{
-    $distancias = getDistanciasSP();
-
-    $distancia = $distancias[$estadoDestino] ?? null;
-
-    $valorBase = 10.00;
-    $custoPorKm = 0.02;
-    $custoPorKg = 5.00;
-
-    $valor = $valorBase + ($distancia * $custoPorKm) + ($peso * $custoPorKg);
-
-    $prazo = ceil($distancia / 500);
-
-    return [
-        'estado' => $estadoDestino,
-        'valor_numerico' => $valor,
-        'valor' => number_format($valor, 2, ',', '.'),
-        'prazo' => $prazo
-    ];
-}
+//     if (!$estado || $peso <= 0) {
+//         $resultado = ['erro' => "Dados inválidos."];
+//     } else {
+//         $resultado = calcularFreteSimulado($estado, $peso);
+//         $valorFrete = $resultado['valor_numerico'] ?? 0;
+//     }
+// }
 
 ?>
 
@@ -415,13 +365,15 @@ function calcularFreteSimulado($estadoDestino, $peso)
                                     Please select a valid country.
                                 </div>
                             </div>
+                            <input type="hidden" name="frete" id="freteInput" value="0">
 
+                           <button type="button" id="btnCalcularFrete" class="btn btn-secondary">
+                                Calcular frete
+                            </button>
 
-                            <button type="submit" name="calcular_frete" class="btn btn-secondary">Calcular frete</button>
-                        </form>
                             
                         <!-- <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button> -->
-                        <form method="post">
+
                              <input type="hidden" name="carrinho" id="carrinhoInput">
                             <hr class="my-4">
                             <h4 class="mb-3">Pagamento</h4>
@@ -551,6 +503,49 @@ function calcularFreteSimulado($estadoDestino, $peso)
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/js/checkout.js"></script>
+
+    <script>
+        document.getElementById("btnCalcularFrete").addEventListener("click", async () => {
+            const shippingElement = document.getElementById("checkoutShippingCost");
+            const estado = document.getElementById("uf").value;
+            const peso = 1;
+
+            if (!estado) {
+                alert("Informe o estado primeiro");
+                return;
+            }
+
+            try {
+                const response = await fetch("frete.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: `estado=${encodeURIComponent(estado)}&peso=${peso}`
+                });
+
+                const data = await response.json();
+
+                if (data.erro) {
+                    alert(data.erro);
+                    return;
+                }
+
+                // Atualiza texto
+                shippingElement.textContent = "R$ " + data.valor;
+
+                // Atualiza dataset (ESSENCIAL)
+                shippingElement.dataset.shippingCost = data.valor_numerico;
+
+                // Atualiza hidden input
+                document.getElementById("freteInput").value = data.valor_numerico;
+
+            } catch (err) {
+                console.error(err);
+                alert("Erro ao calcular frete");
+            }
+        });
+    </script>
 
         
 </body>

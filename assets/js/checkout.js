@@ -148,7 +148,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (couponForm) {
         couponForm.addEventListener("submit", function(event) {
-            event.preventDefault();
 
             const couponCode = couponInput ? couponInput.value.trim().toLowerCase() : "";
 
@@ -184,10 +183,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 return;
             }
 
-            event.preventDefault();
             checkoutForm.classList.add("was-validated");
 
             if (!checkoutForm.checkValidity()) {
+
                 Swal.fire({
                     icon: "error",
                     title: "Formulario incompleto",
