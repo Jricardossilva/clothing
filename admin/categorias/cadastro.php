@@ -36,9 +36,8 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         <label for="genero">Gênero:</label>
         <select class="form-select" aria-label="Default select example" name="genero" id="genero" required>
             <option selected disabled>Selecione o gênero</option>
-            <option value="Masculino" <?php echo $categoria['genero'] === 'Masculino' ? 'selected' : ''; ?>>Masculino</option>
-            <option value="Feminino" <?php echo $categoria['genero'] === 'Feminino' ? 'selected' : ''; ?>>Feminino</option>
-            <option value="Unissex" <?php echo $categoria['genero'] === 'Unissex' ? 'selected' : ''; ?>>Unissex</option>
+            <option value="masculino" <?php echo strtolower((string) $categoria['genero']) === 'masculino' ? 'selected' : ''; ?>>Masculino</option>
+            <option value="feminino" <?php echo strtolower((string) $categoria['genero']) === 'feminino' ? 'selected' : ''; ?>>Feminino</option>
         </select>
     </div>
     <button type="submit" class="btn btn-primary mt-3"><?= empty($categoria['id']) ? 'Cadastrar' : 'Atualizar' ?></button>
