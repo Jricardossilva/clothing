@@ -111,8 +111,15 @@
           <input type="text" class="form-control" placeholder="Digite seu CEP" style="max-width: 200px;">
         </div>
 
-
-        <p class="text-success fw-bold">🟢 Item está em estoque</p>
+        <?php
+          $qtdEstoque = $produto['estoque'];
+          if($qtdEstoque > 0){
+            echo '<p class="text-success fw-bold">🟢 Item está em estoque</p>';
+          }else{
+            echo '<p class="text-danger fw-bold">🔴 Produto em falta</p>';
+          }
+        ?>
+        
 
 
         <button
@@ -126,6 +133,10 @@
           data-product-url="<?= htmlspecialchars('produto.php?id=' . (int) $produto['id']) ?>">
           Adicionar ao carrinho
         </button>
+       <br> <br>
+        
+       <p class="texto-destaque"><?= htmlspecialchars($produto['descricao']) ?></p>
+
       </div>
     </div>
   </div>

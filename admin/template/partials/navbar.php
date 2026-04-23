@@ -28,6 +28,10 @@ $primeiro_nome = explode(" ", $nome_completo);
                 <li class="nav-item">
                      <a class="nav-link active" style="color: white;" href="<?= BASE_URL ?>/categorias/index.php">Categorias</a>
                 </li>
+                <!-- Relatório -->
+                <li class="nav-item">
+                     <a class="nav-link active" style="color: white;" href="<?= BASE_URL ?>/relatorio/index.php">Relatório</a>
+                </li>
 
             </ul>
         </div>
@@ -38,7 +42,7 @@ $primeiro_nome = explode(" ", $nome_completo);
                 <?= htmlspecialchars($primeiro_nome[0])?>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="perfil.php#senha">Alterar senha</a></li>
+                <li><a class="dropdown-item" href="../alterarsenha.php">Alterar senha</a></li>
                 <li>
                     <form method="POST" action="<?= BASE_URL ?>/logout.php">
                         <button type="submit" class="dropdown-item">Sair</button>

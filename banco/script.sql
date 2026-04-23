@@ -22,7 +22,9 @@ CREATE TABLE produtos(
     preco DECIMAL(6,2),
     estoque INT,
     situacao INT DEFAULT 1,
-    data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    data_cadastro DATETIME DEFAULT,
+    url_imagem VARCHAR(255) NULL,
+    CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (categoria_id) REFERENCES categorias(id)
 );
 
@@ -78,34 +80,35 @@ CREATE TABLE tabela_pedidos (
 CREATE TABLE produto_imagem (  
     id INT PRIMARY KEY AUTO_INCREMENT,
 	produto_id INT,
-    url_imagem VARCHAR(50),
-    ordem INT(50),
+    url_imagem VARCHAR(255),
+    ordem INT(255),
     FOREIGN KEY (produto_id) REFERENCES produtos(id)    
 
     
 );
 
-INSERT INTO produtos (nome, preco, url_imagem) VALUES
-('Camiseta Feminina 1', 59.90, 'uploads/feminino1.png'),
-('Camiseta Feminina 10', 64.90, 'uploads/feminino10.png'),
-('Camiseta Feminina 2', 69.90, 'uploads/feminino2.png'),
-('Camiseta Feminina 3', 72.50, 'uploads/feminino3.png'),
-('Camiseta Feminina 4', 78.90, 'uploads/feminino4.png'),
-('Camiseta Feminina 5', 83.40, 'uploads/feminino5.png'),
-('Camiseta Feminina 6', 89.90, 'uploads/feminino6.png'),
-('Camiseta Feminina 7', 57.90, 'uploads/feminino7.png'),
-('Camiseta Feminina 8', 66.90, 'uploads/feminino8.png'),
-('Camiseta Feminina 9', 74.90, 'uploads/feminino9.png'),
-('Camiseta Masculina 1', 61.90, 'uploads/masculino1.png'),
-('Camiseta Masculina 10', 68.90, 'uploads/masculino10.png'),
-('Camiseta Masculina 2', 73.90, 'uploads/masculino2.png'),
-('Camiseta Masculina 3', 79.90, 'uploads/masculino3.png'),
-('Camiseta Masculina 4', 84.90, 'uploads/masculino4.png'),
-('Camiseta Masculina 5', 91.90, 'uploads/masculino5.png'),
-('Camiseta Masculina 6', 76.40, 'uploads/masculino6.png'),
-('Camiseta Masculina 7', 82.90, 'uploads/masculino7.png'),
-('Camiseta Masculina 8', 87.50, 'uploads/masculino8.png'),
-('Camiseta Masculina 9', 95.90, 'uploads/masculino9.png');
+-- Padrão de insert para cadastrar novos prod
+INSERT INTO produtos (nome, descricao, preco, estoque, url_imagem) VALUES 
+('Camiseta Feminina 11', 'Camiseta feminina com modelagem confortavel e tecido leve.', 67.90, 15, 'uploads/feminino11.png'),
+('Camiseta Feminina 12', 'Camiseta feminina com modelagem confortavel e tecido leve.', 71.90, 15, 'uploads/feminino12.png'),
+('Camiseta Feminina 13', 'Camiseta feminina com modelagem confortavel e tecido leve.', 76.90, 15, 'uploads/feminino13.png'),
+('Camiseta Feminina 14', 'Camiseta feminina com modelagem confortavel e tecido leve.', 79.90, 15, 'uploads/feminino14.png'),
+('Camiseta Feminina 15', 'Camiseta feminina com modelagem confortavel e tecido leve.', 82.90, 15, 'uploads/feminino15.png'),
+('Camiseta Feminina 16', 'Camiseta feminina com modelagem confortavel e tecido leve.', 86.90, 15, 'uploads/feminino16.png'),
+('Camiseta Feminina 17', 'Camiseta feminina com modelagem confortavel e tecido leve.', 91.90, 15, 'uploads/feminino17.png'),
+('Camiseta Feminina 18', 'Camiseta feminina com modelagem confortavel e tecido leve.', 94.90, 15, 'uploads/feminino18.png'),
+('Camiseta Feminina 19', 'Camiseta feminina com modelagem confortavel e tecido leve.', 98.90, 15, 'uploads/feminino19.png'),
+('Camiseta Feminina 20', 'Camiseta feminina com modelagem confortavel e tecido leve.', 102.90, 15, 'uploads/feminino20.png'),
+('Camiseta Masculina 11', 'Camiseta masculina com modelagem confortavel e tecido leve.', 72.90, 15, 'uploads/masculino11.png'),
+('Camiseta Masculina 12', 'Camiseta masculina com modelagem confortavel e tecido leve.', 77.90, 15, 'uploads/masculino12.png'),
+('Camiseta Masculina 13', 'Camiseta masculina com modelagem confortavel e tecido leve.', 81.90, 15, 'uploads/masculino13.png'),
+('Camiseta Masculina 14', 'Camiseta masculina com modelagem confortavel e tecido leve.', 85.90, 15, 'uploads/masculino14.png'),
+('Camiseta Masculina 15', 'Camiseta masculina com modelagem confortavel e tecido leve.', 89.90, 15, 'uploads/masculino15.png'),
+('Camiseta Masculina 16', 'Camiseta masculina com modelagem confortavel e tecido leve.', 93.90, 15, 'uploads/masculino16.png'),
+('Camiseta Masculina 17', 'Camiseta masculina com modelagem confortavel e tecido leve.', 97.90, 15, 'uploads/masculino17.png'),
+('Camiseta Masculina 18', 'Camiseta masculina com modelagem confortavel e tecido leve.', 101.90, 15, 'uploads/masculino18.png'),
+('Camiseta Masculina 19', 'Camiseta masculina com modelagem confortavel e tecido leve.', 105.90, 15, 'uploads/masculino19.png'),
+('Camiseta Masculina 20', 'Camiseta masculina com modelagem confortavel e tecido leve.', 109.90, 15, 'uploads/masculino20.png');
 
 CREATE TABLE usuarios (
     id INT PRIMARY KEY AUTO_INCREMENT,
