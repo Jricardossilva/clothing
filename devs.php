@@ -37,7 +37,7 @@
 
         <div class="icones">
           <a href="https://github.com/Carlosmveloso"><i class="fab fa-github"></i></a>
-          <a href="#"><i class="fab fa-linkedin"></i></a>
+          <a href="https://www.linkedin.com/in/carlos-eduardo-a5294a19b/"><i class="fab fa-linkedin"></i></a>
           <a href="#"><i class="fas fa-envelope"></i></a>
         </div>
       </div>
