@@ -1,8 +1,221 @@
 <?php
 
+session_start();
+require 'config/conexao.php';
+
 $valorFrete = 0;
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+// =============================
+// PROCESSAMENTO DA COMPRA
+// =============================
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod']))
+
+    if (!isset($_SESSION['carrinho']) || empty($_SESSION['carrinho'])) {
+        die("Carrinho vazio");
+    }
+
+    $carrinho = $_SESSION['carrinho'];
+
+    // =========================
+    // DADOS CLIENTE
+    // =========================
+    $nome = $_POST['nome'];
+    $sobrenome = $_POST['sobrenome'];
+    $email = $_POST['email'];
+    $telefone = $_POST['telefone'];
+
+    // =========================
+    // DADOS PAGAMENTO / FRETE
+    // =========================
+    $metodo_pagamento = $_POST['paymentMethod'];
+    $frete = floatval($_POST['frete'] ?? 0);
+
+    // =========================
+    // DADOS ENDEREÇO
+    // =========================
+    $logradouro = $_POST['rua'];
+    $numero = $_POST['numero'];
+    $bairro = $_POST['bairro'];
+    $cidade = $_POST['cidade'];
+    $estado = $_POST['estado'];
+    $cep = $_POST['cep'];
+    $pais = $_POST['pais'];
+
+    $total = 0;
+
+    $conn->begin_transaction();
+
+    try {
+
+        // =========================
+        // 1. CRIAR CLIENTE
+        // =========================
+        $stmt = $conn->prepare("
+            INSERT INTO clientes (nome, sobrenome, email, telefone)
+            VALUES (?, ?, ?, ?)
+        ");
+        $stmt->bind_param("ssss", $nome, $sobrenome, $email, $telefone);
+
+        if (!$stmt->execute()) {
+            throw new Exception("Erro ao criar cliente");
+        }
+
+        $cliente_id = $conn->insert_id;
+
+        // =========================
+        // 2. INSERIR ENDEREÇO
+        // =========================
+        $stmt = $conn->prepare("
+            INSERT INTO endereco 
+            (cliente_id, logradouro, numero, bairro, cidade, estado, cep, pais)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+        $stmt->bind_param(
+            "isisssss",
+            $cliente_id,
+            $logradouro,
+            $numero,
+            $bairro,
+            $cidade,
+            $estado,
+            $cep,
+            $pais
+        );
+
+        if (!$stmt->execute()) {
+            throw new Exception("Erro ao salvar endereço");
+        }
+
+        $endereco_id = $conn->insert_id;
+
+        // =========================
+        // 3. CALCULAR TOTAL + LOCK ESTOQUE
+        // =========================
+        foreach ($carrinho as $variacao_id => $quantidade) {
+
+            $stmt = $conn->prepare("
+                SELECT pv.produto_id, pv.estoque, p.preco 
+                FROM produto_variacoes pv
+                INNER JOIN produtos p ON p.id = pv.produto_id
+                WHERE pv.id = ? FOR UPDATE
+            ");
+            $stmt->bind_param("i", $variacao_id);
+            $stmt->execute();
+
+            $result = $stmt->get_result();
+            $dados = $result->fetch_assoc();
+
+            if (!$dados) {
+                throw new Exception("Produto não encontrado");
+            }
+
+            if ($dados['estoque'] < $quantidade) {
+                throw new Exception("Estoque insuficiente");
+            }
+
+            $total += $dados['preco'] * $quantidade;
+        }
+
+        $total += $frete;
+
+        // =========================
+        // 4. CRIAR PEDIDO
+        // =========================
+        $stmt = $conn->prepare("
+            INSERT INTO tabela_pedidos
+            (cliente_id, endereco_entrega_id, valor_total, valor_frete, status_compra)
+            VALUES (?, ?, ?, ?, 'AGUARDANDO PAGAMENTO')
+        ");
+        $stmt->bind_param("iidd", $cliente_id, $endereco_id, $total, $frete);
+
+        if (!$stmt->execute()) {
+            throw new Exception("Erro ao criar pedido");
+        }
+
+        $pedido_id = $conn->insert_id;
+
+        // =========================
+        // 5. PAGAMENTO
+        // =========================
+        $codigo_transacao = uniqid();
+
+        $stmt = $conn->prepare("
+            INSERT INTO pagamento
+            (pedido_id, metodo_pagamento, status_pagamento, codigo_transacao)
+            VALUES (?, ?, 'aguardando', ?)
+        ");
+        $stmt->bind_param("iss", $pedido_id, $metodo_pagamento, $codigo_transacao);
+
+        if (!$stmt->execute()) {
+            throw new Exception("Erro no pagamento");
+        }
+
+        // =========================
+        // 6. ITENS + UPDATE ESTOQUE
+        // =========================
+        foreach ($carrinho as $variacao_id => $quantidade) {
+
+            $stmt = $conn->prepare("
+                SELECT pv.produto_id, p.preco 
+                FROM produto_variacoes pv
+                INNER JOIN produtos p ON p.id = pv.produto_id
+                WHERE pv.id = ?
+            ");
+            $stmt->bind_param("i", $variacao_id);
+            $stmt->execute();
+
+            $dados = $stmt->get_result()->fetch_assoc();
+
+            $produto_id = $dados['produto_id'];
+            $preco = $dados['preco'];
+            $subtotal = $preco * $quantidade;
+
+            // INSERT ITEM
+            $stmt = $conn->prepare("
+                INSERT INTO itens_pedido
+                (pedido_id, produto_id, variacao_id, quantidade, preco_unitario, subtotal)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ");
+            $stmt->bind_param("iiiidd", $pedido_id, $produto_id, $variacao_id, $quantidade, $preco, $subtotal);
+
+            if (!$stmt->execute()) {
+                throw new Exception("Erro ao inserir item");
+            }
+
+            // UPDATE ESTOQUE
+            $stmt = $conn->prepare("
+                UPDATE produto_variacoes
+                SET estoque = estoque - ?
+                WHERE id = ?
+            ");
+            $stmt->bind_param("ii", $quantidade, $variacao_id);
+
+            if (!$stmt->execute()) {
+                throw new Exception("Erro ao atualizar estoque");
+            }
+        }
+
+        // =========================
+        // FINALIZAR
+        // =========================
+        $conn->commit();
+
+        unset($_SESSION['carrinho']);
+
+        echo "<script>alert('Compra realizada com sucesso ✔️');</script>";
+
+    } catch (Exception $e) {
+
+        $conn->rollback();
+
+        echo "<script>alert('Erro: " . $e->getMessage() . "');</script>";
+    }
+}
+
+// =============================
+// FRETE
+// =============================
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['pagamento'])) {
     $estado = $_POST['estado'] ?? '';
     $peso = $_POST['peso'] ?? 1;
 
@@ -70,7 +283,6 @@ function calcularFreteSimulado($estadoDestino, $peso)
 }
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -236,7 +448,7 @@ function calcularFreteSimulado($estadoDestino, $peso)
                             </div>
 
 
-                            <button type="submit" class="btn btn-secondary">Calcular frete</button>
+                            <button type="submit" name="acao" value="frete">Calcular frete</button>
                             <!-- <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button> -->
                             <hr class="my-4">
                             <h4 class="mb-3">Pagamento</h4>
