@@ -6,10 +6,11 @@
   <title>Dev Team</title>
 
   <link rel="stylesheet" href="assets/css/curriculo.css">
-  <link rel="stylesheet" href="assets/css/index.css" >
+  <link rel="stylesheet" href="assets/css/index.css" />
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   
+  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -17,25 +18,25 @@
 
 <div class="container-fluid">
   <div class="grade">
-
+  <!-- CARD 1 -->
   <div class="flip-card">
     <div class="flip-card-inner">
       
       <div class="flip-card-front">
         <img src="../clothing/assets/img/carlos.jpg">
-        <h2>Carlos</h2>
+        <h2>Carlos Eduardo</h2>
       </div>
 
       <div class="flip-card-back">
         <h3>Contribuições</h3>
 
         <p class="descricao">
-          Desenvolveu a interface do site, organizando layout, cores e garantindo boa experiência do usuário.
+          Atuei no desenvolvimento da interface do site da loja, ajudando na organização do layout, na escolha das cores e na criação de páginas mais claras e fáceis de usar, buscando oferecer uma boa experiência ao usuário.
         </p>
 
         <div class="icones">
-          <a href="https://github.com/Carlosmveloso" target="_blank"><i class="fab fa-github"></i></a>
-          <a href="#"><i class="fab fa-linkedin"></i></a>
+          <a href="https://github.com/Carlosmveloso"><i class="fab fa-github"></i></a>
+          <a href="https://www.linkedin.com/in/carlos-eduardo-a5294a19b/"><i class="fab fa-linkedin"></i></a>
           <a href="#"><i class="fas fa-envelope"></i></a>
         </div>
       </div>
@@ -58,8 +59,8 @@
         </p>
 
         <div class="icones">
-          <a href="https://github.com/DiegoLucioR" target="_blank"><i class="fab fa-github"></i></a>
-          <a href="https://www.linkedin.com/in/diegolucio780" target="_blank"><i class="fab fa-linkedin"></i></a>
+          <a href="https://github.com/DiegoLucioR"><i class="fab fa-github"></i></a>
+          <a href="https://www.linkedin.com/in/diegolucio780"><i class="fab fa-linkedin"></i></a>
           <a href="#"><i class="fas fa-envelope"></i></a>
         </div>
       </div>
@@ -70,7 +71,7 @@
     <div class="flip-card-inner">
       <div class="flip-card-front">
         <img src="../clothing/assets/img/ernanda.jpg">
-        <h2>Ernanda</h2>
+        <h2>Ernanda Rubinelle</h2>
       </div>
 
       <div class="flip-card-back">
@@ -81,7 +82,7 @@
         </p>
 
         <div class="icones">
-          <a href="https://github.com/rubinelle" target="_blank"><i class="fab fa-github"></i></a>
+          <a href="https://github.com/rubinelle"><i class="fab fa-github"></i></a>
           <a href="#"><i class="fab fa-linkedin"></i></a>
           <a href="#"><i class="fas fa-envelope"></i></a>
         </div>
@@ -104,7 +105,7 @@
         </p>
 
         <div class="icones">
-          <a href="https://github.com/johnherbert1977" target="_blank"><i class="fab fa-github"></i></a>
+          <a href="https://github.com/johnherbert1977"><i class="fab fa-github"></i></a>
           <a href="#"><i class="fab fa-linkedin"></i></a>
           <a href="#"><i class="fas fa-envelope"></i></a>
         </div>
@@ -127,7 +128,8 @@
         </p>
 
         <div class="icones">
-          <a href="https://github.com/gueltech" target="_blank"><i class="fab fa-github"></i></a>
+          <a href="https://github.com/gueltech"><i class="fab fa-github"></i></a>
+          <a href="#"><i class="fab fa-linkedin"></i></a>
           <a href="#"><i class="fas fa-envelope"></i></a>
         </div>
       </div>
@@ -149,8 +151,8 @@
         </p>
 
         <div class="icones">
-          <a href="https://github.com/rodrigodmd-pb" target="_blank"><i class="fab fa-github"></i></a>
-          <a href="https://br.linkedin.com/in/rodrigo-soares-9309b4167" target="_blank"><i class="fab fa-linkedin"></i></a>
+          <a href="https://github.com/rodrigodmd-pb"><i class="fab fa-github"></i></a>
+          <a href="https://br.linkedin.com/in/rodrigo-soares-9309b4167"><i class="fab fa-linkedin"></i></a>
           <a href="#"><i class="fas fa-envelope"></i></a>
         </div>
       </div>

@@ -6,7 +6,12 @@
         $id = $_POST['id'] ?? null;
         $nome = trim($_POST['nome']);
         $descricao = trim($_POST['descricao']);
-        $genero = trim($_POST['genero']);
+        $genero = strtolower(trim($_POST['genero']));
+
+        if (!in_array($genero, ['masculino', 'feminino'], true)) {
+            header('Location: form.php' . ($id ? '?id=' . urlencode((string) $id) : ''));
+            exit;
+        }
 
         if ($id) {
             // Edição

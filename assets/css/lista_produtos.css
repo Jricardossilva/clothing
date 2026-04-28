@@ -33,6 +33,22 @@
     margin-bottom: 5px;
 }
 
+.filter-color-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.filter-color-swatch {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
 
 
 .products {
@@ -66,12 +82,13 @@
 }
 
 .name {
-    font-size: 15px;
+    font-size: 18px;
     margin-top: 8px;
+    color: black;
 }
 
 .price {
-    color: red;
+    color: gray;
     font-weight: bold;
 }
 

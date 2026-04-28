@@ -14,6 +14,10 @@ CREATE TABLE categorias(
     descricao VARCHAR (300)
 );
 
+INSERT INTO categorias (nome, genero, descricao) VALUES
+('camisetas masculinas', 'masculino', 'Categoria base para camisetas e roupas masculinas.'),
+('camisetas femininas', 'feminino', 'Categoria base para camisetas e roupas femininas.');
+
 CREATE TABLE produtos(
     id INT AUTO_INCREMENT PRIMARY KEY,
     categoria_id INT,
