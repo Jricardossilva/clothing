@@ -9,6 +9,17 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
+
 .icons {
   width: 20px;
 }
@@ -19,6 +30,7 @@
 
 .logo-marca {
   width: 150px;
+  max-width: 100%;
 }
 
 .site-header,
@@ -51,6 +63,17 @@
 
 .header-brand {
   flex: 0 1 260px;
+  min-width: 0;
+}
+
+.header-brand a {
+  display: inline-flex;
+  max-width: 100%;
+}
+
+.header-actions {
+  flex-wrap: nowrap;
+  min-width: 0;
 }
 
 .site-nav {
@@ -679,8 +702,27 @@ footer {
   }
 
   .header-actions {
-    gap: 14px !important;
+    gap: 10px !important;
     align-items: center;
+    flex-shrink: 0;
+  }
+
+  .logo-marca {
+    width: 110px;
+  }
+
+  .icons {
+    width: 26px;
+  }
+
+  .favorites-count-badge {
+    top: -6px;
+    right: -7px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    font-size: 10px;
+    line-height: 16px;
   }
 
   .mobile-menu-toggle {
@@ -709,8 +751,8 @@ footer {
   }
 
   .kit-grid {
-    flex-direction: row;
-    flex-wrap: nowrap;
+    flex-direction: column;
+    flex-wrap: wrap;
     padding-left: 16px !important;
     padding-right: 16px !important;
     gap: 12px !important;
@@ -718,8 +760,8 @@ footer {
   }
 
   .kit-card {
-    width: calc(50% - 6px);
-    flex: 1 1 0;
+    width: 100%;
+    flex: 1 1 100%;
     padding: 18px 12px !important;
   }
 
