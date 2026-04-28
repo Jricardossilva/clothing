@@ -211,8 +211,8 @@ $precoKitMasculino = calcularPrecoKitTotal($kitMasculino['preco'] ?? 0);
     </div>
 
     <section class="mx-auto section-roupas">
-      <h2 class="py-3 mt-3">Peças a partir de R$ <?php echo formatarPrecoHome($precoInicial); ?></h2>
-      <div class="row row-cols-1 row-cols-md-4 g-4">
+      <h2 class="py-3 mt-3" id="desconto">Peças a partir de R$ <?php echo formatarPrecoHome($precoInicial); ?></h2>
+      <div class="row row-cols-1 row-cols-md-4 g-4" > 
         <?php if ($primeiraVitrine): ?>
           <?php foreach ($primeiraVitrine as $produto): ?>
             <div class="col">
@@ -252,7 +252,7 @@ $precoKitMasculino = calcularPrecoKitTotal($kitMasculino['preco'] ?? 0);
       <img class="img-fluid banner-promo mt-4 w-100" src="assets/img/banner-3.png" alt="" />
     </div>
 
-    <section class="mx-auto section-roupas mt-5">
+    <section class="mx-auto section-roupas mt-5" id="destaque">
       <div class="row row-cols-1 row-cols-md-4 g-4">
         <?php foreach ($segundaVitrine as $produto): ?>
           <div class="col">
@@ -286,7 +286,7 @@ $precoKitMasculino = calcularPrecoKitTotal($kitMasculino['preco'] ?? 0);
     <section class="kit-section bg-black p-1">
       <div class="d-flex">
         <h2
-          class="m-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem">
+          class="m-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem" id="kits">
           Monte seu kit
         </h2>
       </div>
@@ -310,7 +310,7 @@ $precoKitMasculino = calcularPrecoKitTotal($kitMasculino['preco'] ?? 0);
       </div>
       <div class="d-flex">
         <h2
-          class="mx-4 mt-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem">
+          class="mx-4 mt-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem" id="looks">
           Monte seu look
         </h2>
       </div>

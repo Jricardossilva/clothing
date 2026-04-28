@@ -14,19 +14,19 @@
         <div class="footer-nav-group d-flex flex-row-reverse">
           <ul class="text-end">
             <li class="p-2 footer-links">
-              <a class="text-light" href="#">Novidades</a>
-            </li>
-            <li class="p-2 footer-links">
               <a class="text-light" href="lista_produtos.php?genero=masculino">Masculino</a>
             </li>
             <li class="p-2 footer-links">
               <a class="text-light" href="lista_produtos.php?genero=feminino">Feminino</a>
             </li>
             <li class="p-2 footer-links">
-              <a class="text-light" href="#">Destaques</a>
+              <a class="text-light" href="#kits">Monte seu kit</a>
             </li>
             <li class="p-2 footer-links">
-              <a class="text-light" href="#">Até 70% OFF</a>
+              <a class="text-light" href="#looks">Monte seu look</a>
+            </li>
+            <li class="p-2 footer-links">
+              <a class="text-light" href="#desconto">Até 70% OFF</a>
             </li>
           </ul>
         </div>
@@ -39,16 +39,10 @@
               <a class="text-light" href="#">Perguntas Frequentes</a>
             </li>
             <li class="p-2 footer-links">
-              <a class="text-light" href="#">Trocar é fácil</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Como cuidar de seus básicos</a>
-            </li>
-            <li class="p-2 footer-links">
               <a class="text-light" target="_blank" href="assets/pdfs/termosClothing.pdf">Termos e condições</a>
             </li>
             <li class="p-2 footer-links">
-              <a class="text-light" href="#">Políticas de privacidade</a>
+              <a class="text-light" target="_blank" href="assets/pdfs/politica-privacidade.pdf">Políticas de privacidade</a>
             </li>
             <li class="p-2 footer-links">
               <a class="text-light" href="#">Trabalhe Conosco</a>
