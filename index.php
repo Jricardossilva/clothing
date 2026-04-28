@@ -189,7 +189,7 @@ $precoKitMasculino = calcularPrecoKitTotal($kitMasculino['preco'] ?? 0);
 
   <main>
     <!-- Carrossel inicial -->
-    <div id="carouselExampleInterval" class="carousel slide text-center mt-3 h-75" data-bs-ride="carousel">
+    <div id="carouselExampleInterval" class="home-carousel carousel slide text-center mt-3 h-75" data-bs-ride="carousel">
       <div class="carousel-inner">
         <div class="carousel-item active" data-bs-interval="2000">
           <img class="banner rounded-1 d-block w-100" src="assets/img/banner-1.jpg" alt="..." />
@@ -283,15 +283,15 @@ $precoKitMasculino = calcularPrecoKitTotal($kitMasculino['preco'] ?? 0);
     </div>
 
     <!-- Área de kits -->
-    <section class="bg-black p-1">
+    <section class="kit-section bg-black p-1">
       <div class="d-flex">
         <h2
           class="m-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem">
           Monte seu kit
         </h2>
       </div>
-      <div class="d-flex w-100 gap-3 px-4 mb-5">
-        <div class="d-flex flex-column align-items-center justify-content-center bg-white w-50 p-3">
+      <div class="kit-grid d-flex w-100 gap-3 px-4 mb-5">
+        <div class="kit-card d-flex flex-column align-items-center justify-content-center bg-white p-3">
           <h4 class="mt-5 mb-3 text-uppercase">Kit Camisetas</h4>
           <h3 class="fs-1 fw-bold">Prima Feminino</h3>
           <p class="fs-2">R$<?php echo formatarPrecoHome($precoKitFeminino); ?></p>
@@ -299,7 +299,7 @@ $precoKitMasculino = calcularPrecoKitTotal($kitMasculino['preco'] ?? 0);
             alt="<?php echo htmlspecialchars($kitFeminino['nome'] ?? 'Kit feminino', ENT_QUOTES, 'UTF-8'); ?>" />
           <a href="" class="my-3 fw-bold text-uppercase menu__link">Comprar</a>
         </div>
-        <div class="d-flex flex-column align-items-center justify-content-center bg-white w-50">
+        <div class="kit-card d-flex flex-column align-items-center justify-content-center bg-white">
           <h4 class="mt-5 mb-3 text-uppercase">Kit Camisetas</h4>
           <h3 class="fs-1 fw-bold">Prima Masculino</h3>
           <p class="fs-2">R$<?php echo formatarPrecoHome($precoKitMasculino); ?></p>
@@ -314,9 +314,9 @@ $precoKitMasculino = calcularPrecoKitTotal($kitMasculino['preco'] ?? 0);
           Monte seu look
         </h2>
       </div>
-      <div class="d-flex gap-4 p-3 mx-2">
+      <div class="look-grid d-flex gap-4 p-3 mx-2">
         <?php foreach ($looksPrimavera as $look): ?>
-          <div class="card w-25">
+          <div class="card look-card">
             <img src="<?php echo htmlspecialchars($look['imagem'], ENT_QUOTES, 'UTF-8'); ?>" class="card-img-top"
               alt="<?php echo htmlspecialchars($look['nome'], ENT_QUOTES, 'UTF-8'); ?>" />
             <div class="card-body">

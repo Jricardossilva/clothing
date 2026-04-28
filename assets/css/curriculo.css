@@ -8,6 +8,11 @@
   margin: 30px;
 }
 
+.devs-page {
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
 /* CARD */
 .flip-card {
   width: 260px;
@@ -115,11 +120,37 @@
 @media (max-width: 900px) {
   .grade {
     grid-template-columns: repeat(2, 1fr);
+    margin: 24px 16px;
   }
 }
 
 @media (max-width: 600px) {
   .grade {
     grid-template-columns: 1fr;
+    margin: 20px 0;
+    gap: 18px;
+  }
+
+  .flip-card {
+    width: min(100%, 320px);
+    height: 340px;
+  }
+
+  .flip-card-back {
+    padding: 18px;
+  }
+
+  .flip-card-back h3 {
+    font-size: 1.2rem;
+  }
+
+  .descricao {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .icones {
+    gap: 16px;
+    margin-top: 12px;
   }
 }

@@ -17,7 +17,7 @@
 <body>
   <?php include 'includes/header.php'; ?>
 
-<div class="container-fluid">
+<div class="container-fluid devs-page">
   <div class="grade">
   <!-- CARD 1 -->
   <div class="flip-card">

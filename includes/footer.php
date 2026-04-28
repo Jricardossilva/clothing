@@ -1,6 +1,6 @@
-<footer class="w-100 px-4 py-2">
-      <div class="d-flex align-items-center">
-        <div class="w-50">
+<footer class="site-footer w-100 px-4 py-2">
+      <div class="footer-content d-flex align-items-center">
+        <div class="footer-brand">
           <img
             class="logo-marca-footer"
             src="assets/img/logo-marca.png"
@@ -11,7 +11,7 @@
             Todos os direito reservados
           </p>
         </div>
-        <div class="w-25 d-flex flex-row-reverse">
+        <div class="footer-nav-group d-flex flex-row-reverse">
           <ul class="text-end">
             <li class="p-2 footer-links">
               <a class="text-light" href="#">Novidades</a>
@@ -30,7 +30,7 @@
             </li>
           </ul>
         </div>
-        <div class="w-25 d-flex flex-row-reverse">
+        <div class="footer-nav-group d-flex flex-row-reverse">
           <ul class="text-end">
             <li class="p-2 footer-links">
               <a class="text-light" href="../clothing/devs.php">Sobre nós</a>
@@ -56,7 +56,7 @@
           </ul>
         </div>
       </div>
-      <div class="d-flex justify-content-start gap-3 w-25">
+      <div class="footer-social-row d-flex justify-content-start gap-3">
         <a href=""
           ><img class="icons" src="assets/img/instagram-icon.png" alt=""
         /></a>
@@ -72,7 +72,7 @@
         /></a>
       </div>
       <!-- Botão para subir a página -->
-      <div class="d-flex justify-content-end sticky-bottom p-3">
+      <div class="footer-backtotop-wrap d-flex justify-content-end sticky-bottom p-3">
         <button class="button back-to-top">
           <svg class="svgIcon" viewBox="0 0 384 512">
             <path

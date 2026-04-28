@@ -271,92 +271,195 @@ function formatarNomeCor(string $cor): string
 <body>
     <?php include 'includes/header.php'; ?>
     <main>
-        <h2 class="text-center mt-4 fw-bold"><?php echo htmlspecialchars($tituloPagina, ENT_QUOTES, 'UTF-8'); ?></h2>
+        <div class="product-list-shell">
+            <h2 class="text-center mt-4 fw-bold product-list-title"><?php echo htmlspecialchars($tituloPagina, ENT_QUOTES, 'UTF-8'); ?></h2>
 
-        <div class="container d-flex mt-4">
-            <aside class="sidebar">
-                <form method="get" action="lista_produtos.php">
-                    <?php if ($generoSelecionado !== null): ?>
-                        <input type="hidden" name="genero" value="<?php echo htmlspecialchars($generoSelecionado, ENT_QUOTES, 'UTF-8'); ?>">
-                    <?php endif; ?>
-                    <?php if ($categoriaSelecionada !== null): ?>
-                        <input type="hidden" name="categoria" value="<?php echo (int) $categoriaSelecionada; ?>">
-                    <?php endif; ?>
+            <div class="product-list-toolbar d-lg-none">
+                <button
+                    class="btn btn-dark product-list-toolbar-btn"
+                    type="button"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#filtrosListaProdutos"
+                    aria-controls="filtrosListaProdutos">
+                    Filtros
+                </button>
+                <div class="product-list-count">
+                    <?php echo count($produtos); ?> produto<?php echo count($produtos) === 1 ? '' : 's'; ?>
+                </div>
+            </div>
 
-                <h3>Ordenar por</h3>
-                    <?php foreach ($mapaOrdenacao as $valorOrdenacao => $dadosOrdenacao): ?>
-                        <label>
-                            <input
-                                type="radio"
-                                name="ordenar"
-                                value="<?php echo htmlspecialchars($valorOrdenacao, ENT_QUOTES, 'UTF-8'); ?>"
-                                <?php echo $ordenacaoSelecionada === $valorOrdenacao ? 'checked' : ''; ?>>
-                            <?php echo htmlspecialchars($dadosOrdenacao['label'], ENT_QUOTES, 'UTF-8'); ?>
-                        </label>
-                    <?php endforeach; ?>
+            <div class="product-list-layout mt-4">
+                <aside class="sidebar d-none d-lg-block">
+                    <form method="get" action="lista_produtos.php">
+                        <?php if ($generoSelecionado !== null): ?>
+                            <input type="hidden" name="genero" value="<?php echo htmlspecialchars($generoSelecionado, ENT_QUOTES, 'UTF-8'); ?>">
+                        <?php endif; ?>
+                        <?php if ($categoriaSelecionada !== null): ?>
+                            <input type="hidden" name="categoria" value="<?php echo (int) $categoriaSelecionada; ?>">
+                        <?php endif; ?>
 
-                <h3>Tamanho</h3>
-                    <?php foreach ($tamanhosDisponiveis as $tamanhoDisponivel): ?>
-                        <label>
-                            <input
-                                type="checkbox"
-                                name="tamanho[]"
-                                value="<?php echo htmlspecialchars($tamanhoDisponivel, ENT_QUOTES, 'UTF-8'); ?>"
-                                <?php echo in_array($tamanhoDisponivel, $tamanhosSelecionados, true) ? 'checked' : ''; ?>>
-                            <?php echo htmlspecialchars($tamanhoDisponivel, ENT_QUOTES, 'UTF-8'); ?>
-                        </label>
-                    <?php endforeach; ?>
-
-                <h3>Cor</h3>
-                    <?php if ($coresDisponiveis): ?>
-                        <?php foreach ($coresDisponiveis as $corDisponivel): ?>
-                            <label class="filter-color-option" title="<?php echo htmlspecialchars(formatarNomeCor($corDisponivel), ENT_QUOTES, 'UTF-8'); ?>">
+                        <h3>Ordenar por</h3>
+                        <?php foreach ($mapaOrdenacao as $valorOrdenacao => $dadosOrdenacao): ?>
+                            <label>
                                 <input
-                                    type="checkbox"
-                                    name="cor[]"
-                                    value="<?php echo htmlspecialchars($corDisponivel, ENT_QUOTES, 'UTF-8'); ?>"
-                                    <?php echo in_array($corDisponivel, $coresSelecionadas, true) ? 'checked' : ''; ?>>
-                                <span
-                                    class="filter-color-swatch"
-                                    style="background-color: <?php echo htmlspecialchars($corDisponivel, ENT_QUOTES, 'UTF-8'); ?>;"
-                                    aria-label="<?php echo htmlspecialchars(formatarNomeCor($corDisponivel), ENT_QUOTES, 'UTF-8'); ?>">
-                                </span>
+                                    type="radio"
+                                    name="ordenar"
+                                    value="<?php echo htmlspecialchars($valorOrdenacao, ENT_QUOTES, 'UTF-8'); ?>"
+                                    <?php echo $ordenacaoSelecionada === $valorOrdenacao ? 'checked' : ''; ?>>
+                                <?php echo htmlspecialchars($dadosOrdenacao['label'], ENT_QUOTES, 'UTF-8'); ?>
                             </label>
                         <?php endforeach; ?>
-                    <?php else: ?>
-                        <p class="filter-empty">Nenhuma cor cadastrada.</p>
-                    <?php endif; ?>
 
-                    <button type="submit" class="btn btn-dark w-100 mt-3">Aplicar Filtros</button>
-                    <a
-                        href="lista_produtos.php<?php echo $parametrosLimparFiltros ? '?' . htmlspecialchars(http_build_query($parametrosLimparFiltros), ENT_QUOTES, 'UTF-8') : ''; ?>"
-                        class="btn btn-outline-secondary w-100 mt-2">
-                        Limpar Filtros
-                    </a>
-                </form>
-            </aside>
+                        <h3>Tamanho</h3>
+                        <?php foreach ($tamanhosDisponiveis as $tamanhoDisponivel): ?>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="tamanho[]"
+                                    value="<?php echo htmlspecialchars($tamanhoDisponivel, ENT_QUOTES, 'UTF-8'); ?>"
+                                    <?php echo in_array($tamanhoDisponivel, $tamanhosSelecionados, true) ? 'checked' : ''; ?>>
+                                <?php echo htmlspecialchars($tamanhoDisponivel, ENT_QUOTES, 'UTF-8'); ?>
+                            </label>
+                        <?php endforeach; ?>
 
-            <section class="products">
-                <?php if ($produtos): ?>
-                    <?php foreach ($produtos as $produto): ?>
-                        <?php $imagem = !empty($produto['url_imagem']) ? $produto['url_imagem'] : 'assets/img/camiseta-preta.jpg'; ?>
-                        <a href="produto.php?id=<?php echo (int) $produto['id']; ?>" class="product-link">
-                            <div class="product">
-                                <img src="<?php echo htmlspecialchars($imagem, ENT_QUOTES, 'UTF-8'); ?>"
-                                    alt="<?php echo htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8'); ?>" />
-                                <div class="name"><?php echo htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8'); ?></div>
-                                <div class="price">R$ <?php echo formatarPreco((float) $produto['preco']); ?></div>
+                        <h3>Cor</h3>
+                        <?php if ($coresDisponiveis): ?>
+                            <div class="filter-color-grid">
+                                <?php foreach ($coresDisponiveis as $corDisponivel): ?>
+                                    <label class="filter-color-option" title="<?php echo htmlspecialchars(formatarNomeCor($corDisponivel), ENT_QUOTES, 'UTF-8'); ?>">
+                                        <input
+                                            type="checkbox"
+                                            name="cor[]"
+                                            value="<?php echo htmlspecialchars($corDisponivel, ENT_QUOTES, 'UTF-8'); ?>"
+                                            <?php echo in_array($corDisponivel, $coresSelecionadas, true) ? 'checked' : ''; ?>>
+                                        <span
+                                            class="filter-color-swatch"
+                                            style="background-color: <?php echo htmlspecialchars($corDisponivel, ENT_QUOTES, 'UTF-8'); ?>;"
+                                            aria-label="<?php echo htmlspecialchars(formatarNomeCor($corDisponivel), ENT_QUOTES, 'UTF-8'); ?>">
+                                        </span>
+                                        <span class="filter-color-name"><?php echo htmlspecialchars(formatarNomeCor($corDisponivel), ENT_QUOTES, 'UTF-8'); ?></span>
+                                    </label>
+                                <?php endforeach; ?>
                             </div>
+                        <?php else: ?>
+                            <p class="filter-empty">Nenhuma cor cadastrada.</p>
+                        <?php endif; ?>
+
+                        <button type="submit" class="btn btn-dark w-100 mt-3">Aplicar Filtros</button>
+                        <a
+                            href="lista_produtos.php<?php echo $parametrosLimparFiltros ? '?' . htmlspecialchars(http_build_query($parametrosLimparFiltros), ENT_QUOTES, 'UTF-8') : ''; ?>"
+                            class="btn btn-outline-secondary w-100 mt-2">
+                            Limpar Filtros
                         </a>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <div class="product product-empty">
-                        <img src="assets/img/camiseta-preta.jpg" alt="Nenhum produto cadastrado" />
-                        <div class="name">Nenhum produto encontrado</div>
-                        <div class="price">Nao ha produtos para o filtro selecionado.</div>
+                    </form>
+                </aside>
+
+                <div class="offcanvas offcanvas-start product-filter-offcanvas" tabindex="-1" id="filtrosListaProdutos" aria-labelledby="filtrosListaProdutosLabel">
+                    <div class="offcanvas-header">
+                        <div>
+                            <p class="product-filter-eyebrow mb-1">Clothing</p>
+                            <h5 class="offcanvas-title mb-0" id="filtrosListaProdutosLabel">Filtros</h5>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
                     </div>
-                <?php endif; ?>
-            </section>
+                    <div class="offcanvas-body">
+                        <form method="get" action="lista_produtos.php" class="product-filter-form">
+                            <?php if ($generoSelecionado !== null): ?>
+                                <input type="hidden" name="genero" value="<?php echo htmlspecialchars($generoSelecionado, ENT_QUOTES, 'UTF-8'); ?>">
+                            <?php endif; ?>
+                            <?php if ($categoriaSelecionada !== null): ?>
+                                <input type="hidden" name="categoria" value="<?php echo (int) $categoriaSelecionada; ?>">
+                            <?php endif; ?>
+
+                            <h3>Ordenar por</h3>
+                            <?php foreach ($mapaOrdenacao as $valorOrdenacao => $dadosOrdenacao): ?>
+                                <label>
+                                    <input
+                                        type="radio"
+                                        name="ordenar"
+                                        value="<?php echo htmlspecialchars($valorOrdenacao, ENT_QUOTES, 'UTF-8'); ?>"
+                                        <?php echo $ordenacaoSelecionada === $valorOrdenacao ? 'checked' : ''; ?>>
+                                    <?php echo htmlspecialchars($dadosOrdenacao['label'], ENT_QUOTES, 'UTF-8'); ?>
+                                </label>
+                            <?php endforeach; ?>
+
+                            <h3>Tamanho</h3>
+                            <?php foreach ($tamanhosDisponiveis as $tamanhoDisponivel): ?>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        name="tamanho[]"
+                                        value="<?php echo htmlspecialchars($tamanhoDisponivel, ENT_QUOTES, 'UTF-8'); ?>"
+                                        <?php echo in_array($tamanhoDisponivel, $tamanhosSelecionados, true) ? 'checked' : ''; ?>>
+                                    <?php echo htmlspecialchars($tamanhoDisponivel, ENT_QUOTES, 'UTF-8'); ?>
+                                </label>
+                            <?php endforeach; ?>
+
+                            <h3>Cor</h3>
+                            <?php if ($coresDisponiveis): ?>
+                                <div class="filter-color-grid">
+                                    <?php foreach ($coresDisponiveis as $corDisponivel): ?>
+                                        <label class="filter-color-option" title="<?php echo htmlspecialchars(formatarNomeCor($corDisponivel), ENT_QUOTES, 'UTF-8'); ?>">
+                                            <input
+                                                type="checkbox"
+                                                name="cor[]"
+                                                value="<?php echo htmlspecialchars($corDisponivel, ENT_QUOTES, 'UTF-8'); ?>"
+                                                <?php echo in_array($corDisponivel, $coresSelecionadas, true) ? 'checked' : ''; ?>>
+                                            <span
+                                                class="filter-color-swatch"
+                                                style="background-color: <?php echo htmlspecialchars($corDisponivel, ENT_QUOTES, 'UTF-8'); ?>;"
+                                                aria-label="<?php echo htmlspecialchars(formatarNomeCor($corDisponivel), ENT_QUOTES, 'UTF-8'); ?>">
+                                            </span>
+                                            <span class="filter-color-name"><?php echo htmlspecialchars(formatarNomeCor($corDisponivel), ENT_QUOTES, 'UTF-8'); ?></span>
+                                        </label>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php else: ?>
+                                <p class="filter-empty">Nenhuma cor cadastrada.</p>
+                            <?php endif; ?>
+
+                            <div class="product-filter-actions">
+                                <button type="submit" class="btn btn-dark w-100 mt-3">Aplicar Filtros</button>
+                                <a
+                                    href="lista_produtos.php<?php echo $parametrosLimparFiltros ? '?' . htmlspecialchars(http_build_query($parametrosLimparFiltros), ENT_QUOTES, 'UTF-8') : ''; ?>"
+                                    class="btn btn-outline-secondary w-100 mt-2">
+                                    Limpar Filtros
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <section class="products-wrapper">
+                    <div class="products-header d-none d-lg-flex">
+                        <div class="product-list-count">
+                            <?php echo count($produtos); ?> produto<?php echo count($produtos) === 1 ? '' : 's'; ?>
+                        </div>
+                    </div>
+
+                    <section class="products">
+                        <?php if ($produtos): ?>
+                            <?php foreach ($produtos as $produto): ?>
+                                <?php $imagem = !empty($produto['url_imagem']) ? $produto['url_imagem'] : 'assets/img/camiseta-preta.jpg'; ?>
+                                <a href="produto.php?id=<?php echo (int) $produto['id']; ?>" class="product-link">
+                                    <div class="product">
+                                        <img src="<?php echo htmlspecialchars($imagem, ENT_QUOTES, 'UTF-8'); ?>"
+                                            alt="<?php echo htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8'); ?>" />
+                                        <div class="name"><?php echo htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8'); ?></div>
+                                        <div class="price">R$ <?php echo formatarPreco((float) $produto['preco']); ?></div>
+                                    </div>
+                                </a>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="product product-empty">
+                                <img src="assets/img/camiseta-preta.jpg" alt="Nenhum produto cadastrado" />
+                                <div class="name">Nenhum produto encontrado</div>
+                                <div class="price">Nao ha produtos para o filtro selecionado.</div>
+                            </div>
+                        <?php endif; ?>
+                    </section>
+                </section>
+            </div>
         </div>
     </main>
 
