@@ -18,7 +18,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1>Relatório</h1>
-    <a href="exportar_relatorio.php" class="btn btn-success">
+    <a href="exportar.php" class="btn btn-success">
         Exportar
     </a>
 </div>

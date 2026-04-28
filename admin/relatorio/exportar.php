@@ -34,7 +34,7 @@ $stmt = $pdo->query("
     INNER JOIN endereco 
         ON tabela_pedidos.endereco_entrega_id = endereco.id
     INNER JOIN pagamento 
-        ON tabela_pedidos.pagamento_id = pagamento.id
+        ON pagamento.pedido_id = tabela_pedidos.id
 ");
 
 $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
