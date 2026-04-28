@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="assets/css/curriculo.css">
   <link rel="stylesheet" href="assets/css/index.css" />
 
-  <!-- Ícones -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   
   <!-- Bootstrap CSS -->
@@ -45,12 +44,11 @@
     </div>
   </div>
 
-  <!-- CARD 2 -->
   <div class="flip-card">
     <div class="flip-card-inner">
       <div class="flip-card-front">
         <img src="../clothing/assets/img/diego2.jpg">
-        <h2>Diego Lucio</h2>
+        <h2>Diego</h2>
       </div>
 
       <div class="flip-card-back">
@@ -69,7 +67,6 @@
     </div>
   </div>
 
-  <!-- CARD 3 -->
   <div class="flip-card">
     <div class="flip-card-inner">
       <div class="flip-card-front">
@@ -93,12 +90,11 @@
     </div>
   </div>
 
-  <!-- CARD 4 -->
   <div class="flip-card">
     <div class="flip-card-inner">
       <div class="flip-card-front">
         <img src="../clothing/assets/img/john.jpg">
-        <h2>John Herbert</h2>
+        <h2>John</h2>
       </div>
 
       <div class="flip-card-back">
@@ -117,7 +113,6 @@
     </div>
   </div>
 
-  <!-- CARD 5 -->
   <div class="flip-card">
     <div class="flip-card-inner">
       <div class="flip-card-front">
@@ -129,7 +124,7 @@
         <h3>Contribuições</h3>
 
         <p class="descricao">
-          Realizou testes no sistema, identificando erros e garantindo o funcionamento correto das funcionalidades.
+        Criou funcionalidades para gestão de produtos e categorias, acompanhamento de pedidos, navegação entre páginas e melhorias no frete, com integração ao banco de dados.
         </p>
 
         <div class="icones">
@@ -141,7 +136,6 @@
     </div>
   </div>
 
-  <!-- CARD 6 -->
   <div class="flip-card">
     <div class="flip-card-inner">
       <div class="flip-card-front">
@@ -153,7 +147,7 @@
         <h3>Contribuições</h3>
 
         <p class="descricao">
-          Produziu a documentação do projeto, explicando funcionamento, estrutura e uso do sistema.
+      Realizou a modelagem do banco de dados, desenvolveu integrações para controle de estoque no back-end, aprimorou a autenticação e implementou a gestão de páginas de produto.
         </p>
 
         <div class="icones">
