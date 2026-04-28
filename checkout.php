@@ -82,6 +82,8 @@ function calcularFreteSimulado($estadoDestino, $peso)
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/css/index.css">
     <link rel="stylesheet" href="assets/css/checkout.css">
+    <link rel="stylesheet" href="https://cloudflare.com">
+
 </head>
 
 <body class="checkout-page">
@@ -151,7 +153,7 @@ function calcularFreteSimulado($estadoDestino, $peso)
                         <div class="row g-3">
                             <div class="col-sm-6">
                                 <label for="firstName" class="form-label">Nome</label>
-                                <input type="text" class="form-control" name="nome" id="firstName" placeholder="" value="<?php echo $_POST['nome'] ?? '' ?>" required>
+                                <input type="text" class="form-control" name="nome" id="firstName" placeholder="" value="<?php echo $_POST['nome'] ?? '' ?> "style="text-transform: capitalize;" required>
                                 <div class="invalid-feedback">
                                     Valid first name is required.
                                 </div>
@@ -159,7 +161,7 @@ function calcularFreteSimulado($estadoDestino, $peso)
 
                             <div class="col-sm-6">
                                 <label for="lastName" class="form-label">Sobrenome</label>
-                                <input type="text" class="form-control" name="sobrenome" id="lastName" placeholder="" value="<?php echo $_POST['sobrenome'] ?? '' ?>" required>
+                                <input type="text" class="form-control" name="sobrenome" id="lastName" placeholder="" value="<?php echo $_POST['sobrenome'] ?? '' ?>" style="text-transform: capitalize;" required>
                                 <div class="invalid-feedback">
                                     Valid last name is required.
                                 </div>
@@ -182,7 +184,7 @@ function calcularFreteSimulado($estadoDestino, $peso)
 	
 	                            <div class="col-4"> <label for="address" class="form-label">CEP</label>
                                 <input type="text"
-                                    class="form-control" name="cep" id="cep" placeholder="CEP" onblur="buscaCEP()" value="<?php echo $_POST['cep'] ?? '' ?>" required>
+                                    class="form-control" name="cep" id="cep" placeholder="CEP" onblur="buscaCEP()" value="<?php echo $_POST['cep'] ?? '' ?>"  required>
                                 <div class="invalid-feedback">
                                 </div>
                             </div>
@@ -226,12 +228,12 @@ function calcularFreteSimulado($estadoDestino, $peso)
                                     <!-- A opção padrão deve ter value vazio para o 'required' funcionar -->
                                     <option value="" <?php echo !isset($_POST['pais']) ? 'selected' : ''; ?> disabled>Selecionar</option>
                                     
-                                    <option value="United States" <?php echo (($_POST['pais'] ?? '') == 'United States') ? 'selected' : ''; ?>>United States</option>
+                                    <option value="United States" <?php echo (($_POST['pais'] ?? '') == 'United States') ? 'selected' : ''; ?>>EUA</option>
                                     
                                     <option value="Brasil" <?php echo (($_POST['pais'] ?? '') == 'Brasil') ? 'selected' : ''; ?>>Brasil</option>
                                 </select>
                                 <div class="invalid-feedback">
-                                    Please select a valid country.
+                                Por favor, selecione um país válido.
                                 </div>
                             </div>
 
@@ -240,7 +242,7 @@ function calcularFreteSimulado($estadoDestino, $peso)
                             <!-- <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button> -->
                             <hr class="my-4">
                             <h4 class="mb-3">Pagamento</h4>
-                            <div class="my-3">
+                            <div class="my-3">                            
                                 <div class="form-check">
                                     <input id="credit" name="paymentMethod" type="radio" class="form-check-input" value="credit" required>
                                     <label class="form-check-label" for="credit">Cartão de crédito</label>
@@ -256,40 +258,62 @@ function calcularFreteSimulado($estadoDestino, $peso)
                                     <label class="form-check-label" for="pix">Pix</label>
                                 </div>
                             </div>
-
+                            
                             <div class="row gy-3" id="cardPaymentFields" style="display: none;">
+                            
                                 <div class="col-md-6">
-                                    <label for="cc-name" class="form-label">Nome no cartão</label>
+                                    <label for="cc-name" class="form-label">Nome do titular</label>
                                     <input type="text" class="form-control" id="cc-name" placeholder="">
-                                    <small class="text-body-secondary">Nome completo como está no cartão</small>
+                                    <small class="text-body-secondary"></small>
                                     <div class="invalid-feedback">
-                                        Name on card is required
+                                    É necessário preencher o cartão com o nome.
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                <label for="cpf" class="form-label">Numero do CPF</label>
+                                <input type="text" class="form-control" id="cpf" placeholder="000.000.000-00" maxlength="14">
+                                    <div class="invalid-feedback">
+                                    É necessário um CPF válido.
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label for="cc-number" class="form-label">Número do cartão</label>
-                                    <input type="text" class="form-control" id="cc-number" placeholder="">
+                                    <input type="text"  class="form-control" id="cc-number" placeholder="0000 0000 0000 0000">
                                     <div class="invalid-feedback">
-                                        Credit card number is required
+                                    É necessário o número do cartão de crédito.
                                     </div>
                                 </div>
-
                                 <div class="col-md-3">
-                                    <label for="cc-expiration" class="form-label">Expiração</label>
-                                    <input type="text" class="form-control" id="cc-expiration" placeholder="">
+                                    <label for="cc-expiration" class="form-label">Data Validade</label>
+                                    <input type="text" class="form-control" id="cc-expiration" placeholder="dd/mm">
                                     <div class="invalid-feedback">
-                                        Expiration date required
+                                    Data de validade necessária
                                     </div>
-                                </div>
-
+                                </div>                                
                                 <div class="col-md-3">
                                     <label for="cc-cvv" class="form-label">CVV</label>
-                                    <input type="text" class="form-control" id="cc-cvv" placeholder="">
-                                    <div class="invalid-feedback">
-                                        Security code required
+                                    <div class="input-group">
+                                        <!-- Campo de Input (Borda esquerda arredondada pelo Bootstrap) -->
+                                        <input type="password" class="form-control" id="cc-cvv" placeholder=" ">
+                                        
+                                        <!-- Botão com borda direita arredondada explicitamente -->
+                                        <button class="btn btn-outline-secondary rounded-end" type="button" id="btn-toggle-cvv">
+                                            <span id="eye-icon-container">
+                                                <svg xmlns="http://w3.org" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                                    <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                                </svg>
+                                            </span>
+                                        </button>
+
+                                        <div class="invalid-feedback">
+                                            Security code required
+                                        </div>
                                     </div>
                                 </div>
+
                             </div>
 
                             <hr class="my-4">
@@ -330,7 +354,16 @@ function calcularFreteSimulado($estadoDestino, $peso)
         </div>
     </div>
 
+    <input type="text" id="cep" placeholder="00000-000" maxlength="9">
+
     <script>
+        function mascaraCEP(valor) {
+            valor = valor.replace(/\D/g, "");
+            valor = valor.substring(0, 8);
+            valor = valor.replace(/(\d{5})(\d)/, "$1-$2");
+            return valor;
+        }
+
         async function buscaCEP() {
             const cep = document.getElementById('cep').value.replace(/\D/g, '');
 
@@ -345,16 +378,22 @@ function calcularFreteSimulado($estadoDestino, $peso)
                     return;
                 }
 
-                document.getElementById('logradouro').value = data.logradouro;
-                document.getElementById('bairro').value = data.bairro;
-                document.getElementById('localidade').value = data.localidade;
-                document.getElementById('uf').value = data.uf;
+                document.getElementById('logradouro').value = data.logradouro || '';
+                document.getElementById('bairro').value = data.bairro || '';
+                document.getElementById('localidade').value = data.localidade || '';
+                document.getElementById('uf').value = data.uf || '';
 
             } catch (error) {
                 console.error("Erro ao buscar o CEP:", error);
             }
         }
 
+        // apenas máscara (SEM busca automática)
+        document.getElementById('cep').addEventListener('input', function(e) {
+            e.target.value = mascaraCEP(e.target.value);
+        });
+
+        // busca só no Enter
         document.getElementById('cep').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
@@ -362,37 +401,132 @@ function calcularFreteSimulado($estadoDestino, $peso)
             }
         });
     </script>
+
+    <script>
+        function mascaraTelefone(valor) {
+            valor = valor.replace(/\D/g, "").substring(0, 11);; // remove tudo que não for número
+            valor = valor.replace(/^(\d{2})(\d)/g, "($1) $2"); // (11) 9
+
+            if (valor.length <= 13) {
+                // telefone fixo: (11) 1234-5678
+                valor = valor.replace(/(\d{4})(\d{4})$/, "$1-$2");
+            } else {
+                // celular: (11) 91234-5678
+                valor = valor.replace(/(\d{5})(\d{4})$/, "$1-$2");
+            }
+
+            return valor;
+        }
+
+        document.getElementById("telefone").addEventListener("input", function(e) {
+        e.target.value = mascaraTelefone(e.target.value);
+        });
+    </script>
+
+    <script>
+        function mascaraCartao(valor) {
+        valor = valor.replace(/\D/g, ""); // remove tudo que não for número
+        valor = valor.substring(0, 16);   // limita a 16 dígitos
+
+        // adiciona espaço a cada 4 dígitos
+        valor = valor.replace(/(\d{4})(?=\d)/g, "$1 ");
+
+        return valor;
+        }
+
+        document.getElementById("cc-number").addEventListener("input", function(e) {
+        e.target.value = mascaraCartao(e.target.value);
+        });
+    </script>
+    <script>
+        function mascaraValidade(valor) {
+            valor = valor.replace(/\D/g, ""); // só números
+            valor = valor.substring(0, 4);    // limita a 4 dígitos
+
+            // adiciona a barra
+            valor = valor.replace(/(\d{2})(\d)/, "$1/$2");
+
+            return valor;
+        }
+
+        document.getElementById("cc-expiration").addEventListener("input", function(e) {
+            e.target.value = mascaraValidade(e.target.value);
+        });
+    </script>
+        <script>
+        // Desenhos dos ícones (Aberto e Fechado)
+        const iconOpen = `<svg xmlns="http://w3.org" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/><path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/></svg>`;
+        const iconClosed = `<svg xmlns="http://w3.org" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z"/><path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.299.822.822a3.502 3.502 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829z"/><path d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12-.708.708z"/></svg>`;
+
+        const cvvInput = document.getElementById('cc-cvv');
+        const eyeContainer = document.getElementById('eye-icon-container');
+
+        // Alternar visibilidade
+        document.getElementById('btn-toggle-cvv').addEventListener('click', function () {
+            if (cvvInput.type === 'password') {
+                cvvInput.type = 'text';
+                eyeContainer.innerHTML = iconClosed;
+            } else {
+                cvvInput.type = 'password';
+                eyeContainer.innerHTML = iconOpen;
+            }
+        });
+
+        // Máscara (só números)
+        cvvInput.addEventListener("input", function(e) {
+            e.target.value = e.target.value.replace(/\D/g, "").substring(0, 4);
+        });
+        
+    </script>
+
+    <script>
+        const inputCpf = document.getElementById('cpf');
+
+        inputCpf.addEventListener('input', (e) => {
+            let value = e.target.value;
+            
+            // Remove tudo o que não é dígito
+            value = value.replace(/\D/g, "");
+            
+            // Aplica a máscara progressivamente
+            value = value.replace(/(\d{3})(\d)/, "$1.$2");
+            value = value.replace(/(\d{3})(\d)/, "$1.$2");
+            value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+            
+            e.target.value = value;
+        });
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/js/checkout.js"></script>
-
-        
-</body>
-
-
-<div id="modalPixContainer" class="modal">
-    <div class="modal-dialog d-flex justify-content-center align-items-center">
-        <div class="modal-content text-center p-4">
-            <span class="close-btn" onclick="fecharModal()" style="position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer;">&times;</span>
-
-            <h2 class="modal-title mb-3">Pagamento PIX</h2>
-
-            <div class="qr-container mb-3">
-                <img src="../clothing/assets/img/testeqrcode.jpg" alt="QR Code PIX"
+           
+    
+    
+    <div id="modalPixContainer" class="modal">
+        <div class="modal-dialog d-flex justify-content-center align-items-center">
+            <div class="modal-content text-center p-4">
+                <span class="close-btn" onclick="fecharModal()" style="position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer;">&times;</span>
+                
+                <h2 class="modal-title mb-3">Pagamento PIX</h2>
+                
+                <div class="qr-container mb-3">
+                    <img src="../clothing/assets/img/testeqrcode.jpg" alt="QR Code PIX"
                     style="width: 100%; max-width: 250px; height: auto; margin: 0 auto; display: block; border: 1px solid #eee; padding: 15px; background: #fff;">
-                <p class="qr-instruction mt-2 mb-3" style="font-size: 15px; color: #666;">Aponte a câmera do seu banco para o código acima</p>
-            </div>
-
-            <div class="upload-section d-flex flex-column align-items-center">
-                <label for="comprovante" class="mb-2 fw-bold">Anexar Comprovante:</label>
-                <input type="file" id="comprovante" class="form-control mb-3" style="max-width: 400px; width: 100%;" accept="image/*,.pdf">
-                <button type="button" class="btn btn-primary" onclick="enviarDados()" style="max-width: 400px; width: 100%; padding: 12px 0; font-size: 1.1rem;">
-                    Confirmar Pagamento
-                </button>
+                    <p class="qr-instruction mt-2 mb-3" style="font-size: 15px; color: #666;">Aponte a câmera do seu banco para o código acima</p>
+                </div>
+                
+                <div class="upload-section d-flex flex-column align-items-center">
+                    <label for="comprovante" class="mb-2 fw-bold">Anexar Comprovante:</label>
+                    <input type="file" id="comprovante" class="form-control mb-3" style="max-width: 400px; width: 100%;" accept="image/*,.pdf">
+                    <button type="button" class="btn btn-primary" onclick="enviarDados()" style="max-width: 400px; width: 100%; padding: 12px 0; font-size: 1.1rem;">
+                        Confirmar Pagamento
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
-
+        
+    </body>
 </html>

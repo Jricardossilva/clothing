@@ -20,7 +20,6 @@
   perspective: 1000px;
 }
 
-/* INTERNO */
 .flip-card-inner {
   width: 100%;
   height: 100%;
@@ -29,12 +28,10 @@
   transform-style: preserve-3d;
 }
 
-/* HOVER (desktop) */
 .flip-card:hover .flip-card-inner {
   transform: rotateY(180deg);
 }
 
-/* FRENTE E VERSO */
 .flip-card-front,
 .flip-card-back {
   position: absolute;
@@ -44,11 +41,9 @@
   backface-visibility: hidden;
   overflow: hidden;
   box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  /* Garante que o padding não aumente o tamanho do card */
   box-sizing: border-box; 
 }
 
-/* FRENTE */
 .flip-card-front {
   background: #3c4a60;
   color: white;
@@ -67,7 +62,6 @@
   margin: 15px 0;
 }
 
-/* VERSO (Ajustado para centralizar o texto) */
 .flip-card-back {
   background: linear-gradient(135deg, #2563eb, #1e40af);
   color: white;
@@ -77,8 +71,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  
-  /* Respiro interno para o texto não bater nas bordas */
   padding: 25px;
   text-align: center;
 }
@@ -89,12 +81,10 @@
   font-size: 1.4rem;
 }
 
-/* DESCRIÇÃO (Ajustada para melhor leitura) */
 .descricao {
   font-size: 14px;
   line-height: 1.6;
   margin: 10px 0;
-  /* Limita a largura interna para o texto respirar */
   max-width: 100%; 
 }
 
@@ -116,7 +106,6 @@
   color: #93c5fd;
 }
 
-/* RESPONSIVO */
 @media (max-width: 900px) {
   .grade {
     grid-template-columns: repeat(2, 1fr);
