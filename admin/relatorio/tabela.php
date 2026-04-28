@@ -6,12 +6,15 @@
         tabela_pedidos.valor_total,
         tabela_pedidos.data_pedido,
         clientes.nome,
-        endereco.estado
+        endereco.estado,
+        pagamento.metodo_pagamento
     FROM tabela_pedidos
     INNER JOIN clientes 
         ON tabela_pedidos.cliente_id = clientes.id
     INNER JOIN endereco 
         ON tabela_pedidos.endereco_entrega_id = endereco.id
+    INNER JOIN pagamento 
+        ON pagamento.pedido_id = tabela_pedidos.id
 ");
     $tabela_pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -25,6 +28,7 @@
             <th>Nome</th>
             <th>Estado</th>
             <th>Preço</th>
+            <th>Forma de Pagamento</th>
             <th>Data do pedido</th>
         </tr>
     </thead>
@@ -34,6 +38,7 @@
                 <td><?php echo $pedido['nome']; ?></td>
                 <td><?php echo $pedido['estado']; ?></td>
                 <td>R$ <?php echo number_format($pedido['valor_total'], 2, ',', '.'); ?></td>
+                <td><?php echo $pedido['metodo_pagamento']; ?></td>
                 <td><?php echo date('d/m/Y', strtotime($pedido['data_pedido'])); ?></td>
             </tr>
         <?php endforeach; ?>
