@@ -36,20 +36,9 @@ function normalizarCaminhoImagem(?string $caminho): string
   return $caminhoNormalizado;
 }
 
-function calcularPrecoOriginal(float $precoAtual): float
+function calcularPrecoKitTotal(float $precoAtual): float
 {
-  return round($precoAtual * 1.35, 2);
-}
-
-function calcularPrecoKit(float $precoAtual): array
-{
-  $precoCheio = round($precoAtual * 3, 2);
-  $precoPromocional = round($precoCheio * 0.85, 2);
-
-  return [
-    'cheio' => $precoCheio,
-    'promocional' => $precoPromocional,
-  ];
+  return round($precoAtual * 3, 2);
 }
 
 function embaralharProdutos(array $produtos): array
@@ -146,7 +135,6 @@ if (isset($pdo)) {
       'preco' => (float) $produto['preco'],
       'imagem' => normalizarCaminhoImagem($produto['url_imagem'] ?? null),
       'alt' => $produto['nome'],
-      'preco_original' => calcularPrecoOriginal((float) $produto['preco']),
     ];
   }
 }
@@ -181,8 +169,8 @@ $looksPrimavera = intercalarProdutosPorGenero(
   array_slice($masculinosDisponiveis, 0, 2)
 );
 
-$precosKitFeminino = calcularPrecoKit($kitFeminino['preco'] ?? 0);
-$precosKitMasculino = calcularPrecoKit($kitMasculino['preco'] ?? 0);
+$precoKitFeminino = calcularPrecoKitTotal($kitFeminino['preco'] ?? 0);
+$precoKitMasculino = calcularPrecoKitTotal($kitMasculino['preco'] ?? 0);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -201,7 +189,7 @@ $precosKitMasculino = calcularPrecoKit($kitMasculino['preco'] ?? 0);
 
   <main>
     <!-- Carrossel inicial -->
-    <div id="carouselExampleInterval" class="carousel slide text-center mt-3 h-75" data-bs-ride="carousel">
+    <div id="carouselExampleInterval" class="home-carousel carousel slide text-center mt-3 h-75" data-bs-ride="carousel">
       <div class="carousel-inner">
         <div class="carousel-item active" data-bs-interval="2000">
           <img class="banner rounded-1 d-block w-100" src="assets/img/banner-1.jpg" alt="..." />
@@ -223,8 +211,8 @@ $precosKitMasculino = calcularPrecoKit($kitMasculino['preco'] ?? 0);
     </div>
 
     <section class="mx-auto section-roupas">
-      <h2 class="py-3 mt-3">Peças a partir de R$ <?php echo formatarPrecoHome($precoInicial); ?></h2>
-      <div class="row row-cols-1 row-cols-md-4 g-4">
+      <h2 class="py-3 mt-3" id="desconto">Peças a partir de R$ <?php echo formatarPrecoHome($precoInicial); ?></h2>
+      <div class="row row-cols-1 row-cols-md-4 g-4" > 
         <?php if ($primeiraVitrine): ?>
           <?php foreach ($primeiraVitrine as $produto): ?>
             <div class="col">
@@ -239,7 +227,6 @@ $precosKitMasculino = calcularPrecoKit($kitMasculino['preco'] ?? 0);
                     </p>
                     <p class="d-flex justify-content-center gap-3">
                       <strong>R$ <?php echo formatarPrecoHome($produto['preco']); ?></strong>
-                      <del>R$ <?php echo formatarPrecoHome($produto['preco_original']); ?></del>
                     </p>
                   </div>
                 </div>
@@ -265,7 +252,7 @@ $precosKitMasculino = calcularPrecoKit($kitMasculino['preco'] ?? 0);
       <img class="img-fluid banner-promo mt-4 w-100" src="assets/img/banner-3.png" alt="" />
     </div>
 
-    <section class="mx-auto section-roupas mt-5">
+    <section class="mx-auto section-roupas mt-5" id="destaque">
       <div class="row row-cols-1 row-cols-md-4 g-4">
         <?php foreach ($segundaVitrine as $produto): ?>
           <div class="col">
@@ -280,7 +267,6 @@ $precosKitMasculino = calcularPrecoKit($kitMasculino['preco'] ?? 0);
                   </p>
                   <p class="d-flex justify-content-center gap-3">
                     <strong>R$ <?php echo formatarPrecoHome($produto['preco']); ?></strong>
-                    <del>R$ <?php echo formatarPrecoHome($produto['preco_original']); ?></del>
                   </p>
                 </div>
               </div>
@@ -297,30 +283,26 @@ $precosKitMasculino = calcularPrecoKit($kitMasculino['preco'] ?? 0);
     </div>
 
     <!-- Área de kits -->
-    <section class="bg-black p-1">
+    <section class="kit-section bg-black p-1">
       <div class="d-flex">
         <h2
-          class="m-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem">
+          class="m-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem" id="kits">
           Monte seu kit
         </h2>
       </div>
-      <div class="d-flex w-100 gap-3 px-4 mb-5">
-        <div class="d-flex flex-column align-items-center justify-content-center bg-white w-50 p-3">
+      <div class="kit-grid d-flex w-100 gap-3 px-4 mb-5">
+        <div class="kit-card d-flex flex-column align-items-center justify-content-center bg-white p-3">
           <h4 class="mt-5 mb-3 text-uppercase">Kit Camisetas</h4>
           <h3 class="fs-1 fw-bold">Prima Feminino</h3>
-          <p class="fs-2">de R$<?php echo formatarPrecoHome($precosKitFeminino['cheio']); ?> por
-            R$<?php echo formatarPrecoHome($precosKitFeminino['promocional']); ?></p>
-          <p class="fs-3 mt-1 text-decoration-underline">Cupom: KITPIMA</p>
+          <p class="fs-2">R$<?php echo formatarPrecoHome($precoKitFeminino); ?></p>
           <img class="w-100" src="<?php echo htmlspecialchars($kitFeminino['imagem'] ?? 'assets/img/placeholder.png', ENT_QUOTES, 'UTF-8'); ?>"
             alt="<?php echo htmlspecialchars($kitFeminino['nome'] ?? 'Kit feminino', ENT_QUOTES, 'UTF-8'); ?>" />
           <a href="" class="my-3 fw-bold text-uppercase menu__link">Comprar</a>
         </div>
-        <div class="d-flex flex-column align-items-center justify-content-center bg-white w-50">
+        <div class="kit-card d-flex flex-column align-items-center justify-content-center bg-white">
           <h4 class="mt-5 mb-3 text-uppercase">Kit Camisetas</h4>
           <h3 class="fs-1 fw-bold">Prima Masculino</h3>
-          <p class="fs-2">de R$<?php echo formatarPrecoHome($precosKitMasculino['cheio']); ?> por
-            R$<?php echo formatarPrecoHome($precosKitMasculino['promocional']); ?></p>
-          <p class="fs-3 text-decoration-underline mt-1">Cupom: KITPIMA</p>
+          <p class="fs-2">R$<?php echo formatarPrecoHome($precoKitMasculino); ?></p>
           <img class="w-100" src="<?php echo htmlspecialchars($kitMasculino['imagem'] ?? 'assets/img/placeholder.png', ENT_QUOTES, 'UTF-8'); ?>"
             alt="<?php echo htmlspecialchars($kitMasculino['nome'] ?? 'Kit masculino', ENT_QUOTES, 'UTF-8'); ?>" />
           <a href="" class="my-3 fw-bold text-uppercase menu__link">Comprar</a>
@@ -328,13 +310,13 @@ $precosKitMasculino = calcularPrecoKit($kitMasculino['preco'] ?? 0);
       </div>
       <div class="d-flex">
         <h2
-          class="mx-4 mt-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem">
-          Monte seu look para a primavera
+          class="mx-4 mt-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem" id="looks">
+          Monte seu look
         </h2>
       </div>
-      <div class="d-flex gap-4 p-3 mx-2">
+      <div class="look-grid d-flex gap-4 p-3 mx-2">
         <?php foreach ($looksPrimavera as $look): ?>
-          <div class="card w-25">
+          <div class="card look-card">
             <img src="<?php echo htmlspecialchars($look['imagem'], ENT_QUOTES, 'UTF-8'); ?>" class="card-img-top"
               alt="<?php echo htmlspecialchars($look['nome'], ENT_QUOTES, 'UTF-8'); ?>" />
             <div class="card-body">

@@ -1,6 +1,6 @@
-<footer class="w-100 px-4 py-2">
-      <div class="d-flex align-items-center">
-        <div class="w-50">
+<footer class="site-footer w-100 px-4 py-2">
+      <div class="footer-content d-flex align-items-center">
+        <div class="footer-brand">
           <img
             class="logo-marca-footer"
             src="assets/img/logo-marca.png"
@@ -11,11 +11,8 @@
             Todos os direito reservados
           </p>
         </div>
-        <div class="w-25 d-flex flex-row-reverse">
+        <div class="footer-nav-group d-flex flex-row-reverse">
           <ul class="text-end">
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Novidades</a>
-            </li>
             <li class="p-2 footer-links">
               <a class="text-light" href="lista_produtos.php?genero=masculino">Masculino</a>
             </li>
@@ -23,14 +20,17 @@
               <a class="text-light" href="lista_produtos.php?genero=feminino">Feminino</a>
             </li>
             <li class="p-2 footer-links">
-              <a class="text-light" href="#">Destaques</a>
+              <a class="text-light" href="#kits">Monte seu kit</a>
             </li>
             <li class="p-2 footer-links">
-              <a class="text-light" href="#">Até 70% OFF</a>
+              <a class="text-light" href="#looks">Monte seu look</a>
+            </li>
+            <li class="p-2 footer-links">
+              <a class="text-light" href="#desconto">Até 70% OFF</a>
             </li>
           </ul>
         </div>
-        <div class="w-25 d-flex flex-row-reverse">
+        <div class="footer-nav-group d-flex flex-row-reverse">
           <ul class="text-end">
             <li class="p-2 footer-links">
               <a class="text-light" href="../clothing/devs.php">Sobre nós</a>
@@ -39,16 +39,10 @@
               <a class="text-light" href="#">Perguntas Frequentes</a>
             </li>
             <li class="p-2 footer-links">
-              <a class="text-light" href="#">Trocar é fácil</a>
+              <a class="text-light" target="_blank" href="assets/pdfs/termosClothing.pdf">Termos e condições</a>
             </li>
             <li class="p-2 footer-links">
-              <a class="text-light" href="#">Como cuidar de seus básicos</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Termos e condições</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Políticas de privacidade</a>
+              <a class="text-light" target="_blank" href="assets/pdfs/politica-privacidade.pdf">Políticas de privacidade</a>
             </li>
             <li class="p-2 footer-links">
               <a class="text-light" href="#">Trabalhe Conosco</a>
@@ -56,7 +50,7 @@
           </ul>
         </div>
       </div>
-      <div class="d-flex justify-content-start gap-3 w-25">
+      <div class="footer-social-row d-flex justify-content-start gap-3">
         <a href=""
           ><img class="icons" src="assets/img/instagram-icon.png" alt=""
         /></a>
@@ -72,7 +66,7 @@
         /></a>
       </div>
       <!-- Botão para subir a página -->
-      <div class="d-flex justify-content-end sticky-bottom p-3">
+      <div class="footer-backtotop-wrap d-flex justify-content-end sticky-bottom p-3">
         <button class="button back-to-top">
           <svg class="svgIcon" viewBox="0 0 384 512">
             <path

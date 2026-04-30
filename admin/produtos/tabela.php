@@ -28,9 +28,9 @@
           <tr>               
             <td><?= htmlspecialchars($produto['nome'])?></td>
             <td><?= htmlspecialchars($produto['descricao'])?></td>
-            <td>R$ <?= number_format($produto['preco'], 2, ',', '.') ?></td>
+            <td class="text-nowrap">R$ <?= number_format($produto['preco'], 2, ',', '.') ?></td>
             <td><?= htmlspecialchars($produto['estoque'])?></td>
-            <td>
+            <td class="d-flex justify-content-center gap-2 flex-nowrap">
               <a href="form.php?id=<?= htmlspecialchars($produto['id'])?>" class="btn btn-warning">Editar</a>
               <a href="deletar.php?id=<?= htmlspecialchars($produto['id'])?>" class="btn btn-danger" onclick="deletar(event, this.href)">Deletar</a>
             </td>

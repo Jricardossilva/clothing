@@ -41,10 +41,50 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             <label class="form-label">Nome do produto</label>
             <input type="text" name="nome" class="form-control" required value="<?= htmlspecialchars($produto['nome']) ?>">
         </div>
-        <div class="mb-3 col-md-2">
-            <label class="form-label">Cor</label>
-            <input type="color" name="cor" class="form-control" required value="<?= $produto['cor'] ?>">
-        </div>
+    
+    <div class="mb-3 col-md-2">
+    <label for="cor" class="form-label">
+        Cor
+    </label>
+
+    <select 
+        name="cor" 
+        id="cor" 
+        class="form-select" 
+        required
+    >
+
+        <option value="">
+            Selecione uma cor
+        </option>
+
+        <option value="Vermelho">
+            🔴 Vermelho
+        </option>
+
+        <option value="Preto">
+            ⚫ Preto
+        </option>
+
+        <option value="Branco">
+            ⚪ Branco
+        </option>
+
+        <option value="Amarelo">
+            🟡 Amarelo
+        </option>
+
+        <option value="Verde">
+            🟢 Verde
+        </option>
+
+        <option value="Azul">
+            🔵 Azul
+        </option>
+
+    </select>
+
+</div>
         <div class="mb-3 col-md-2">
             <label class="form-label">Preço</label>
             <input type="number" name="preco" step="0.01" class="form-control" required value="<?= $produto['preco'] ?>">

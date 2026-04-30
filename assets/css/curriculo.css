@@ -1,17 +1,16 @@
-/* CONFIGURAÇÃO GERAL */
-body {
-  background: #ffffff;
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 30px;
-}
 
 /* GRID 3 POR LINHA */
-.container {
+.grade {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 25px;
   justify-items: center;
+  margin: 30px;
+}
+
+.devs-page {
+  padding-top: 24px;
+  padding-bottom: 24px;
 }
 
 /* CARD */
@@ -21,7 +20,6 @@ body {
   perspective: 1000px;
 }
 
-/* INTERNO */
 .flip-card-inner {
   width: 100%;
   height: 100%;
@@ -30,12 +28,10 @@ body {
   transform-style: preserve-3d;
 }
 
-/* HOVER (desktop) */
 .flip-card:hover .flip-card-inner {
   transform: rotateY(180deg);
 }
 
-/* FRENTE E VERSO */
 .flip-card-front,
 .flip-card-back {
   position: absolute;
@@ -45,11 +41,9 @@ body {
   backface-visibility: hidden;
   overflow: hidden;
   box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  /* Garante que o padding não aumente o tamanho do card */
   box-sizing: border-box; 
 }
 
-/* FRENTE */
 .flip-card-front {
   background: #3c4a60;
   color: white;
@@ -68,7 +62,6 @@ body {
   margin: 15px 0;
 }
 
-/* VERSO (Ajustado para centralizar o texto) */
 .flip-card-back {
   background: linear-gradient(135deg, #2563eb, #1e40af);
   color: white;
@@ -78,8 +71,6 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  
-  /* Respiro interno para o texto não bater nas bordas */
   padding: 25px;
   text-align: center;
 }
@@ -90,42 +81,65 @@ body {
   font-size: 1.4rem;
 }
 
-/* DESCRIÇÃO (Ajustada para melhor leitura) */
 .descricao {
   font-size: 14px;
   line-height: 1.6;
   margin: 10px 0;
-  /* Limita a largura interna para o texto respirar */
   max-width: 100%; 
 }
 
 /* ÍCONES */
-.icons {
+.icones {
   display: flex;
   gap: 20px;
   margin-top: 15px;
 }
 
-.icons a {
+.icones a {
   color: white;
   font-size: 24px;
   transition: 0.3s;
 }
 
-.icons a:hover {
+.icones a:hover {
   transform: scale(1.2);
   color: #93c5fd;
 }
 
-/* RESPONSIVO */
 @media (max-width: 900px) {
-  .container {
+  .grade {
     grid-template-columns: repeat(2, 1fr);
+    margin: 24px 16px;
   }
 }
 
 @media (max-width: 600px) {
-  .container {
+  .grade {
     grid-template-columns: 1fr;
+    margin: 20px 0;
+    gap: 18px;
+  }
+
+  .flip-card {
+    width: min(100%, 320px);
+    height: 340px;
+  }
+
+  .flip-card-back {
+    padding: 18px;
+  }
+
+  .flip-card-back h3 {
+    font-size: 1.2rem;
+  }
+
+  .descricao {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .icones {
+    gap: 16px;
+    margin-top: 12px;
   }
 }
