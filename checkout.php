@@ -12,6 +12,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'pagar')
 
     $carrinho = json_decode($_POST['carrinho'] ?? '', true);
     try {
+        if (!is_array($carrinho)) {
+            throw new Exception("Carrinho invalido");
+        }
+
+        $itensCarrinho = [];
+
+        foreach ($carrinho as $chave => $item) {
+            if (is_array($item)) {
+                $produto_id = (int) ($item['id'] ?? 0);
+                $quantidade = (int) ($item['quantity'] ?? 0);
+            } else {
+                $produto_id = (int) $chave;
+                $quantidade = (int) $item;
+            }
+
+            if ($produto_id > 0 && $quantidade > 0) {
+                $itensCarrinho[$produto_id] = ($itensCarrinho[$produto_id] ?? 0) + $quantidade;
+            }
+        }
+
+        if (empty($itensCarrinho)) {
+            throw new Exception("Carrinho vazio");
+        }
+
         $pdo->beginTransaction();
         // =========================
         // DADOS CLIENTE
@@ -24,7 +48,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'pagar')
         // =========================
         // DADOS PAGAMENTO / FRETE
         // =========================
-        $metodo_pagamento = $_POST['paymentMethod'];
+        $metodosPagamento = [
+            'credit' => 'credito',
+            'credito' => 'credito',
+            'debit' => 'debito',
+            'debito' => 'debito',
+            'pix' => 'pix',
+            'boleto' => 'boleto',
+        ];
+        $metodo_pagamento = $metodosPagamento[$_POST['paymentMethod'] ?? ''] ?? '';
+
+        if ($metodo_pagamento === '') {
+            throw new Exception("Metodo de pagamento invalido");
+        }
         $frete = floatval($_POST['frete'] ?? 0);
 
         // =========================
@@ -75,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'pagar')
             // =========================
             // 3. CALCULAR TOTAL + LOCK ESTOQUE
             // =========================
-            foreach ($carrinho as $produto_id => $quantidade) {
+            foreach ($itensCarrinho as $produto_id => $quantidade) {
 
             $stmt = $pdo->prepare("
                 SELECT id, estoque, preco 
@@ -127,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'pagar')
             // =========================
             // 6. ITENS + UPDATE ESTOQUE
             // =========================
-            foreach ($carrinho as $produto_id => $quantidade) {
+            foreach ($itensCarrinho as $produto_id => $quantidade) {
 
                 $stmt = $pdo->prepare("
                     SELECT preco 
@@ -170,11 +206,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'pagar')
             $pdo->commit();
 
 
-            echo "<script>alert('Compra realizada com sucesso ✔️');</script>";
+            echo "<script>
+                localStorage.removeItem('shoppingCart');
+                localStorage.removeItem('checkoutCouponCode');
+                window.location.href = 'index.php';
+            </script>";
 
         } catch (Exception $e) {
 
-            $pdo->rollback();
+            if ($pdo->inTransaction()) {
+                $pdo->rollback();
+            }
 
             echo "<script>alert('Erro: " . $e->getMessage() . "');</script>";
         }
@@ -330,6 +372,8 @@ function calcularFreteSimulado($estadoDestino, $peso)
 
                 <div class="col-md-7 col-lg-8">
 	                    <form method="POST" class="needs-validation mb-5" id="checkoutForm" novalidate>
+                        <input type="hidden" name="carrinho" id="carrinhoInput">
+                        <input type="hidden" name="frete" id="freteInput" value="<?php echo htmlspecialchars((string) $valorFrete, ENT_QUOTES, 'UTF-8'); ?>">
                         <div class="row g-3">
                             <div class="col-sm-6">
                                 <label for="firstName" class="form-label">Nome</label>
