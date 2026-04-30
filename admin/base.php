@@ -2,10 +2,10 @@
 
 session_start();
 // Defina a base do seu projeto (ajuste se necessário)
-define('BASE_URL', 'http://localhost/clothing/admin');
+define('BASE_URL', 'https://projetointegrador.com.br/clothing/admin');
 
 if(!isset($_SESSION['usuario_id'])) {
-    header("Location: http://localhost/clothing/login.php");
+    header("Location: https://projetointegrador.com.br/clothing/login.php");
     exit;
 }
 
@@ -22,7 +22,7 @@ if(!isset($_SESSION['usuario_id'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- usa BASE_URL aqui também -->
-    <link rel="stylesheet" href="http://localhost/clothing/assets/css/style.css">
+    <link rel="stylesheet" href="https://projetointegrador.com.br/clothing/assets/css/style.css">
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -45,6 +45,6 @@ if(!isset($_SESSION['usuario_id'])) {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="http://localhost/clothing/assets/js/funcoesGlobais/sweetAlerts/sweetAlerts.js"></script>
+<script src="https://projetointegrador.com.br/clothing/assets/js/funcoesGlobais/sweetAlerts/sweetAlerts.js"></script>
 </body>
 </html>
