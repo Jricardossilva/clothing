@@ -83,7 +83,7 @@
 
         <div class="icones">
           <a href="https://github.com/rubinelle" target="_blank"><i class="fab fa-github"></i></a>
-          <a href="#"><i class="fab fa-linkedin"></i></a>
+          <a href="https://www.linkedin.com/in/ernanda-rubinelle-34a232252/"><i class="fab fa-linkedin"></i></a>
           <a href="https://wa.me/558388153712" target="_blank"><i class="fab fa-whatsapp"></i></a>
         </div>
       </div>
