@@ -103,35 +103,45 @@
             <button class="btn btn-outline-secondary" type="button" data-quantity-action="increase">+</button>
           </div>
         </div>
-
-
-        <div class="mb-3">
-          <label class="form-label fw-bold">Calcular frete:</label>
-          <input type="text" class="form-control" placeholder="Digite seu CEP" style="max-width: 200px;">
-        </div>
-
+       
         <?php
           $qtdEstoque = $produto['estoque'];
-          if($qtdEstoque > 0){
+          if ($qtdEstoque > 0) {
+            // Note o uso de pontos '.' para juntar o texto com as variáveis PHP
+            echo '<button
+                    class="btn btn-dark btn-lg mt-2"
+                    type="button"
+                    data-add-to-cart
+                    data-product-id="' . (int)$produto['id'] . '"
+                    data-product-name="' . htmlspecialchars($produto['nome']) . '"
+                    data-product-price="' . htmlspecialchars($precoFormatado) . '"
+                    data-product-image="' . htmlspecialchars($imagemProduto) . '"
+                    data-product-url="' . htmlspecialchars('produto.php?id=' . (int)$produto['id']) . '">
+                    Adicionar ao carrinho
+                  </button>';
+            
             echo '<p class="text-success fw-bold">🟢 Item está em estoque</p>';
-          }else{
-            echo '<p class="text-danger fw-bold">🔴 Produto em falta</p>';
+        }        
+           else {
+              echo '<p class="text-danger fw-bold">🔴 Produto em falta</p>';
+              echo '<div class="alert alert-secondary mt-3">
+                      <!-- ADICIONADO: ID mensagemAlerta -->
+                      <div id="mensagemAlerta"></div> 
+                      
+                      <p class="small mb-2"> Quer ser avisado quando chegar? </p>
+                      
+                      <!-- ADICIONADO: ID meuFormAvisar -->
+                      <form id="meuFormAvisar"  method="POST" class="d-flex gap-2">
+                        <input type="hidden" name="produto_id" value="' . (int)$produto['id'] . '">
+                        
+                        <!-- ADICIONADO: ID emailCliente -->
+                        <input type="email" id="emailCliente" name="email" class="form-control form-control-sm" placeholder="Seu e-mail" required>
+                        
+                        <button type="submit" class="col-auto btn btn-sm btn-dark">Avisar-me</button>
+                      </form>
+                    </div>';
           }
-        ?>
-        
-
-
-        <button
-          class="btn btn-dark btn-lg mt-2"
-          type="button"
-          data-add-to-cart
-          data-product-id="<?= (int) $produto['id'] ?>"
-          data-product-name="<?= htmlspecialchars($produto['nome']) ?>"
-          data-product-price="<?= htmlspecialchars($precoFormatado) ?>"
-          data-product-image="<?= htmlspecialchars($imagemProduto) ?>"
-          data-product-url="<?= htmlspecialchars('produto.php?id=' . (int) $produto['id']) ?>">
-          Adicionar ao carrinho
-        </button>
+          ?>               
        <br> <br>
         
        <p class="texto-destaque"><?= htmlspecialchars($produto['descricao']) ?></p>
@@ -147,6 +157,32 @@
     }
   </script>
   <script src="assets/js/produto.js"></script>
+
+  <script>
+  const form = document.getElementById('meuFormAvisar');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      // Impede o recarregamento imediato para mostrar o alerta
+      e.preventDefault(); 
+      
+      const email = document.getElementById('emailCliente').value;
+      const placeholder = document.getElementById('mensagemAlerta');
+      
+      // Mostra o alerta
+      placeholder.innerHTML = `
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          E-mail <strong>${email}</strong> cadastrado com sucesso!
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>`;
+
+      // Opcional: Envia o formulário de verdade após 2 segundos
+      setTimeout(() => {
+        this.submit();
+      }, 2000);
+    });
+  }
+</script>
+
 </body>
 
 </html>
