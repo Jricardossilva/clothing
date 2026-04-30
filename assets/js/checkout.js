@@ -45,6 +45,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const spanClose = document.querySelector(".close-btn") || document.querySelector(".close");
 
+    if (checkoutForm) {
+        checkoutForm.addEventListener("submit", function () {
+            const cart = getCartItems();
+            const carrinhoInput = document.getElementById("carrinhoInput");
+
+            if (carrinhoInput) {
+                carrinhoInput.value = JSON.stringify(cart);
+            }
+        });
+    }
+    
     function getAppliedCouponCode() {
         return localStorage.getItem(CHECKOUT_COUPON_KEY) || "";
     }
@@ -174,45 +185,45 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     if (checkoutForm) {
-        checkoutForm.addEventListener("submit", function(event) {
-            const submitter = event.submitter;
+        const btn = document.getElementById("checkoutSubmitPayment");
+        if(btn) {
+             btn.addEventListener("click", function (event) {
+                console.log("Clique no botão pagar");
 
-            if (!submitter || submitter.id !== "checkoutSubmitPayment") {
-                return;
-            }
+                const form = document.getElementById("checkoutForm");
+                if (!form.checkValidity()) {
+                    event.preventDefault();
 
-            event.preventDefault();
-            checkoutForm.classList.add("was-validated");
-
-            if (!checkoutForm.checkValidity()) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Formulario incompleto",
-                    text: "Preencha todos os campos obrigatorios para finalizar o pagamento."
-                });
-                return;
-            }
-
-            Swal.fire({
-                title: "Processando pagamento...",
-                text: "Aguarde enquanto confirmamos seu pagamento.",
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: function() {
-                    Swal.showLoading();
-                }
-            }).then(function(result) {
-                if (result.dismiss === Swal.DismissReason.timer) {
                     Swal.fire({
-                        icon: "success",
-                        title: "Pagamento realizado com sucesso",
-                        text: "Seu pagamento foi concluido."
+                        icon: "error",
+                        title: "Formulario incompleto",
+                        text: "Preencha os campos obrigatorios."
                     });
+
+                    return;
                 }
+                Swal.fire({
+                    title: "Processando pagamento...",
+                    text: "Aguarde enquanto confirmamos seu pagamento.",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: function() {
+                        Swal.showLoading();
+                    }
+                }).then(function(result) {
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Pagamento realizado com sucesso",
+                            text: "Seu pagamento foi concluido."
+                        });
+                    }
+                });
+                console.log("Form válido, enviando");
             });
-        });
+        }
     }
 
     function toggleCardFields(showCardFields) {
