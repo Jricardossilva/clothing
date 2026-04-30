@@ -106,11 +106,23 @@
        
         <?php
           $qtdEstoque = $produto['estoque'];
-
           if ($qtdEstoque > 0) {
-              echo '<button class="btn btn-dark btn-lg mt-2" type="button" data-add-to-cart ...>Adicionar ao carrinho</button>';
-              echo '<p class="text-success fw-bold">🟢 Item está em estoque</p>';
-          } else {
+            // Note o uso de pontos '.' para juntar o texto com as variáveis PHP
+            echo '<button
+                    class="btn btn-dark btn-lg mt-2"
+                    type="button"
+                    data-add-to-cart
+                    data-product-id="' . (int)$produto['id'] . '"
+                    data-product-name="' . htmlspecialchars($produto['nome']) . '"
+                    data-product-price="' . htmlspecialchars($precoFormatado) . '"
+                    data-product-image="' . htmlspecialchars($imagemProduto) . '"
+                    data-product-url="' . htmlspecialchars('produto.php?id=' . (int)$produto['id']) . '">
+                    Adicionar ao carrinho
+                  </button>';
+            
+            echo '<p class="text-success fw-bold">🟢 Item está em estoque</p>';
+        }        
+           else {
               echo '<p class="text-danger fw-bold">🔴 Produto em falta</p>';
               echo '<div class="alert alert-secondary mt-3">
                       <!-- ADICIONADO: ID mensagemAlerta -->
@@ -125,13 +137,11 @@
                         <!-- ADICIONADO: ID emailCliente -->
                         <input type="email" id="emailCliente" name="email" class="form-control form-control-sm" placeholder="Seu e-mail" required>
                         
-                        <button type="submit" class="btn btn-primary btn-sm">Avisar-me</button>
+                        <button type="submit" class="col-auto btn btn-sm btn-dark">Avisar-me</button>
                       </form>
                     </div>';
           }
-          ?>
-
-                
+          ?>               
        <br> <br>
         
        <p class="texto-destaque"><?= htmlspecialchars($produto['descricao']) ?></p>
