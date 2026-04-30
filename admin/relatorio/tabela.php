@@ -1,6 +1,7 @@
 <?php
-    require '../../config/conexao.php';
-    $stmt = $pdo->query("
+require '../../config/conexao.php';
+
+$stmt = $pdo->query("
     SELECT 
         tabela_pedidos.id,
         tabela_pedidos.valor_total,
@@ -13,14 +14,28 @@
         ON tabela_pedidos.cliente_id = clientes.id
     INNER JOIN endereco 
         ON tabela_pedidos.endereco_entrega_id = endereco.id
-    INNER JOIN pagamento 
+    LEFT JOIN pagamento 
         ON pagamento.pedido_id = tabela_pedidos.id
 ");
-    $tabela_pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$tabela_pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+function formatarMetodoPagamento(?string $metodo): string
+{
+    $metodos = [
+        'pix' => 'Pix',
+        'credito' => 'Cartão de crédito',
+        'credit' => 'Cartão de crédito',
+        'debito' => 'Cartão de débito',
+        'debit' => 'Cartão de débito',
+        'boleto' => 'Boleto',
+    ];
+
+    return $metodos[$metodo ?? ''] ?? 'Nao informado';
+}
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h1>Relatório</h1>
+    <h1>Relatorio</h1>
     <a href="exportar.php" class="btn btn-success">
         Exportar
     </a>
@@ -38,10 +53,10 @@
     <tbody>
         <?php foreach ($tabela_pedidos as $pedido): ?>
             <tr>
-                <td><?php echo $pedido['nome']; ?></td>
-                <td><?php echo $pedido['estado']; ?></td>
-                <td>R$ <?php echo number_format($pedido['valor_total'], 2, ',', '.'); ?></td>
-                <td><?php echo $pedido['metodo_pagamento']; ?></td>
+                <td><?php echo htmlspecialchars($pedido['nome'], ENT_QUOTES, 'UTF-8'); ?></td>
+                <td><?php echo htmlspecialchars($pedido['estado'], ENT_QUOTES, 'UTF-8'); ?></td>
+                <td>R$ <?php echo number_format((float) $pedido['valor_total'], 2, ',', '.'); ?></td>
+                <td><?php echo htmlspecialchars(formatarMetodoPagamento($pedido['metodo_pagamento'] ?? null), ENT_QUOTES, 'UTF-8'); ?></td>
                 <td><?php echo date('d/m/Y', strtotime($pedido['data_pedido'])); ?></td>
             </tr>
         <?php endforeach; ?>

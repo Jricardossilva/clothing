@@ -1,8 +1,231 @@
 <?php
 
+session_start();
+require 'config/conexao.php';
+
 $valorFrete = 0;
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+// =============================
+// PROCESSAMENTO DA COMPRA
+// =============================
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'pagar') {
+
+    $carrinho = json_decode($_POST['carrinho'] ?? '', true);
+    try {
+        if (!is_array($carrinho)) {
+            throw new Exception("Carrinho invalido");
+        }
+
+        $itensCarrinho = [];
+
+        foreach ($carrinho as $chave => $item) {
+            if (is_array($item)) {
+                $produto_id = (int) ($item['id'] ?? 0);
+                $quantidade = (int) ($item['quantity'] ?? 0);
+            } else {
+                $produto_id = (int) $chave;
+                $quantidade = (int) $item;
+            }
+
+            if ($produto_id > 0 && $quantidade > 0) {
+                $itensCarrinho[$produto_id] = ($itensCarrinho[$produto_id] ?? 0) + $quantidade;
+            }
+        }
+
+        if (empty($itensCarrinho)) {
+            throw new Exception("Carrinho vazio");
+        }
+
+        $pdo->beginTransaction();
+        // =========================
+        // DADOS CLIENTE
+        // =========================
+        $nome = $_POST['nome'];
+        $sobrenome = $_POST['sobrenome'];
+        $email = $_POST['email'];
+        $telefone = $_POST['telefone'];
+
+        // =========================
+        // DADOS PAGAMENTO / FRETE
+        // =========================
+        $metodosPagamento = [
+            'credit' => 'credito',
+            'credito' => 'credito',
+            'debit' => 'debito',
+            'debito' => 'debito',
+            'pix' => 'pix',
+            'boleto' => 'boleto',
+        ];
+        $metodo_pagamento = $metodosPagamento[$_POST['paymentMethod'] ?? ''] ?? '';
+
+        if ($metodo_pagamento === '') {
+            throw new Exception("Metodo de pagamento invalido");
+        }
+        $frete = floatval($_POST['frete'] ?? 0);
+
+        // =========================
+        // DADOS ENDEREÇO
+        // =========================
+        $logradouro = $_POST['rua'];
+        $numero = $_POST['numero'];
+        $bairro = $_POST['bairro'];
+        $cidade = $_POST['cidade'];
+        $estado = $_POST['estado'];
+        $cep = $_POST['cep'];
+        $pais = $_POST['pais'];
+
+        $total = 0;
+
+            // =========================
+            // 1. CRIAR CLIENTE
+            // =========================
+            $stmt = $pdo->prepare("
+                INSERT INTO clientes (nome, sobrenome, email, telefone)
+                VALUES (?, ?, ?, ?)
+            ");
+            $stmt->execute([$nome, $sobrenome, $email, $telefone]);
+
+            $cliente_id = $pdo->lastInsertId();
+
+            // =========================
+            // 2. INSERIR ENDEREÇO
+            // =========================
+            $stmt = $pdo->prepare("
+                INSERT INTO endereco 
+                (cliente_id, logradouro, numero, bairro, cidade, estado, cep, pais)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ");
+            $stmt->execute([
+                $cliente_id,
+                $logradouro,
+                $numero,
+                $bairro,
+                $cidade,
+                $estado,
+                $cep,
+                $pais
+            ]);
+
+            $endereco_id = $pdo->lastInsertId();
+
+            // =========================
+            // 3. CALCULAR TOTAL + LOCK ESTOQUE
+            // =========================
+            foreach ($itensCarrinho as $produto_id => $quantidade) {
+
+            $stmt = $pdo->prepare("
+                SELECT id, estoque, preco 
+                FROM produtos
+                WHERE id = ?
+                FOR UPDATE
+            ");
+            $stmt->execute([$produto_id]);
+
+            $dados = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$dados) {
+                throw new Exception("Produto não encontrado");
+            }
+
+            if ($dados['estoque'] < $quantidade) {
+                throw new Exception("Estoque insuficiente");
+            }
+
+            $total += $dados['preco'] * $quantidade;
+        }
+
+        $total += $frete;
+
+        // =========================
+        // 4. CRIAR PEDIDO
+        // =========================
+        $stmt = $pdo->prepare("
+            INSERT INTO tabela_pedidos
+            (cliente_id, endereco_entrega_id, valor_total, valor_frete, status_compra)
+            VALUES (?, ?, ?, ?, 'AGUARDANDO PAGAMENTO')
+        ");
+        $stmt->execute([$cliente_id, $endereco_id, $total, $frete]);
+
+        $pedido_id = $pdo->lastInsertId();
+
+        // =========================
+        // 5. PAGAMENTO
+        // =========================
+        $codigo_transacao = uniqid();
+
+        $stmt = $pdo->prepare("
+            INSERT INTO pagamento
+            (pedido_id, metodo_pagamento, status_pagamento, codigo_transacao)
+            VALUES (?, ?, 'aguardando', ?)
+        ");
+        $stmt->execute([$pedido_id, $metodo_pagamento, $codigo_transacao]);
+
+            // =========================
+            // 6. ITENS + UPDATE ESTOQUE
+            // =========================
+            foreach ($itensCarrinho as $produto_id => $quantidade) {
+
+                $stmt = $pdo->prepare("
+                    SELECT preco 
+                    FROM produtos
+                    WHERE id = ?
+                ");
+                $stmt->execute([$produto_id]);
+
+                $dados = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                $preco = $dados['preco'];
+                $subtotal = $preco * $quantidade;
+
+                // INSERT ITEM
+                $stmt = $pdo->prepare("
+                    INSERT INTO itens_pedido
+                    (pedido_id, produto_id, quantidade, preco_unitario, subtotal)
+                    VALUES (?, ?, ?, ?, ?)
+                ");
+                $stmt->execute([
+                    $pedido_id,
+                    $produto_id,
+                    $quantidade,
+                    $preco,
+                    $subtotal
+                ]);
+
+                // UPDATE ESTOQUE
+                $stmt = $pdo->prepare("
+                    UPDATE produtos
+                    SET estoque = estoque - ?
+                    WHERE id = ?
+                ");
+                $stmt->execute([$quantidade, $produto_id]);
+            }
+
+            // =========================
+            // FINALIZAR
+            // =========================
+            $pdo->commit();
+
+
+            echo "<script>
+                localStorage.removeItem('shoppingCart');
+                localStorage.removeItem('checkoutCouponCode');
+                window.location.href = 'index.php';
+            </script>";
+
+        } catch (Exception $e) {
+
+            if ($pdo->inTransaction()) {
+                $pdo->rollback();
+            }
+
+            echo "<script>alert('Erro: " . $e->getMessage() . "');</script>";
+        }
+}
+
+// =============================
+// FRETE
+// =============================
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'frete') {
     $estado = $_POST['estado'] ?? '';
     $peso = $_POST['peso'] ?? 1;
 
@@ -70,7 +293,6 @@ function calcularFreteSimulado($estadoDestino, $peso)
 }
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -123,7 +345,7 @@ function calcularFreteSimulado($estadoDestino, $peso)
 	                        </li>
 	                    </ul>
                     <div class="input-group">
-                        <?php if ($_SERVER['REQUEST_METHOD'] == 'POST'): ?>
+                        <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'frete'): ?>
 
                             <?php if (isset($resultado['erro'])): ?>
                                 <p><?php echo $resultado['erro']; ?></p>
@@ -150,6 +372,8 @@ function calcularFreteSimulado($estadoDestino, $peso)
 
                 <div class="col-md-7 col-lg-8">
 	                    <form method="POST" class="needs-validation mb-5" id="checkoutForm" novalidate>
+                        <input type="hidden" name="carrinho" id="carrinhoInput">
+                        <input type="hidden" name="frete" id="freteInput" value="<?php echo htmlspecialchars((string) $valorFrete, ENT_QUOTES, 'UTF-8'); ?>">
                         <div class="row g-3">
                             <div class="col-sm-6">
                                 <label for="firstName" class="form-label">Nome</label>
@@ -238,7 +462,7 @@ function calcularFreteSimulado($estadoDestino, $peso)
                             </div>
 
 
-                            <button type="submit" class="btn btn-secondary">Calcular frete</button>
+                            <button type="submit" name="acao" value="frete">Calcular frete</button>
                             <!-- <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button> -->
                             <hr class="my-4">
                             <h4 class="mb-3">Pagamento</h4>
@@ -317,7 +541,7 @@ function calcularFreteSimulado($estadoDestino, $peso)
                             </div>
 
                             <hr class="my-4">
-	                            <button class="w-100 btn btn-primary btn-lg mt-3" id="checkoutSubmitPayment" type="submit">
+	                            <button class="w-100 btn btn-primary btn-lg mt-3" name="acao" value="pagar" id="checkoutSubmitPayment" type="submit">
 	                                Realizar pagamento
 	                            </button>
 
@@ -353,8 +577,6 @@ function calcularFreteSimulado($estadoDestino, $peso)
             </div>
         </div>
     </div>
-
-    <input type="text" id="cep" placeholder="00000-000" maxlength="9">
 
     <script>
         function mascaraCEP(valor) {
@@ -502,31 +724,6 @@ function calcularFreteSimulado($estadoDestino, $peso)
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/js/checkout.js"></script>
-           
-    
-    
-    <div id="modalPixContainer" class="modal">
-        <div class="modal-dialog d-flex justify-content-center align-items-center">
-            <div class="modal-content text-center p-4">
-                <span class="close-btn" onclick="fecharModal()" style="position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer;">&times;</span>
-                
-                <h2 class="modal-title mb-3">Pagamento PIX</h2>
-                
-                <div class="qr-container mb-3">
-                    <img src="../clothing/assets/img/testeqrcode.jpg" alt="QR Code PIX"
-                    style="width: 100%; max-width: 250px; height: auto; margin: 0 auto; display: block; border: 1px solid #eee; padding: 15px; background: #fff;">
-                    <p class="qr-instruction mt-2 mb-3" style="font-size: 15px; color: #666;">Aponte a câmera do seu banco para o código acima</p>
-                </div>
-                
-                <div class="upload-section d-flex flex-column align-items-center">
-                    <label for="comprovante" class="mb-2 fw-bold">Anexar Comprovante:</label>
-                    <input type="file" id="comprovante" class="form-control mb-3" style="max-width: 400px; width: 100%;" accept="image/*,.pdf">
-                    <button type="button" class="btn btn-primary" onclick="enviarDados()" style="max-width: 400px; width: 100%; padding: 12px 0; font-size: 1.1rem;">
-                        Confirmar Pagamento
-                    </button>
-                </div>
-            </div>
-        </div>
-        
+             
     </body>
 </html>

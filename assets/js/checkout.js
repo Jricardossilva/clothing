@@ -45,6 +45,63 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const spanClose = document.querySelector(".close-btn") || document.querySelector(".close");
 
+    if (checkoutForm) {
+        checkoutForm.addEventListener("submit", function (event) {
+            const cart = getCartItems();
+            const carrinhoInput = document.getElementById("carrinhoInput");
+            const freteInput = document.getElementById("freteInput");
+            const shippingCostElement = document.getElementById("checkoutShippingCost");
+            const submitter = event.submitter || document.activeElement;
+            const isPaymentSubmit = submitter && submitter.name === "acao" && submitter.value === "pagar";
+
+            if (carrinhoInput) {
+                carrinhoInput.value = JSON.stringify(cart);
+            }
+
+            if (freteInput && shippingCostElement) {
+                freteInput.value = shippingCostElement.dataset.shippingCost || "0";
+            }
+
+            if (!isPaymentSubmit || checkoutForm.dataset.paymentReady === "true") {
+                checkoutForm.dataset.paymentReady = "false";
+                return;
+            }
+
+            event.preventDefault();
+
+            if (!checkoutForm.checkValidity()) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Formulario incompleto",
+                    text: "Preencha os campos obrigatorios."
+                });
+
+                return;
+            }
+
+            Swal.fire({
+                title: "Processando pagamento...",
+                text: "Aguarde enquanto confirmamos seu pagamento.",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: function() {
+                    Swal.showLoading();
+                }
+            }).then(function() {
+                return Swal.fire({
+                    icon: "success",
+                    title: "Pagamento realizado com sucesso",
+                    text: "Seu pagamento foi concluido."
+                });
+            }).then(function() {
+                checkoutForm.dataset.paymentReady = "true";
+                checkoutForm.requestSubmit(submitter);
+            });
+        });
+    }
+    
     function getAppliedCouponCode() {
         return localStorage.getItem(CHECKOUT_COUPON_KEY) || "";
     }
@@ -169,48 +226,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 icon: "error",
                 title: "Cupom invalido",
                 text: "O codigo informado nao e valido."
-            });
-        });
-    }
-
-    if (checkoutForm) {
-        checkoutForm.addEventListener("submit", function(event) {
-            const submitter = event.submitter;
-
-            if (!submitter || submitter.id !== "checkoutSubmitPayment") {
-                return;
-            }
-
-            event.preventDefault();
-            checkoutForm.classList.add("was-validated");
-
-            if (!checkoutForm.checkValidity()) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Formulario incompleto",
-                    text: "Preencha todos os campos obrigatorios para finalizar o pagamento."
-                });
-                return;
-            }
-
-            Swal.fire({
-                title: "Processando pagamento...",
-                text: "Aguarde enquanto confirmamos seu pagamento.",
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: function() {
-                    Swal.showLoading();
-                }
-            }).then(function(result) {
-                if (result.dismiss === Swal.DismissReason.timer) {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Pagamento realizado com sucesso",
-                        text: "Seu pagamento foi concluido."
-                    });
-                }
             });
         });
     }
