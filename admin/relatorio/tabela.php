@@ -45,8 +45,8 @@ function formatarMetodoPagamento(?string $metodo): string
         <tr>
             <th>Nome</th>
             <th>Estado</th>
-            <th>Preco</th>
-            <th>Forma de pagamento</th>
+            <th>Preço</th>
+            <th>Forma de Pagamento</th>
             <th>Data do pedido</th>
         </tr>
     </thead>
