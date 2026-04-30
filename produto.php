@@ -17,8 +17,99 @@
         header("Location: index.php");
         exit;
     } 
+
+    function normalizarListaOpcoes(array $opcoes, bool $maiusculo = false): array
+    {
+        $opcoesTratadas = [];
+
+        foreach ($opcoes as $opcao) {
+            $valor = trim((string) $opcao);
+
+            if ($valor === '') {
+                continue;
+            }
+
+            $opcoesTratadas[] = $maiusculo ? strtoupper($valor) : $valor;
+        }
+
+        return array_values(array_unique($opcoesTratadas));
+    }
+
+    function normalizarCaminhoImagemProduto(?string $caminho): string
+    {
+        $caminho = trim((string) $caminho);
+
+        if ($caminho === '') {
+            return 'assets/img/camiseta-preta.jpg';
+        }
+
+        if (
+            str_starts_with($caminho, 'http://') ||
+            str_starts_with($caminho, 'https://') ||
+            str_starts_with($caminho, 'uploads/') ||
+            str_starts_with($caminho, 'assets/')
+        ) {
+            return $caminho;
+        }
+
+        return 'uploads/' . ltrim($caminho, '/');
+    }
+
+    function obterCorCss(string $cor): string
+    {
+        $corTratada = trim($cor);
+
+        if (preg_match('/^#(?:[0-9a-f]{3}){1,2}$/i', $corTratada)) {
+            return $corTratada;
+        }
+
+        $mapaCores = [
+            'amarelo' => '#ffff00',
+            'azul' => '#3399ff',
+            'bege' => '#f5f5dc',
+            'branco' => '#ffffff',
+            'cinza' => '#808080',
+            'laranja' => '#ffa500',
+            'marrom' => '#8b4513',
+            'preto' => '#000000',
+            'rosa' => '#ffc0cb',
+            'roxo' => '#800080',
+            'verde' => '#2e8b57',
+            'vermelho' => '#ff0000',
+        ];
+
+        return $mapaCores[strtolower($corTratada)] ?? $corTratada;
+    }
+
+    $tamanhosDisponiveis = normalizarListaOpcoes([$produto['tamanho'] ?? ''], true);
+    $coresDisponiveis = normalizarListaOpcoes([$produto['cor'] ?? '']);
+
+    $stmtTabelaVariacoes = $pdo->query("SHOW TABLES LIKE 'produto_variacoes'");
+    $tabelaVariacoesExiste = (bool) $stmtTabelaVariacoes->fetchColumn();
+
+    if ($tabelaVariacoesExiste) {
+        $stmtVariacoes = $pdo->prepare(
+            'SELECT cor, tamanho
+             FROM produto_variacoes
+             WHERE produto_id = ?
+               AND COALESCE(estoque, 0) > 0'
+        );
+        $stmtVariacoes->execute([$id]);
+        $variacoes = $stmtVariacoes->fetchAll();
+
+        $tamanhosVariacoes = normalizarListaOpcoes(array_column($variacoes, 'tamanho'), true);
+        $coresVariacoes = normalizarListaOpcoes(array_column($variacoes, 'cor'));
+
+        if ($tamanhosVariacoes) {
+            $tamanhosDisponiveis = $tamanhosVariacoes;
+        }
+
+        if ($coresVariacoes) {
+            $coresDisponiveis = $coresVariacoes;
+        }
+    }
     
-    $imagemProduto = !empty($produto['url_imagem']) ? $produto['url_imagem'] : 'assets/img/camiseta-preta.jpg';
+    $imagemProduto = normalizarCaminhoImagemProduto($produto['url_imagem'] ?? null);
     $precoFormatado = number_format((float) $produto['preco'], 2, ',', '.');
     $dadosProdutoJs = json_encode([
         'id' => (string) $produto['id'],
@@ -75,23 +166,50 @@
 
         <div class="mb-3">
           <label class="form-label fw-bold">Tamanho:</label><br>
-          <div class="btn-group" role="group">
-            <button class="btn btn-outline-secondary">PP</button>
-            <button class="btn btn-outline-secondary">P</button>
-            <button class="btn btn-outline-secondary">M</button>
-            <button class="btn btn-outline-secondary">G</button>
-            <button class="btn btn-outline-secondary">GG</button>
-            <button class="btn btn-outline-secondary">XGG</button>
-          </div>
+          <?php if ($tamanhosDisponiveis): ?>
+            <div class="btn-group" role="group" aria-label="Tamanhos disponiveis">
+              <?php foreach ($tamanhosDisponiveis as $indice => $tamanhoDisponivel): ?>
+                <input
+                  type="radio"
+                  class="btn-check"
+                  name="tamanho"
+                  id="tamanho-<?= $indice ?>"
+                  value="<?= htmlspecialchars($tamanhoDisponivel, ENT_QUOTES, 'UTF-8') ?>"
+                  <?= $indice === 0 ? 'checked' : '' ?>>
+                <label class="btn btn-outline-secondary" for="tamanho-<?= $indice ?>">
+                  <?= htmlspecialchars($tamanhoDisponivel, ENT_QUOTES, 'UTF-8') ?>
+                </label>
+              <?php endforeach; ?>
+            </div>
+          <?php else: ?>
+            <p class="text-muted mb-0">Nenhum tamanho cadastrado.</p>
+          <?php endif; ?>
         </div>
 
         <div class="mb-3">
-          <label class="form-label fw-bold">Cores disponíveis:</label><br>
-          <span class="color-swatch color-black"></span>
-          <span class="color-swatch color-navy"></span>
-          <span class="color-swatch color-gray"></span>
-          <span class="color-swatch color-blue"></span>
-          <span class="color-swatch color-green"></span>
+          <label class="form-label fw-bold">Cor disponível:</label><br>
+          <?php if ($coresDisponiveis): ?>
+            <div class="product-color-options" role="group" aria-label="Cores disponiveis">
+              <?php foreach ($coresDisponiveis as $indice => $corDisponivel): ?>
+                <input
+                  type="radio"
+                  class="color-radio"
+                  name="cor"
+                  id="cor-<?= $indice ?>"
+                  value="<?= htmlspecialchars($corDisponivel, ENT_QUOTES, 'UTF-8') ?>"
+                  <?= $indice === 0 ? 'checked' : '' ?>>
+                <label
+                  class="color-swatch"
+                  for="cor-<?= $indice ?>"
+                  title="<?= htmlspecialchars($corDisponivel, ENT_QUOTES, 'UTF-8') ?>"
+                  style="background-color: <?= htmlspecialchars(obterCorCss($corDisponivel), ENT_QUOTES, 'UTF-8') ?>;">
+                  <span class="visually-hidden"><?= htmlspecialchars($corDisponivel, ENT_QUOTES, 'UTF-8') ?></span>
+                </label>
+              <?php endforeach; ?>
+            </div>
+          <?php else: ?>
+            <p class="text-muted mb-0">Nenhuma cor cadastrada.</p>
+          <?php endif; ?>
         </div>
 
 

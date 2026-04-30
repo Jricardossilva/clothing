@@ -8,6 +8,32 @@
   margin-right: 5px;
 }
 
+.product-color-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.color-radio {
+  display: none;
+}
+
+.color-radio:checked + .color-swatch {
+  border-color: #111;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #111;
+}
+
+.btn-check:checked + .btn-outline-secondary {
+  color: #fff;
+  background-color: #111;
+  border-color: #111;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(17, 17, 17, 0.28);
+}
+
+.btn-check:focus + .btn-outline-secondary {
+  box-shadow: 0 0 0 4px rgba(17, 17, 17, 0.2);
+}
+
 .color-black {
   background-color: #000;
 }

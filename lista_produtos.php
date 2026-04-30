@@ -52,6 +52,26 @@ function obterFiltroArray(string $nome): array
     )));
 }
 
+function normalizarCaminhoImagemProduto(?string $caminho): string
+{
+    $caminho = trim((string) $caminho);
+
+    if ($caminho === '') {
+        return 'assets/img/camiseta-preta.jpg';
+    }
+
+    if (
+        str_starts_with($caminho, 'http://') ||
+        str_starts_with($caminho, 'https://') ||
+        str_starts_with($caminho, 'uploads/') ||
+        str_starts_with($caminho, 'assets/')
+    ) {
+        return $caminho;
+    }
+
+    return 'uploads/' . ltrim($caminho, '/');
+}
+
 $generoParam = strtolower(trim((string) filter_input(INPUT_GET, 'genero', FILTER_UNSAFE_RAW)));
 $ordenarParam = strtolower(trim((string) filter_input(INPUT_GET, 'ordenar', FILTER_UNSAFE_RAW)));
 $tamanhosParam = obterFiltroArray('tamanho');
@@ -254,6 +274,32 @@ function formatarNomeCor(string $cor): string
 
     return $mapaCores[$corTratada] ?? $cor;
 }
+
+function obterCorCss(string $cor): string
+{
+    $corTratada = trim($cor);
+
+    if (preg_match('/^#(?:[0-9a-f]{3}){1,2}$/i', $corTratada)) {
+        return $corTratada;
+    }
+
+    $mapaCores = [
+        'amarelo' => '#ffff00',
+        'azul' => '#3399ff',
+        'bege' => '#f5f5dc',
+        'branco' => '#ffffff',
+        'cinza' => '#808080',
+        'laranja' => '#ffa500',
+        'marrom' => '#8b4513',
+        'preto' => '#000000',
+        'rosa' => '#ffc0cb',
+        'roxo' => '#800080',
+        'verde' => '#2e8b57',
+        'vermelho' => '#ff0000',
+    ];
+
+    return $mapaCores[strtolower($corTratada)] ?? $corTratada;
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -334,7 +380,7 @@ function formatarNomeCor(string $cor): string
                                             <?php echo in_array($corDisponivel, $coresSelecionadas, true) ? 'checked' : ''; ?>>
                                         <span
                                             class="filter-color-swatch"
-                                            style="background-color: <?php echo htmlspecialchars($corDisponivel, ENT_QUOTES, 'UTF-8'); ?>;"
+                                            style="background-color: <?php echo htmlspecialchars(obterCorCss($corDisponivel), ENT_QUOTES, 'UTF-8'); ?>;"
                                             aria-label="<?php echo htmlspecialchars(formatarNomeCor($corDisponivel), ENT_QUOTES, 'UTF-8'); ?>">
                                         </span>
                                         <span class="filter-color-name"><?php echo htmlspecialchars(formatarNomeCor($corDisponivel), ENT_QUOTES, 'UTF-8'); ?></span>
@@ -407,7 +453,7 @@ function formatarNomeCor(string $cor): string
                                                 <?php echo in_array($corDisponivel, $coresSelecionadas, true) ? 'checked' : ''; ?>>
                                             <span
                                                 class="filter-color-swatch"
-                                                style="background-color: <?php echo htmlspecialchars($corDisponivel, ENT_QUOTES, 'UTF-8'); ?>;"
+                                                style="background-color: <?php echo htmlspecialchars(obterCorCss($corDisponivel), ENT_QUOTES, 'UTF-8'); ?>;"
                                                 aria-label="<?php echo htmlspecialchars(formatarNomeCor($corDisponivel), ENT_QUOTES, 'UTF-8'); ?>">
                                             </span>
                                             <span class="filter-color-name"><?php echo htmlspecialchars(formatarNomeCor($corDisponivel), ENT_QUOTES, 'UTF-8'); ?></span>
@@ -440,7 +486,7 @@ function formatarNomeCor(string $cor): string
                     <section class="products">
                         <?php if ($produtos): ?>
                             <?php foreach ($produtos as $produto): ?>
-                                <?php $imagem = !empty($produto['url_imagem']) ? $produto['url_imagem'] : 'assets/img/camiseta-preta.jpg'; ?>
+                                <?php $imagem = normalizarCaminhoImagemProduto($produto['url_imagem'] ?? null); ?>
                                 <a href="produto.php?id=<?php echo (int) $produto['id']; ?>" class="product-link">
                                     <div class="product">
                                         <img src="<?php echo htmlspecialchars($imagem, ENT_QUOTES, 'UTF-8'); ?>"
