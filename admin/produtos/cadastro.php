@@ -18,16 +18,51 @@ $produto = [
     'descricao' => ''
 ];
 
+$produtoIdAtual = null;
+
 // Se houver id na URL, buscar produto existente
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    $produtoIdAtual = (int) $_GET['id'];
     $stmt = $pdo->prepare("SELECT * FROM produtos WHERE id = ?");
-    $stmt->execute([$_GET['id']]);
+    $stmt->execute([$produtoIdAtual]);
     $produtoBanco = $stmt->fetch();
 
     if ($produtoBanco) {
         $produto = $produtoBanco;
     }
 }
+
+$sqlImagens = "SELECT url_imagem FROM produtos WHERE url_imagem IS NOT NULL AND url_imagem <> ''";
+$parametrosImagens = [];
+
+if ($produtoIdAtual) {
+    $sqlImagens .= " AND id <> ?";
+    $parametrosImagens[] = $produtoIdAtual;
+}
+
+$stmt = $pdo->prepare($sqlImagens);
+$stmt->execute($parametrosImagens);
+$nomesImagensExistentes = [];
+
+foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $urlImagem) {
+    $nomeImagem = basename(str_replace('\\', '/', $urlImagem));
+
+    if ($nomeImagem !== '') {
+        $nomesImagensExistentes[] = mb_strtolower($nomeImagem, 'UTF-8');
+    }
+}
+
+$pastaUploads = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'uploads';
+
+if (is_dir($pastaUploads)) {
+    foreach (scandir($pastaUploads) as $arquivoUpload) {
+        if ($arquivoUpload !== '.' && $arquivoUpload !== '..' && is_file($pastaUploads . DIRECTORY_SEPARATOR . $arquivoUpload)) {
+            $nomesImagensExistentes[] = mb_strtolower($arquivoUpload, 'UTF-8');
+        }
+    }
+}
+
+$nomesImagensExistentes = array_values(array_unique($nomesImagensExistentes));
 ?>
 
 <h1 class="mb-4">Adicionar Produto</h1>
@@ -95,9 +130,17 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         </div>
         <div class="mb-3 col-md-4">
             <label for="formFileSm" class="form-label">Adicione uma imagem</label>
-            <input name="imagem" class="form-control form-control-sm" id="formFileSm" type="file" required>
-            <?php if(!empty($produto['imagem'])): ?>
-                <small>Imagem atual: <?= $produto['imagem'] ?></small>
+            <input
+                name="imagem"
+                class="form-control form-control-sm"
+                id="formFileSm"
+                type="file"
+                data-existing-images='<?= htmlspecialchars(json_encode($nomesImagensExistentes), ENT_QUOTES, 'UTF-8') ?>'
+                <?= empty($produto['id']) ? 'required' : '' ?>
+            >
+            <div class="invalid-feedback">Ja existe uma imagem com esse nome. Renomeie o arquivo antes de cadastrar.</div>
+            <?php if(!empty($produto['url_imagem'])): ?>
+                <small>Imagem atual: <?= htmlspecialchars($produto['url_imagem']) ?></small>
             <?php endif; ?>
         </div>
         <div class="mb-3 col-md-4">

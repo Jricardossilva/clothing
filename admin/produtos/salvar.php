@@ -15,10 +15,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Verificar se enviou uma nova imagem
     if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] == 0) {
-        $nomeOriginal = $_FILES['imagem']['name'];
-        $imagem = time() . '-' . $nomeOriginal;
-        $destino = $_SERVER['DOCUMENT_ROOT'] . '/clothing/uploads/' . $imagem;
-        move_uploaded_file($_FILES['imagem']['tmp_name'], $destino);
+        $nomeOriginal = basename($_FILES['imagem']['name']);
+        $imagem = 'uploads/' . $nomeOriginal;
+        $pastaUploads = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
+        $destino = $pastaUploads . $nomeOriginal;
+
+        $sqlImagemExistente = "SELECT COUNT(*) FROM produtos WHERE url_imagem IN (?, ?)";
+        $parametrosImagemExistente = [$nomeOriginal, $imagem];
+
+        if ($id) {
+            $sqlImagemExistente .= " AND id <> ?";
+            $parametrosImagemExistente[] = $id;
+        }
+
+        $stmt = $pdo->prepare($sqlImagemExistente);
+        $stmt->execute($parametrosImagemExistente);
+        $imagemJaCadastrada = (int) $stmt->fetchColumn() > 0;
+
+        if (file_exists($destino) || $imagemJaCadastrada) {
+            echo "Erro: ja existe uma imagem com esse nome. Renomeie o arquivo e tente novamente.";
+            exit;
+        }
+
+        if (!is_dir($pastaUploads) || !move_uploaded_file($_FILES['imagem']['tmp_name'], $destino)) {
+            echo "Erro: nao foi possivel salvar a imagem na pasta uploads.";
+            exit;
+        }
     }
 
     if ($id) {
