@@ -165,7 +165,8 @@ if (isset($pdo)) {
     }
 
     if ($categoriaSelecionadaNome !== null) {
-        $tituloPagina = strtoupper($categoriaSelecionadaNome);
+        $tituloPagina = mb_strtoupper($categoriaSelecionadaNome, 'UTF-8');
+
     } elseif ($generoSelecionado !== null) {
         $tituloPagina = 'PRODUTOS ' . strtoupper($generoSelecionado);
     }
@@ -316,6 +317,7 @@ function obterCorCss(string $cor): string
     <?php include 'includes/header.php'; ?>
     <main>
         <div class="product-list-shell">
+            <?php  ?>
             <h2 class="text-center mt-4 fw-bold product-list-title"><?php echo htmlspecialchars($tituloPagina, ENT_QUOTES, 'UTF-8'); ?></h2>
 
             <div class="product-list-toolbar d-lg-none">
