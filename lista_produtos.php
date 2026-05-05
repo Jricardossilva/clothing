@@ -164,9 +164,7 @@ if (isset($pdo)) {
         }
     }
 
-    if ($categoriaSelecionadaNome !== null && $generoSelecionado !== null) {
-        $tituloPagina = strtoupper($categoriaSelecionadaNome) . ' ' . strtoupper($generoSelecionado);
-    } elseif ($categoriaSelecionadaNome !== null) {
+    if ($categoriaSelecionadaNome !== null) {
         $tituloPagina = strtoupper($categoriaSelecionadaNome);
     } elseif ($generoSelecionado !== null) {
         $tituloPagina = 'PRODUTOS ' . strtoupper($generoSelecionado);
