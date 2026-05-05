@@ -379,7 +379,7 @@ function calcularFreteSimulado($estadoDestino, $peso)
                                 <label for="firstName" class="form-label">Nome</label>
                                 <input type="text" class="form-control" name="nome" id="firstName" placeholder="" value="<?php echo $_POST['nome'] ?? '' ?> "style="text-transform: capitalize;" required>
                                 <div class="invalid-feedback">
-                                    Valid first name is required.
+                                É necessário um nome válido.
                                 </div>
                             </div>
 
@@ -387,7 +387,7 @@ function calcularFreteSimulado($estadoDestino, $peso)
                                 <label for="lastName" class="form-label">Sobrenome</label>
                                 <input type="text" class="form-control" name="sobrenome" id="lastName" placeholder="" value="<?php echo $_POST['sobrenome'] ?? '' ?>" style="text-transform: capitalize;" required>
                                 <div class="invalid-feedback">
-                                    Valid last name is required.
+                                É necessário um sobrenome válido.
                                 </div>
                             </div>
 	                            <div class="col-12">
@@ -395,7 +395,7 @@ function calcularFreteSimulado($estadoDestino, $peso)
 	                                <input type="email" class="form-control" name="email" id="email" placeholder="nome@exemplo.com" value="<?php echo $_POST['email'] ?? '' ?>"
 	                                    required>
 	                                <div class="invalid-feedback">
-	                                    Please enter a valid email address for shipping updates.
+	                                Por favor, insira um endereço de e-mail válido para receber atualizações sobre o envio.
 	                                </div>
 	                            </div>
 	                            <div class="col-12">
@@ -462,8 +462,8 @@ function calcularFreteSimulado($estadoDestino, $peso)
                             </div>
 
 
-                            <button type="submit" name="acao" value="frete">Calcular frete</button>
-                            <!-- <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button> -->
+                            <button class="w-100 btn btn-primary btn-lg" type="submit" name="acao" value="frete">Calcular frete</button>
+                           
                             <hr class="my-4">
                             <h4 class="mb-3">Pagamento</h4>
                             <div class="my-3">                            
@@ -696,7 +696,7 @@ function calcularFreteSimulado($estadoDestino, $peso)
 
         // Máscara (só números)
         cvvInput.addEventListener("input", function(e) {
-            e.target.value = e.target.value.replace(/\D/g, "").substring(0, 4);
+            e.target.value = e.target.value.replace(/\D/g, "").substring(0, 3);
         });
         
     </script>
