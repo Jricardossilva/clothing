@@ -283,17 +283,22 @@
     button.addEventListener('click', function() {
 
       const nome = this.getAttribute('data-product-name');
-
+      const inputQtde = document.querySelector('[data-product-quantity]');
+      if (inputQtde) {
+          inputQtde.value = "1";
+      }
+     
       Swal.fire({
         position: "top-end",
         icon: "success",
         title: `Produto adicionado ao carrinho 🛒`,
         showConfirmButton: false,
-        timer: 1500
+        timer: 1500        
       });
-
+    
     });
   });
+
 </script>
 <script>
 document.querySelectorAll('.favorite-btn').forEach(button => {
