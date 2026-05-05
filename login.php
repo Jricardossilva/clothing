@@ -2,6 +2,15 @@
 session_start();
 require './config/conexao.php';
 
+$basePath = str_replace('\\', '/', dirname((string) ($_SERVER['SCRIPT_NAME'] ?? '')));
+$basePath = ($basePath === '/' || $basePath === '.') ? '' : rtrim($basePath, '/');
+$loginCssPath = __DIR__ . '/assets/css/login.css';
+$loginCssHref = $basePath . '/assets/css/login.css';
+
+if (file_exists($loginCssPath)) {
+    $loginCssHref .= '?v=' . filemtime($loginCssPath);
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $email = trim($_POST['email']);
@@ -35,9 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página de Login</title>
-    <link rel="stylesheet" href="assets/css/login.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    
+    <link rel="stylesheet" href="<?= htmlspecialchars($loginCssHref, ENT_QUOTES, 'UTF-8') ?>">
 </head> 
 <body style="background-color: rgb(46, 49, 49);" >
     <!-- From Uiverse.io by Yaya12085 --> 
