@@ -7,7 +7,7 @@
             alt="logo-da-marca"
           />
           <p class="mt-3 text-light">
-            © 2025 Lojavirtual.com CNPJ 00.000.000/0000-00 <br />
+            © 2026 Lojavirtual.com CNPJ 10.921.924/0001-84 <br />
             Todos os direito reservados
           </p>
         </div>
