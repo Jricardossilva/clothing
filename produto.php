@@ -295,31 +295,65 @@
     });
   });
 </script>
+<script>
+document.querySelectorAll('.favorite-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const productId = this.getAttribute('data-product-id');
 
-  <script>
-  const form = document.getElementById('meuFormAvisar');
-  if (form) {
-    form.addEventListener('submit', function(e) {
-      // Impede o recarregamento imediato para mostrar o alerta
-      e.preventDefault(); 
-      
-      const email = document.getElementById('emailCliente').value;
-      const placeholder = document.getElementById('mensagemAlerta');
-      
-      // Mostra o alerta
-      placeholder.innerHTML = `
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-          E-mail <strong>${email}</strong> cadastrado com sucesso!
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>`;
+        // Verifica se já está favoritado
+        if (this.classList.contains('favorited')) {
+            // Remover dos favoritos
+            this.classList.remove('favorited');
 
-      // Opcional: Envia o formulário de verdade após 2 segundos
-      setTimeout(() => {
-        this.submit();
-      }, 2000);
+            Swal.fire({
+                position: "top-end",
+                icon: "info",
+                title: "Produto removido dos favoritos 💔",
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+        } else {
+            // Adicionar aos favoritos
+            this.classList.add('favorited');
+
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "Produto adicionado aos favoritos ❤️",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
     });
-  }
+});
 </script>
+
+<script>
+const form = document.getElementById('meuFormAvisar');
+if (form) {
+  form.addEventListener('submit', function(e) {
+    // Impede o recarregamento imediato para mostrar o alerta
+    e.preventDefault(); 
+      
+    const email = document.getElementById('emailCliente').value;
+    const placeholder = document.getElementById('mensagemAlerta');
+      
+    // Mostra o alerta
+    placeholder.innerHTML = `
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        E-mail <strong>${email}</strong> cadastrado com sucesso!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>`;
+
+    // Opcional: Envia o formulário de verdade após 2 segundos
+    setTimeout(() => {
+      this.submit();
+    }, 2000);
+  });
+}
+</script>
+
 
 </body>
 
