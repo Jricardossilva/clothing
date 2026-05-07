@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Página de Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="<?= htmlspecialchars($loginCssHref, ENT_QUOTES, 'UTF-8') ?>">
+    <link rel="stylesheet" href="assets/css/LOGIN.CSS">
 </head> 
 <body style="background-color: rgb(46, 49, 49);" >
     <!-- From Uiverse.io by Yaya12085 --> 
