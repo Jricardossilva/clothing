@@ -89,31 +89,31 @@ $nomesImagensExistentes = array_values(array_unique($nomesImagensExistentes));
         required
     >
 
-        <option value="">
+        <option value="" <?= empty($produto['cor']) ? 'selected' : '' ?>>
             Selecione uma cor
         </option>
 
-        <option value="Vermelho">
+        <option value="Vermelho" <?= strcasecmp((string) $produto['cor'], 'Vermelho') === 0 ? 'selected' : '' ?>>
             🔴 Vermelho
         </option>
 
-        <option value="Preto">
+        <option value="Preto" <?= strcasecmp((string) $produto['cor'], 'Preto') === 0 ? 'selected' : '' ?>>
             ⚫ Preto
         </option>
 
-        <option value="Branco">
+        <option value="Branco" <?= strcasecmp((string) $produto['cor'], 'Branco') === 0 ? 'selected' : '' ?>>
             ⚪ Branco
         </option>
 
-        <option value="Amarelo">
+        <option value="Amarelo" <?= strcasecmp((string) $produto['cor'], 'Amarelo') === 0 ? 'selected' : '' ?>>
             🟡 Amarelo
         </option>
 
-        <option value="Verde">
+        <option value="Verde" <?= strcasecmp((string) $produto['cor'], 'Verde') === 0 ? 'selected' : '' ?>>
             🟢 Verde
         </option>
 
-        <option value="Azul">
+        <option value="Azul" <?= strcasecmp((string) $produto['cor'], 'Azul') === 0 ? 'selected' : '' ?>>
             🔵 Azul
         </option>
 
