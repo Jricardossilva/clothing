@@ -284,9 +284,9 @@ $precoKitMasculino = calcularPrecoKitTotal($kitMasculino['preco'] ?? 0);
 
     <!-- Área de kits -->
     <section class="kit-section bg-black p-1">
-      <div class="d-flex">
+      <div class="d-flex" id="kits">
         <h2
-          class="m-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem" id="kits">
+          class="m-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem">
           Monte seu kit
         </h2>
       </div>
@@ -308,9 +308,9 @@ $precoKitMasculino = calcularPrecoKitTotal($kitMasculino['preco'] ?? 0);
           <a href="" class="my-3 fw-bold text-uppercase menu__link">Comprar</a>
         </div>
       </div>
-      <div class="d-flex">
+      <div class="d-flex" id="looks">
         <h2
-          class="mx-4 mt-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem" id="looks">
+          class="mx-4 mt-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem">
           Monte seu look
         </h2>
       </div>
