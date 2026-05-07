@@ -181,7 +181,7 @@ if (isset($pdo)) {
 
     $where = [
         'p.situacao = 1',
-        'COALESCE(p.estoque, 1) > 0',
+        
     ];
     $parametros = [];
 
