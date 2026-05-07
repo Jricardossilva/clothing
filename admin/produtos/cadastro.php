@@ -58,7 +58,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         required
     >
 
-        <option value="">
+        <option value="" <?= empty($produto['cor']) ? 'selected' : '' ?>>
             Selecione uma cor
         </option>
 
