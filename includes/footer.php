@@ -20,13 +20,13 @@
               <a class="text-light" href="lista_produtos.php?genero=feminino">Feminino</a>
             </li>
             <li class="p-2 footer-links">
-              <a class="text-light" href="#kits">Monte seu kit</a>
+              <a class="text-light" href="https://projetointegrador.com.br/clothing/index.php#kits">Monte seu kit</a>
             </li>
             <li class="p-2 footer-links">
-              <a class="text-light" href="#looks">Monte seu look</a>
+              <a class="text-light" href="https://projetointegrador.com.br/clothing/index.php#looks">Monte seu look</a>
             </li>
             <li class="p-2 footer-links">
-              <a class="text-light" href="#desconto">Até 70% OFF</a>
+              <a class="text-light" href="https://projetointegrador.com.br/clothing/index.php#desconto">Até 70% OFF</a>
             </li>
           </ul>
         </div>
