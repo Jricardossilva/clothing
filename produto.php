@@ -158,9 +158,9 @@
 
       <div class="col-md-6">
         <h2 class="fw-bold product-name-text"><?= htmlspecialchars($produto['nome'])?></h2>
-        <p class="fs-4 fw-bold product-price-text">R$ <?= htmlspecialchars($produto['preco' ])?></p>
         <?php $valorProduto = $produto['preco'];
           $valorDividido = $valorProduto / 3 ?>
+        <p class="fs-4 fw-bold product-price-text">R$ <?php echo number_format($valorProduto, 2, ',', '.') ?></p>
 
         <p class="fs-4 product-installments">ou até 3x de R$ <?php echo number_format($valorDividido, 2, ',', '.') ?> </p>
         
