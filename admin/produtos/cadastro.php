@@ -32,37 +32,6 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     }
 }
 
-$sqlImagens = "SELECT url_imagem FROM produtos WHERE url_imagem IS NOT NULL AND url_imagem <> ''";
-$parametrosImagens = [];
-
-if ($produtoIdAtual) {
-    $sqlImagens .= " AND id <> ?";
-    $parametrosImagens[] = $produtoIdAtual;
-}
-
-$stmt = $pdo->prepare($sqlImagens);
-$stmt->execute($parametrosImagens);
-$nomesImagensExistentes = [];
-
-foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $urlImagem) {
-    $nomeImagem = basename(str_replace('\\', '/', $urlImagem));
-
-    if ($nomeImagem !== '') {
-        $nomesImagensExistentes[] = mb_strtolower($nomeImagem, 'UTF-8');
-    }
-}
-
-$pastaUploads = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'uploads';
-
-if (is_dir($pastaUploads)) {
-    foreach (scandir($pastaUploads) as $arquivoUpload) {
-        if ($arquivoUpload !== '.' && $arquivoUpload !== '..' && is_file($pastaUploads . DIRECTORY_SEPARATOR . $arquivoUpload)) {
-            $nomesImagensExistentes[] = mb_strtolower($arquivoUpload, 'UTF-8');
-        }
-    }
-}
-
-$nomesImagensExistentes = array_values(array_unique($nomesImagensExistentes));
 ?>
 
 <h1 class="mb-4">Adicionar Produto</h1>
@@ -93,27 +62,27 @@ $nomesImagensExistentes = array_values(array_unique($nomesImagensExistentes));
             Selecione uma cor
         </option>
 
-        <option value="Vermelho">
+        <option value="Vermelho" <?= ($produto['cor'] == 'Vermelho') ? 'selected' : '' ?>>
             🔴 Vermelho
         </option>
 
-        <option value="Preto">
+        <option value="Preto" <?= ($produto['cor'] == 'Preto') ? 'selected' : '' ?>>
             ⚫ Preto
         </option>
 
-        <option value="Branco">
+        <option value="Branco" <?= ($produto['cor'] == 'Branco') ? 'selected' : '' ?>>
             ⚪ Branco
         </option>
 
-        <option value="Amarelo">
+        <option value="Amarelo" <?= ($produto['cor'] == 'Amarelo') ? 'selected' : '' ?>>
             🟡 Amarelo
         </option>
 
-        <option value="Verde">
+        <option value="Verde" <?= ($produto['cor'] == 'Verde') ? 'selected' : '' ?>>
             🟢 Verde
         </option>
 
-        <option value="Azul">
+        <option value="Azul" <?= ($produto['cor'] == 'Azul') ? 'selected' : '' ?>>
             🔵 Azul
         </option>
 
@@ -135,10 +104,8 @@ $nomesImagensExistentes = array_values(array_unique($nomesImagensExistentes));
                 class="form-control form-control-sm"
                 id="formFileSm"
                 type="file"
-                data-existing-images='<?= htmlspecialchars(json_encode($nomesImagensExistentes), ENT_QUOTES, 'UTF-8') ?>'
                 <?= empty($produto['id']) ? 'required' : '' ?>
             >
-            <div class="invalid-feedback">Ja existe uma imagem com esse nome. Renomeie o arquivo antes de cadastrar.</div>
             <?php if(!empty($produto['url_imagem'])): ?>
                 <small>Imagem atual: <?= htmlspecialchars($produto['url_imagem']) ?></small>
             <?php endif; ?>

@@ -1,6 +1,26 @@
 <?php
 require '../../config/conexao.php';
 
+function normalizarCaminhoImagemSalva(?string $caminho): ?string
+{
+    $caminho = trim((string) $caminho);
+
+    if ($caminho === '') {
+        return null;
+    }
+
+    if (
+        str_starts_with($caminho, 'http://') ||
+        str_starts_with($caminho, 'https://') ||
+        str_starts_with($caminho, 'uploads/') ||
+        str_starts_with($caminho, 'assets/')
+    ) {
+        return $caminho;
+    }
+
+    return 'uploads/' . ltrim($caminho, '/');
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $id = $_POST['id'] ?? null;
@@ -16,26 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificar se enviou uma nova imagem
     if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] == 0) {
         $nomeOriginal = basename($_FILES['imagem']['name']);
-        $imagem = 'uploads/' . $nomeOriginal;
+        $nomeArquivo = time() . '-' . $nomeOriginal;
+        $imagem = 'uploads/' . $nomeArquivo;
         $pastaUploads = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
-        $destino = $pastaUploads . $nomeOriginal;
-
-        $sqlImagemExistente = "SELECT COUNT(*) FROM produtos WHERE url_imagem IN (?, ?)";
-        $parametrosImagemExistente = [$nomeOriginal, $imagem];
-
-        if ($id) {
-            $sqlImagemExistente .= " AND id <> ?";
-            $parametrosImagemExistente[] = $id;
-        }
-
-        $stmt = $pdo->prepare($sqlImagemExistente);
-        $stmt->execute($parametrosImagemExistente);
-        $imagemJaCadastrada = (int) $stmt->fetchColumn() > 0;
-
-        if (file_exists($destino) || $imagemJaCadastrada) {
-            echo "Erro: ja existe uma imagem com esse nome. Renomeie o arquivo e tente novamente.";
-            exit;
-        }
+        $destino = $pastaUploads . $nomeArquivo;
 
         if (!is_dir($pastaUploads) || !move_uploaded_file($_FILES['imagem']['tmp_name'], $destino)) {
             echo "Erro: nao foi possivel salvar a imagem na pasta uploads.";
@@ -49,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $pdo->prepare("SELECT url_imagem FROM produtos WHERE id = ?");
         $stmt->execute([$id]);
         $produtoAtual = $stmt->fetch();
-        $imagemAtual = $produtoAtual['url_imagem'];
+        $imagemAtual = normalizarCaminhoImagemSalva($produtoAtual['url_imagem'] ?? null);
 
         $sql = "UPDATE produtos SET nome=?, descricao=?, preco=?, cor=?, tamanho=?, estoque=?, url_imagem=?, categoria_id=? WHERE id=?";
         $stmt = $pdo->prepare($sql);
