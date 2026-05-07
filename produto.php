@@ -66,14 +66,8 @@
         $mapaCores = [
             'amarelo' => '#ffff00',
             'azul' => '#3399ff',
-            'bege' => '#f5f5dc',
             'branco' => '#ffffff',
-            'cinza' => '#808080',
-            'laranja' => '#ffa500',
-            'marrom' => '#8b4513',
             'preto' => '#000000',
-            'rosa' => '#ffc0cb',
-            'roxo' => '#800080',
             'verde' => '#2e8b57',
             'vermelho' => '#ff0000',
         ];

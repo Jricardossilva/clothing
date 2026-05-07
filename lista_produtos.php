@@ -250,25 +250,11 @@ function formatarNomeCor(string $cor): string
     $corTratada = strtoupper(trim($cor));
     $mapaCores = [
         '#FFFFFF' => 'Branco',
-        '#FFF' => 'Branco',
         '#000000' => 'Preto',
-        '#000' => 'Preto',
-        '#808080' => 'Cinza',
-        '#C0C0C0' => 'Cinza claro',
         '#FF0000' => 'Vermelho',
-        '#F00' => 'Vermelho',
-        '#0000FF' => 'Azul',
-        '#00F' => 'Azul',
-        '#008000' => 'Verde',
-        '#00FF00' => 'Verde',
-        '#0F0' => 'Verde',
+        '#3399FF' => 'Azul',
+        '#2E8B57' => 'Verde',
         '#FFFF00' => 'Amarelo',
-        '#FF0' => 'Amarelo',
-        '#FFA500' => 'Laranja',
-        '#FFC0CB' => 'Rosa',
-        '#800080' => 'Roxo',
-        '#A52A2A' => 'Marrom',
-        '#F5F5DC' => 'Bege',
     ];
 
     return $mapaCores[$corTratada] ?? $cor;
