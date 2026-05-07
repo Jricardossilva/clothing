@@ -425,9 +425,9 @@ function calcularFreteSimulado($estadoDestino, $peso)
                                 <div class="invalid-feedback"></div>
                             </div>
                             <div class="col-md-3">
-                                <label for="numero" class="form-label">Numero</label>
+                                <label for="numero" class="form-label">Número</label>
                                 <input type="text"
-                                    class="form-control" name="numero" id="numero" placeholder="Numero" value="<?php echo $_POST['numero'] ?? '' ?>" required>
+                                    class="form-control" name="numero" id="numero" placeholder="Número" value="<?php echo $_POST['numero'] ?? '' ?>" required>
                                 <div class="invalid-feedback"></div>
                             </div>
                             <div class="col-5"> <label for="address" class="form-label">Bairro</label>

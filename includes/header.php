@@ -179,7 +179,7 @@ if (!function_exists('montarLinkListaProdutos')) {
     <div class="menu-item">
       <a href="<?php echo htmlspecialchars(montarLinkListaProdutos(['ordenar' => 'menor_preco']), ENT_QUOTES, 'UTF-8'); ?>" class="menu__link">Promoção</a>
       <div class="submenu">
-        <a href="<?php echo htmlspecialchars(montarLinkListaProdutos(['ordenar' => 'menor_preco']), ENT_QUOTES, 'UTF-8'); ?>">Menor preco</a>
+        <a href="<?php echo htmlspecialchars(montarLinkListaProdutos(['ordenar' => 'menor_preco']), ENT_QUOTES, 'UTF-8'); ?>">Menor preço</a>
         <a href="<?php echo htmlspecialchars(montarLinkListaProdutos(['genero' => 'masculino', 'ordenar' => 'menor_preco']), ENT_QUOTES, 'UTF-8'); ?>">Masculino</a>
         <a href="<?php echo htmlspecialchars(montarLinkListaProdutos(['genero' => 'feminino', 'ordenar' => 'menor_preco']), ENT_QUOTES, 'UTF-8'); ?>">Feminino</a>
       </div>
