@@ -241,12 +241,6 @@ $precoKitMasculino = calcularPrecoKitTotal($kitMasculino['preco'] ?? 0);
       </div>
     </section>
 
-    <div class="text-center mt-4">
-      <button>
-        <span class="box">Ver tudo !</span>
-      </button>
-    </div>
-
     <!-- Área de promoções -->
     <div class="text-center">
       <img class="img-fluid banner-promo mt-4 w-100" src="assets/img/banner-3.png" alt="" />
@@ -275,12 +269,6 @@ $precoKitMasculino = calcularPrecoKitTotal($kitMasculino['preco'] ?? 0);
         <?php endforeach; ?>
       </div>
     </section>
-
-    <div class="text-center mt-4">
-      <button>
-        <span class="box">Ver tudo !</span>
-      </button>
-    </div>
 
     <!-- Área de kits -->
     <section class="kit-section bg-black p-1">
