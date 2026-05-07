@@ -1,529 +1,341 @@
+<?php
+include 'config/conexao.php';
+
+function formatarPrecoHome(float $preco): string
+{
+  return number_format($preco, 2, ',', '.');
+}
+
+function normalizarCaminhoImagem(?string $caminho): string
+{
+  if (empty($caminho)) {
+    return 'assets/img/placeholder.png';
+  }
+
+  if (
+    str_starts_with($caminho, 'http://') ||
+    str_starts_with($caminho, 'https://') ||
+    str_starts_with($caminho, 'uploads/') ||
+    str_starts_with($caminho, 'assets/')
+  ) {
+    $caminhoNormalizado = $caminho;
+  } else {
+    $caminhoNormalizado = 'uploads/' . ltrim($caminho, '/');
+  }
+
+  if (
+    !str_starts_with($caminhoNormalizado, 'http://') &&
+    !str_starts_with($caminhoNormalizado, 'https://')
+  ) {
+    $arquivoLocal = __DIR__ . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $caminhoNormalizado);
+    if (!file_exists($arquivoLocal)) {
+      return 'assets/img/placeholder.png';
+    }
+  }
+
+  return $caminhoNormalizado;
+}
+
+function calcularPrecoKitTotal(float $precoAtual): float
+{
+  return round($precoAtual * 3, 2);
+}
+
+function embaralharProdutos(array $produtos): array
+{
+  shuffle($produtos);
+
+  return $produtos;
+}
+
+function separarProdutosPorGenero(array $produtos): array
+{
+  $femininos = [];
+  $masculinos = [];
+  $neutros = [];
+
+  foreach ($produtos as $produto) {
+    $nomeProduto = mb_strtolower($produto['nome'], 'UTF-8');
+
+    if (str_contains($nomeProduto, 'femin')) {
+      $femininos[] = $produto;
+    } elseif (str_contains($nomeProduto, 'mascul')) {
+      $masculinos[] = $produto;
+    } else {
+      $neutros[] = $produto;
+    }
+  }
+
+  return [
+    'femininos' => embaralharProdutos($femininos),
+    'masculinos' => embaralharProdutos($masculinos),
+    'neutros' => embaralharProdutos($neutros),
+  ];
+}
+
+function intercalarProdutosPorGenero(array $femininos, array $masculinos): array
+{
+  $resultado = [];
+  $max = max(count($femininos), count($masculinos));
+
+  for ($i = 0; $i < $max; $i++) {
+    if (isset($femininos[$i])) $resultado[] = $femininos[$i];
+    if (isset($masculinos[$i])) $resultado[] = $masculinos[$i];
+  }
+
+  return $resultado;
+}
+
+function obterProdutoAleatorio(array &$produtos, array $fallback): array
+{
+  return array_shift($produtos) ?? $fallback;
+}
+
+function removerProdutosPorIds(array $produtos, array $idsUsados): array
+{
+  if (empty($idsUsados)) {
+    return $produtos;
+  }
+
+  return array_values(array_filter(
+    $produtos,
+    static fn(array $produto): bool => !in_array($produto['id'], $idsUsados, true)
+  ));
+}
+
+/* =========================
+   🔥 BUSCAR DO BANCO
+========================= */
+$produtosHome = [];
+
+if (isset($pdo)) {
+  $stmt = $pdo->query("
+    SELECT
+      p.id,
+      p.nome,
+      p.preco,
+      COALESCE(p.url_imagem, pi.url_imagem, 'assets/img/placeholder.png') AS url_imagem
+    FROM produtos p
+    LEFT JOIN produto_imagem pi
+      ON pi.produto_id = p.id
+      AND pi.ordem = (
+        SELECT MIN(pi2.ordem)
+        FROM produto_imagem pi2
+        WHERE pi2.produto_id = p.id
+      )
+    WHERE p.situacao = 1
+      AND COALESCE(p.estoque, 1) > 0
+    ORDER BY p.id DESC
+  ");
+
+  foreach ($stmt->fetchAll() as $produto) {
+    $produtosHome[] = [
+      'id' => (int) $produto['id'],
+      'nome' => $produto['nome'],
+      'preco' => (float) $produto['preco'],
+      'imagem' => normalizarCaminhoImagem($produto['url_imagem'] ?? null),
+      'alt' => $produto['nome'],
+    ];
+  }
+}
+
+/* =========================
+   🔁 LÓGICA EXISTENTE
+========================= */
+$produtosPorGenero = separarProdutosPorGenero($produtosHome);
+
+$femininosHome = $produtosPorGenero['femininos'];
+$masculinosHome = $produtosPorGenero['masculinos'];
+$neutrosHome = $produtosPorGenero['neutros'];
+
+$produtosHome = intercalarProdutosPorGenero($femininosHome, $masculinosHome);
+$produtosHome = array_merge($produtosHome, $neutrosHome);
+
+$precoInicial = !empty($produtosHome) ? min(array_column($produtosHome, 'preco')) : 0;
+
+$primeiraVitrine = array_slice($produtosHome, 0, 4);
+$segundaVitrine = array_slice($produtosHome, 4, 4);
+
+$idsUsadosNasVitrines = array_column(array_merge($primeiraVitrine, $segundaVitrine), 'id');
+
+$femininosDisponiveis = removerProdutosPorIds($femininosHome, $idsUsadosNasVitrines);
+$masculinosDisponiveis = removerProdutosPorIds($masculinosHome, $idsUsadosNasVitrines);
+
+$kitFeminino = obterProdutoAleatorio($femininosDisponiveis, []);
+$kitMasculino = obterProdutoAleatorio($masculinosDisponiveis, []);
+
+$looksPrimavera = intercalarProdutosPorGenero(
+  array_slice($femininosDisponiveis, 0, 2),
+  array_slice($masculinosDisponiveis, 0, 2)
+);
+
+$precoKitFeminino = calcularPrecoKitTotal($kitFeminino['preco'] ?? 0);
+$precoKitMasculino = calcularPrecoKitTotal($kitMasculino['preco'] ?? 0);
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="styles/index.css" />
-    <title>Clothing</title>
-  </head>
 
-  <body>
-    <header>
-      <div class="d-flex justify-content-between align-items-center px-3 pt-2">
-        <div class="d-flex justify-content-start gap-3 w-25">
-          <a href=""
-            ><img class="icons" src="images/instagram-icon.png" alt=""
-          /></a>
-          <a href=""
-            ><img class="icons" src="images/tiktok-icon.png" alt=""
-          /></a>
-          <a href=""
-            ><img class="icons" src="images/facebook-icon.png" alt=""
-          /></a>
-          <a href=""
-            ><img class="icons" src="images/linkedin-logo.png" alt=""
-          /></a>
-          <a href=""
-            ><img class="icons" src="images/youtube-icon.png" alt=""
-          /></a>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+  <link rel="stylesheet" href="assets/css/index.css" />
+  <title>Clothing</title>
+</head>
 
-        <div class="d-flex justify-content-center w-50">
-          <a href=""
-            ><img
-              class="logo-marca"
-              src="images/logo-marca.png"
-              alt="Logo da Marca"
-          /></a>
-        </div>
+<body>
+  <?php include 'includes/header.php'; ?>
 
-        <div class="d-flex justify-content-end gap-3 w-25">
-          <a href=""><img src="images/coracao-icon.png" alt="" /></a>
-          <a href=""><img src="images/conta-icon.png" alt="" /></a>
-          <a href=""><img src="images/lupa-icon.png" alt="" /></a>
-          <a href=""><img src="images/sacola-icon.png" alt="" /></a>
+  <main>
+    <!-- Carrossel inicial -->
+    <div id="carouselExampleInterval" class="home-carousel carousel slide text-center mt-3 h-75" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active" data-bs-interval="2000">
+          <img class="banner rounded-1 d-block w-100" src="assets/img/banner-1.jpg" alt="..." />
+        </div>
+        <div class="carousel-item" data-bs-interval="2000">
+          <img class="banner rounded-1 d-block w-100" src="assets/img/banner-2.jpg" alt="..." />
         </div>
       </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval"
+        data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval"
+        data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
 
-      <!-- ✅ MENU ATUALIZADO COM DROPDOWN -->
-      <nav class="d-flex gap-5 justify-content-center flex-wrap mt-5">
-        <div class="menu-item">
-          <a href="#" class="menu__link">Lançamento</a>
-          <div class="submenu">
-            <a href="#">Camisetas</a>
-            <a href="#">Calças</a>
-            <a href="#">Bermudas</a>
-            <a href="#">Acessórios</a>
+    <section class="mx-auto section-roupas">
+      <h2 class="py-3 mt-3" id="desconto">Peças a partir de R$ <?php echo formatarPrecoHome($precoInicial); ?></h2>
+      <div class="row row-cols-1 row-cols-md-4 g-4" > 
+        <?php if ($primeiraVitrine): ?>
+          <?php foreach ($primeiraVitrine as $produto): ?>
+            <div class="col">
+              <a href="produto.php?id=<?php echo (int) $produto['id']; ?>" class="text-decoration-none text-dark">
+                <div class="card">
+                  <img src="<?php echo htmlspecialchars($produto['imagem'], ENT_QUOTES, 'UTF-8'); ?>" class="card-img-top"
+                    alt="<?php echo htmlspecialchars($produto['alt'], ENT_QUOTES, 'UTF-8'); ?>" />
+                  <div class="card-body text-center">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text">
+                      <strong><?php echo htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8'); ?></strong>
+                    </p>
+                    <p class="d-flex justify-content-center gap-3">
+                      <strong>R$ <?php echo formatarPrecoHome($produto['preco']); ?></strong>
+                    </p>
+                  </div>
+                </div>
+              </a>
+            </div>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <div class="col-12">
+            <p class="text-center mb-0">Nenhum produto disponivel no momento.</p>
           </div>
-        </div>
-        <div class="menu-item">
-          <a href="pages/masculino.html" class="menu__link">Masculino</a>
-          <div class="submenu">
-            <a href="#">Camisetas</a>
-            <a href="#">Calças</a>
-            <a href="#">Bermudas</a>
-            <a href="#">Acessórios</a>
-          </div>
-        </div>
-        <div class="menu-item">
-          <a href="#" class="menu__link">Feminino</a>
-          <div class="submenu">
-            <a href="#">Blusas</a>
-            <a href="#">Vestidos</a>
-            <a href="#">Saias</a>
-            <a href="#">Moda Fitness</a>
-          </div>
-        </div>
-        <div class="menu-item">
-          <a href="#" class="menu__link">Destaques</a>
-          <div class="submenu">
-            <a href="#">Camisetas</a>
-            <a href="#">Calças</a>
-            <a href="#">Bermudas</a>
-            <a href="#">Acessórios</a>
-          </div>
-        </div>
-        <div class="menu-item">
-          <a href="#" class="menu__link">Promoção</a>
-          <div class="submenu">
-            <a href="#">Camisetas</a>
-            <a href="#">Calças</a>
-            <a href="#">Bermudas</a>
-            <a href="#">Acessórios</a>
-          </div>
-        </div>
-      </nav>
-    </header>
-    <main>
-      <!-- Carrossel incial -->
-      <div
-        id="carouselExampleInterval"
-        class="carousel slide text-center mt-3 h-75"
-        data-bs-ride="carousel"
-      >
-        <div class="carousel-inner">
-          <div class="carousel-item active" data-bs-interval="2000">
-            <img
-              class="banner rounded-1"
-              src="images/banner-1.jpg"
-              class="d-block w-100"
-              alt="..."
-            />
-          </div>
-          <div class="carousel-item" data-bs-interval="2000">
-            <img
-              class="banner rounded-1 d-block w-100"
-              src="images/banner-2.jpg"
-              alt="..."
-            />
-          </div>
-        </div>
-        <button
-          class="carousel-control-prev"
-          type="button"
-          data-bs-target="#carouselExampleInterval"
-          data-bs-slide="prev"
-        >
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button
-          class="carousel-control-next"
-          type="button"
-          data-bs-target="#carouselExampleInterval"
-          data-bs-slide="next"
-        >
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
+        <?php endif; ?>
       </div>
-      <!-- Cards de roupas iniciais -->
-      <section class="mx-auto section-roupas">
-        <h2 class="py-3 mt-3">Peças a partir de R$ 41,90</h2>
-        <div class="row row-cols-1 row-cols-md-4 g-4">
+    </section>
+
+    <div class="text-center mt-4">
+      <button>
+        <span class="box">Ver tudo !</span>
+      </button>
+    </div>
+
+    <!-- Área de promoções -->
+    <div class="text-center">
+      <img class="img-fluid banner-promo mt-4 w-100" src="assets/img/banner-3.png" alt="" />
+    </div>
+
+    <section class="mx-auto section-roupas mt-5" id="destaque">
+      <div class="row row-cols-1 row-cols-md-4 g-4">
+        <?php foreach ($segundaVitrine as $produto): ?>
           <div class="col">
-            <div class="card">
-              <img
-                src="images/exemplo-roupa.webp"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-                <p class="card-text">
-                  <strong>
-                    Camiseta Algodão Premium Feminina | Everyday Collection -
-                    Verde Oliva
-                  </strong>
-                </p>
-                <p class="d-flex justify-content-center gap-3">
-                  <strong>R$ 75,99</strong> <del>R$ 189,00</del>
-                </p>
+            <a href="produto.php?id=<?php echo (int) $produto['id']; ?>" class="text-decoration-none text-dark">
+              <div class="card">
+                <img src="<?php echo htmlspecialchars($produto['imagem'], ENT_QUOTES, 'UTF-8'); ?>" class="card-img-top"
+                  alt="<?php echo htmlspecialchars($produto['alt'], ENT_QUOTES, 'UTF-8'); ?>" />
+                <div class="card-body text-center">
+                  <h5 class="card-title"></h5>
+                  <p class="card-text">
+                    <strong><?php echo htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8'); ?></strong>
+                  </p>
+                  <p class="d-flex justify-content-center gap-3">
+                    <strong>R$ <?php echo formatarPrecoHome($produto['preco']); ?></strong>
+                  </p>
+                </div>
               </div>
-            </div>
+            </a>
           </div>
-          <div class="col">
-            <div class="card">
-              <img
-                src="images/exemplo-roupa.webp"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-                <p class="card-text">
-                  <strong>
-                    Camiseta Algodão Premium Feminina | Everyday Collection -
-                    Verde Oliva
-                  </strong>
-                </p>
-                <p class="d-flex justify-content-center gap-3">
-                  <strong>R$ 75,99</strong> <del>R$ 189,00</del>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card">
-              <img
-                src="images/exemplo-roupa.webp"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-                <p class="card-text">
-                  <strong>
-                    Camiseta Algodão Premium Feminina | Everyday Collection -
-                    Verde Oliva
-                  </strong>
-                </p>
-                <p class="d-flex justify-content-center gap-3">
-                  <strong>R$ 75,99</strong> <del>R$ 189,00</del>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card">
-              <img
-                src="images/exemplo-roupa.webp"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-                <p class="card-text">
-                  <strong>
-                    Camiseta Algodão Premium Feminina | Everyday Collection -
-                    Verde Oliva
-                  </strong>
-                </p>
-                <p class="d-flex justify-content-center gap-3">
-                  <strong>R$ 75,99</strong> <del>R$ 189,00</del>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <div class="text-center mt-4">
-        <button>
-          <span class="box">Ver tudo !</span>
-        </button>
+        <?php endforeach; ?>
       </div>
-      <!-- Área de promoções -->
-      <div class="text-center">
-        <img
-          class="img-fluid banner-promo mt-4 w-100"
-          src="images/banner-3.png"
-          alt=""
-        />
+    </section>
+
+    <div class="text-center mt-4">
+      <button>
+        <span class="box">Ver tudo !</span>
+      </button>
+    </div>
+
+    <!-- Área de kits -->
+    <section class="kit-section bg-black p-1">
+      <div class="d-flex">
+        <h2
+          class="m-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem" id="kits">
+          Monte seu kit
+        </h2>
       </div>
-      <section class="mx-auto section-roupas mt-5">
-        <div class="row row-cols-1 row-cols-md-4 g-4">
-          <div class="col">
-            <div class="card">
-              <img
-                src="images/exemplo-roupa.webp"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-                <p class="card-text">
-                  <strong>
-                    Camiseta Algodão Premium Feminina | Everyday Collection -
-                    Verde Oliva
-                  </strong>
-                </p>
-                <p class="d-flex justify-content-center gap-3">
-                  <strong>R$ 75,99</strong> <del>R$ 189,00</del>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card">
-              <img
-                src="images/exemplo-roupa.webp"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-                <p class="card-text">
-                  <strong>
-                    Camiseta Algodão Premium Feminina | Everyday Collection -
-                    Verde Oliva
-                  </strong>
-                </p>
-                <p class="d-flex justify-content-center gap-3">
-                  <strong>R$ 75,99</strong> <del>R$ 189,00</del>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card">
-              <img
-                src="images/exemplo-roupa.webp"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-                <p class="card-text">
-                  <strong>
-                    Camiseta Algodão Premium Feminina | Everyday Collection -
-                    Verde Oliva
-                  </strong>
-                </p>
-                <p class="d-flex justify-content-center gap-3">
-                  <strong>R$ 75,99</strong> <del>R$ 189,00</del>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card">
-              <img
-                src="images/exemplo-roupa.webp"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-                <p class="card-text">
-                  <strong>
-                    Camiseta Algodão Premium Feminina | Everyday Collection -
-                    Verde Oliva
-                  </strong>
-                </p>
-                <p class="d-flex justify-content-center gap-3">
-                  <strong>R$ 75,99</strong> <del>R$ 189,00</del>
-                </p>
-              </div>
-            </div>
-          </div>
+      <div class="kit-grid d-flex w-100 gap-3 px-4 mb-5">
+        <div class="kit-card d-flex flex-column align-items-center justify-content-center bg-white p-3">
+          <h4 class="mt-5 mb-3 text-uppercase">Kit Camisetas</h4>
+          <h3 class="fs-1 fw-bold">Prima Feminino</h3>
+          <p class="fs-2">R$<?php echo formatarPrecoHome($precoKitFeminino); ?></p>
+          <img class="w-100" src="<?php echo htmlspecialchars($kitFeminino['imagem'] ?? 'assets/img/placeholder.png', ENT_QUOTES, 'UTF-8'); ?>"
+            alt="<?php echo htmlspecialchars($kitFeminino['nome'] ?? 'Kit feminino', ENT_QUOTES, 'UTF-8'); ?>" />
+          <a href="" class="my-3 fw-bold text-uppercase menu__link">Comprar</a>
         </div>
-      </section>
-      <div class="text-center mt-4">
-        <button>
-          <span class="box">Ver tudo !</span>
-        </button>
+        <div class="kit-card d-flex flex-column align-items-center justify-content-center bg-white">
+          <h4 class="mt-5 mb-3 text-uppercase">Kit Camisetas</h4>
+          <h3 class="fs-1 fw-bold">Prima Masculino</h3>
+          <p class="fs-2">R$<?php echo formatarPrecoHome($precoKitMasculino); ?></p>
+          <img class="w-100" src="<?php echo htmlspecialchars($kitMasculino['imagem'] ?? 'assets/img/placeholder.png', ENT_QUOTES, 'UTF-8'); ?>"
+            alt="<?php echo htmlspecialchars($kitMasculino['nome'] ?? 'Kit masculino', ENT_QUOTES, 'UTF-8'); ?>" />
+          <a href="" class="my-3 fw-bold text-uppercase menu__link">Comprar</a>
+        </div>
       </div>
-      <!-- Área de Kits -->
-      <section class="bg-black p-1">
-        <div class="d-flex">
-          <h2
-            class="m-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem"
-          >
-            Monte seu kit
-          </h2>
-        </div>
-        <div class="d-flex w-100 gap-3 px-4 mb-5">
-          <div
-            class="d-flex flex-column align-items-center justify-content-center bg-white w-50 p-3"
-          >
-            <h4 class="mt-5 mb-3 text-uppercase">Kit Camisetas</h4>
-            <h3 class="fs-1 fw-bold">Prima Feminino</h3>
-            <p class="fs-2">de R$255 por R$195</p>
-            <p class="fs-3 mt-1 text-decoration-underline">Cupom: KITPIMA</p>
-            <img class="w-100" src="images/prima-feminino.png" alt="" />
-            <a href="" class="my-3 fw-bold text-uppercase menu__link"
-              >Comprar</a
-            >
-          </div>
-          <div
-            class="d-flex flex-column align-items-center justify-content-center bg-white w-50"
-          >
-            <h4 class="mt-5 mb-3 text-uppercase">Kit Camisetas</h4>
-            <h3 class="fs-1 fw-bold">Prima Masculino</h3>
-            <p class="fs-2">de R$255 por R$195</p>
-            <p class="fs-3 text-decoration-underline mt-1">Cupom: KITPIMA</p>
-            <img class="w-100" src="images/prima-feminino.png" alt="" />
-            <a href="" class="my-3 fw-bold text-uppercase menu__link"
-              >Comprar</a
-            >
-          </div>
-        </div>
-        <div class="d-flex">
-          <h2
-            class="mx-4 mt-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem"
-          >
-            Monte seu look para a primavera
-          </h2>
-        </div>
-        <div class="d-flex gap-4 p-3 mx-2">
-          <div class="card w-25">
-            <img
-              src="images/exemplo-roupa.webp"
-              class="card-img-top"
-              alt="..."
-            />
+      <div class="d-flex">
+        <h2
+          class="mx-4 mt-4 px-2 border-start border-end border-2 border-white text-light text-uppercase text-center fs-4 montagem" id="looks">
+          Monte seu look
+        </h2>
+      </div>
+      <div class="look-grid d-flex gap-4 p-3 mx-2">
+        <?php foreach ($looksPrimavera as $look): ?>
+          <div class="card look-card">
+            <img src="<?php echo htmlspecialchars($look['imagem'], ENT_QUOTES, 'UTF-8'); ?>" class="card-img-top"
+              alt="<?php echo htmlspecialchars($look['nome'], ENT_QUOTES, 'UTF-8'); ?>" />
             <div class="card-body">
               <p class="card-text text-center">
                 <a href="#" class="fs-5 menu__link">Comprar</a>
               </p>
             </div>
           </div>
-          <div class="card w-25">
-            <img
-              src="images/exemplo-roupa.webp"
-              class="card-img-top"
-              alt="..."
-            />
-            <div class="card-body">
-              <p class="card-text text-center">
-                <a href="#" class="fs-5 menu__link">Comprar</a>
-              </p>
-            </div>
-          </div>
-          <div class="card w-25">
-            <img
-              src="images/exemplo-roupa.webp"
-              class="card-img-top"
-              alt="..."
-            />
-            <div class="card-body">
-              <p class="card-text text-center">
-                <a href="#" class="fs-5 menu__link">Comprar</a>
-              </p>
-            </div>
-          </div>
-          <div class="card w-25">
-            <img
-              src="images/exemplo-roupa.webp"
-              class="card-img-top"
-              alt="..."
-            />
-            <div class="card-body">
-              <p class="card-text text-center">
-                <a href="#" class="fs-5 menu__link">Comprar</a>
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-    <footer class="w-100 px-4 py-2">
-      <div class="d-flex align-items-center">
-        <div class="w-50">
-          <img
-            class="logo-marca-footer"
-            src="images/logo-marca.png"
-            alt="logo-da-marca"
-          />
-          <p class="mt-3 text-light">
-            © 2025 Lojavirtual.com CNPJ 00.000.000/0000-00 <br />
-            Todos os direito reservados
-          </p>
-        </div>
-        <div class="w-25 d-flex flex-row-reverse">
-          <ul class="text-end">
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Novidades</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Masculino</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Feminino</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Destaques</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Até 70% OFF</a>
-            </li>
-          </ul>
-        </div>
-        <div class="w-25 d-flex flex-row-reverse">
-          <ul class="text-end">
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Sobre nós</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Perguntas Frequentes</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Trocar é fácil</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Como cuidar de seus básicos</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Termos e condições</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Políticas de privacidade</a>
-            </li>
-            <li class="p-2 footer-links">
-              <a class="text-light" href="#">Trabalhe Conosco</a>
-            </li>
-          </ul>
-        </div>
+        <?php endforeach; ?>
       </div>
-      <div class="d-flex justify-content-start gap-3 w-25">
-        <a href=""
-          ><img class="icons" src="images/instagram-icon.png" alt=""
-        /></a>
-        <a href=""><img class="icons" src="images/tiktok-icon.png" alt="" /></a>
-        <a href=""
-          ><img class="icons" src="images/facebook-icon.png" alt=""
-        /></a>
-        <a href=""
-          ><img class="icons" src="images/linkedin-logo.png" alt=""
-        /></a>
-        <a href=""
-          ><img class="icons" src="images/youtube-icon.png" alt=""
-        /></a>
-      </div>
-      <!-- Botão para subir a página -->
-      <div class="d-flex justify-content-end sticky-bottom p-3">
-        <button class="button back-to-top">
-          <svg class="svgIcon" viewBox="0 0 384 512">
-            <path
-              d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"
-            ></path>
-          </svg>
-        </button>
-      </div>
-    </footer>
+    </section>
+  </main>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-      crossorigin="anonymous"
-    ></script>
+  <?php include 'includes/footer.php'; ?>
 
-    <script src="scripts/index.js"></script>
-  </body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+  <script src="assets/js/index.js"></script>
+</body>
+
 </html>
