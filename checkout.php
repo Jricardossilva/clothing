@@ -564,7 +564,7 @@ function calcularFreteSimulado($estadoDestino, $peso)
                 <div class="qr-container mb-3">
                     <img src="../clothing/assets/img/testeqrcode.jpg" alt="QR Code PIX"
                         style="width: 100%; max-width: 250px; height: auto; margin: 0 auto; display: block; border: 1px solid #eee; padding: 15px; background: #fff;">
-                    <p class="qr-instruction mt-2 mb-3" style="font-size: 15px; color: #666;">Aponte a cÃ¢mera do seu banco para o cÃ³digo acima</p>
+                    <p class="qr-instruction mt-2 mb-3" style="font-size: 15px; color: #666;">Aponte a câmera do seu banco para o código acima</p>
                 </div>
 
                 <div class="upload-section d-flex flex-column align-items-center">
